@@ -9,22 +9,68 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#IMPORT AND TIDY AQUACULTURE DATA
 
 ```{r cars}
-summary(cars)
+library(plyr)
+library(dplyr)
+library(tidyr)
+
+aqua.raw<-read.csv("aquaculture-prod-raw.csv", header=T)
+summary(aqua.raw)
+names(aqua.raw)[names(aqua.raw)=="Country..Country."]<-"Country"
+names(aqua.raw)[names(aqua.raw)=="Species..ASFIS.species."]<-"Species"
+names(aqua.raw)[names(aqua.raw)=="Aquaculture.area..FAO.major.fishing.area."]<-"Area"
+names(aqua.raw)[names(aqua.raw)=="Environment..Environment."]<-"Environment"
+
+aqua.raw2<-aqua.raw %>% gather(Year, Value, -c(Country, Species, Area, Environment, Unit))
+head(aqua.raw2)
+levels(aqua.raw2$Unit)
+
+aqua.raw2$Year<-gsub("X", "", aqua.raw2$Year)
+aqua.raw2$Year<-as.numeric(aqua.raw2$Year)
+
+#Sort the symbols in values out
+## "..." = data unavailable
+## " " = data not separately available
+## "-" = nil or zero
+## "0 0" = more than zero but less than half the unit used
+## F = FAO estimate from available sources of information
+aqua.raw2$Value[aqua.raw2$Value=="0 0"] <- 0.5
+aqua.raw2$Value[aqua.raw2$Value=="-"] <- 0
+
+#exclude unavailable data
+aqua.raw2 <- aqua.raw2[aqua.raw2$Value!="...",]
+aqua.raw2 <- aqua.raw2[aqua.raw2$Value!="",]
+
+#Use estimates as data
+aqua.raw2$Value <- gsub(' F', '', aqua.raw2$Value)
+head(aqua.raw2)
+aqua.raw2$Value <- as.numeric(aqua.raw2$Value)
+
+prod.aqua<-aqua.raw2
+prod.aqua
+
+#get taxons
+taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
+
+names(taxons)[names(taxons)=="Name_en"]<-"Species"
+prod.aqua<-join(prod.aqua, taxons, by="Species", type="inner")
+
+#Exclude totals and weird country values
+levels(prod.aqua$Country)
+prod.aqua<- prod.aqua[prod.aqua$Country!="FAO. 2017. Fishery and Aquaculture Statistics. Global aquaculture production 1950-2015 (FishstatJ). In: FAO Fisheries and Aquaculture Department [online]. Rome. Updated 2017. www.fao.org/fishery/statistics/software/fishstatj/en",]
+prod.aqua<- prod.aqua[prod.aqua$Country!="Totals",]
+
+write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
+
 ```
 
-## Including Plots
+## Plotting changes in production over time of species groups and projections based on IMPACT model projections
 
-You can also embed plots, for example:
+```{r}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
