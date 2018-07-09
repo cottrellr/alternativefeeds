@@ -6,10 +6,18 @@ output: word_document
 ---
 
 ```{r}
-library(plyr)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(devtools)
+library(readr)
+library(broom)
+library(stringr)
+library(ggsci)
+library(ggforce)
+library(png)
+library(grid) 
+library(taxize)
 
 ```
 
@@ -56,7 +64,7 @@ prod.aqua
 taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
 
 names(taxons)[names(taxons)=="Name_en"]<-"Species"
-prod.aqua<-join(prod.aqua, taxons, by="Species", type="inner")
+prod.aqua<- dplyr::left_join(prod.aqua, taxons, by="Species")
 
 #Exclude totals and weird country values
 levels(prod.aqua$Country)
@@ -65,75 +73,103 @@ prod.aqua<- prod.aqua[prod.aqua$Country!="Totals",]
 
 write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
 
+
+
+
+```
+
+
+#ISOLATE FED SPECIES
+
+```{r}
+
+
+prod.aqua[grep("Fleshy prawn", prod.aqua$Species),]
+unique(prod.aqua$Species[grep("Fleshy prawn", prod.aqua$Species)])
+
+Fed_Spp <- c("Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", "Nile tilapia", "Blue-Nile tilapia, hybrid", "Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel", "Pacu", "Pirapatinga", "Cachama", "Atlantic salmon", "Rainbow trout", "Milkfish", "European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Barramundi(=Giant seaperch)", "Atlantic cod" , "European seabass", "Gilthead seabream", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei","Red drum", "Flathead grey mullet" ,"Squaretail mullet"   , "Thinlip grey mullet" , "So-iuy mullet"   ,     "Bluespot mullet"   ,   "Lebranche mullet", "Mullets nei", "Japanese amberjack", "Chinese mitten crab", "Red claw crayfish", "Giant river prawn", "Oriental river prawn", "Whiteleg shrimp", "Giant tiger prawn", "Fleshy prawn")
+
+#Fedspecies<-data.frame(Scientific_Name=c("Ctenopharyngodon idella", "Megalobrama amblycephala", "Cyprinus carpio", "Carassius carassius", "Mylopharyngodon piceus", "Barbonymus gonionotus", "Catla catla", "Labeo rohita", "Cirrhinus cirrhosus", "Oreochromis niloticus", "Oreochromis aureus x O. niloticus", "Ictalurus punctatus", "Ictalurus punctatus x I. furcatus", "Clarias gariepinus x C. macrocephalus", "Clarias gariepinus",  "Silurus asotus" , "Pelteobagrus fulvidraco", "Channa spp",   "Channa argus" , "Siniperca chuatsi", "Monopterus albus", "Piaractus brachypomus", "Colossoma macropomum","Piaractus mesopotamicus", "Anguilla spp", "Salmo salar", "Oncorhynchus mykiss", "Chanos chanos", "Lates calcarifer", "Platichthys flesus", "Bothidae", "Pleuronectidae", "Psetta maxima", "Gadus morhua", "Dicentrarchus labrax", "Sparus aurata", "Epinephelus spp", "Serranidae", "Sciaenops ocellatus", "Mugil cephalus", "Liza vaigiensis", "Liza ramada", "Mugil soiuy", "Valamugil seheli", "Mugil liza", "Seriola quinqueradiata", "Eriocheir sinensis", "Cherax quadricarinatus", "Macrobrachium rosenbergii", "Macrobrachium nipponense", "Penaeus vannamei", "Penaeus monodon", "Penaeus chinensis"), Feed=rep("Fed"))
+
+
+fed_aqua <-prod.aqua[prod.aqua$Species %in% Fed_Spp,]
+
+write.csv(fed_aqua, "Fed aquaculture tidy.csv", row.names = F)
+
+
+
+
 ```
 
 ## Plotting changes in production over time of species groups and projections based on IMPACT model projections
 
 ```{r}
 
-aqua<-read.csv("Aquaculture production tidy.csv", header = T)
+fed_aqua<-read.csv("Fed aquaculture tidy.csv", header = T)
 diets<-read.csv("fishmeal diet data.csv", header = T)
-taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
-names(taxons)[names(taxons)=="Name_en"]<-"Species"
 
-diets<-join(diets, taxons, by="Species", type="left")
+fed_aqua<-dplyr::left_join(fed_aqua, diets, by="Scientific_Name")
 
-aqua.fed<-join(aqua, diets, by="Species", type="left")
-#aqua.fed<-aqua.fed[!is.na(aqua.fed$IMPACT_species),]
 
 #exclude non-fed and amphib/reptile species
-aqua.fed<-aqua.fed[aqua.fed$Major_Group=="CRUSTACEA" | aqua.fed$Major_Group=="PISCES",]
-aqua.fed$IMPACT_species<-as.character(aqua.fed$IMPACT_species)
-
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Carps, barbels and other cyprinids"]<-"Carp"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Cods, hakes, haddocks"]<-"Major demersal"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Crabs, sea-spiders"]<-"Crustaceans"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Flounders, halibuts, soles"]<-"Major demersal" #check
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Freshwater crustaceans"]<-"Crustaceans"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Lobsters, spiny-rock lobsters"]<-"Crustaceans"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Marine fishes not identified"]<-"Other marine"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Miscellaneous coastal fishes"]<-"Other marine"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Miscellaneous demersal fishes"]<-"Other marine"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Miscellaneous diadromous fishes"]<-"Other freshwater"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Miscellaneous freshwater fishes"]<-"Other freshwater"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Miscellaneous marine crustaceans"]<-"Crustaceans"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Miscellaneous pelagic fishes"]<-"Other pelagic"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="River eels"]<-"Eels and Sturgeon"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Salmons, trouts, smelts"]<-"Salmon"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Shads"]<-"Other Marine"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Shrimps, prawns"]<-"Shrimp"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Sturgeons, paddlefishes"]<-"Eels and Sturgeon"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Tilapias and other cichlids"]<-"Tilapia"
-aqua.fed$IMPACT_species[aqua.fed$ISSCAAP_Group=="Tunas, bonitos, billfishes"]<-"Tuna"
-
-aqua.fed$IMPACT_species<-as.factor(aqua.fed$IMPACT_species)
-
-#need to exclude silver and bighead carp
+# fed_aqua<-fed_aqua[fed_aqua$Major_Group=="CRUSTACEA" | fed_aqua$Major_Group=="PISCES",]
 
 
-aqua.fed.global<-aggregate(aqua.fed$Value~aqua.fed$Year+aqua.fed$IMPACT_species,FUN=sum)
+#adjust ISSCAAP groups
 
-names(aqua.fed.global)[1]<-"Year"
-names(aqua.fed.global)[2]<-"Group"
-names(aqua.fed.global)[3]<-"Value"
+
+#adjust IMPACT groups
+fed_aqua$IMPACT_species<-as.character(fed_aqua$IMPACT_species)
+
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Carps, barbels and other cyprinids"]<-"Carp"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Cods, hakes, haddocks"]<-"Major demersal"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Crabs, sea-spiders"]<-"Crustaceans"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Flounders, halibuts, soles"]<-"Major demersal" #check
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Freshwater crustaceans"]<-"Crustaceans"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Lobsters, spiny-rock lobsters"]<-"Crustaceans"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Marine fishes not identified"]<-"Other marine"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Miscellaneous coastal fishes"]<-"Other marine"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Miscellaneous demersal fishes"]<-"Other marine"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Miscellaneous diadromous fishes"]<-"Other freshwater"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Miscellaneous freshwater fishes"]<-"Other freshwater"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Miscellaneous marine crustaceans"]<-"Crustaceans"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Miscellaneous pelagic fishes"]<-"Other pelagic"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="River eels"]<-"Eels and Sturgeon"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Salmons, trouts, smelts"]<-"Salmon"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Shads"]<-"Other Marine"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Shrimps, prawns"]<-"Shrimp"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Sturgeons, paddlefishes"]<-"Eels and Sturgeon"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Tilapias and other cichlids"]<-"Tilapia"
+fed_aqua$IMPACT_species[fed_aqua$ISSCAAP_Group=="Tunas, bonitos, billfishes"]<-"Tuna"
+
+fed_aqua$IMPACT_species<-as.factor(fed_aqua$IMPACT_species)
+
+
+fed_aqua.global<-aggregate(fed_aqua$Value~fed_aqua$Year+fed_aqua$Species.x,FUN=sum)
+
+names(fed_aqua.global)[1]<-"Year"
+names(fed_aqua.global)[2]<-"Group"
+names(fed_aqua.global)[3]<-"Value"
 
 
 #relevel the group factor
-levels(aqua.fed.global$Group)
-aqua.fed.global$Group<-factor(aqua.fed.global$Group, levels(aqua.fed.global$Group)[c(1,10,9,11)])
+levels(fed_aqua.global$Group)
+fed_aqua.global$Group<-factor(fed_aqua.global$Group, levels(fed_aqua.global$Group)[c(1,10,9,11)])
 
 
 #Look at the ISCAAP production data
-ggplot(data = aqua.fed.global, aes(x=Year, y=Value, colour=Group))+geom_line()
-ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 10, height = 6)
+ggplot(data = fed_aqua.global, aes(x=Year, y=Value, colour=Group))+geom_line()
+ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 5)
 
-ordered<-aqua.fed.global[aqua.fed.global$Year==2015,]
+ordered<-fed_aqua.global[fed_aqua.global$Year==2015,]
 ordered<-ordered[order(-ordered$Value),]
 
 cols<-
 
-ggplot(data = aqua.fed.global[,c(1,3,4)], aes(x=Year, y=Value, colour=IMPACT_species))+geom_line()
+ggplot(data = fed_aqua.global[,c(1,3,4)], aes(x=Year, y=Value, colour=IMPACT_species))+geom_line()
 
+
+diets
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
