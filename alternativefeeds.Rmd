@@ -18,7 +18,10 @@ library(ggforce)
 library(png)
 library(grid) 
 library(taxize)
-
+library(zoo)
+library(colorspace)
+library(grDevices)
+library(RColorBrewer)
 ```
 
 #IMPORT AND TIDY AQUACULTURE DATA
@@ -98,19 +101,69 @@ write.csv(fed_aqua, "Fed aquaculture tidy.csv", row.names = F)
 
 ```
 
+
+# IMPORT SPECIES PICS
+
+```{r}
+
+# IMPORT AND NAME IMAGES
+
+carp_img<- readPNG("carp.png")
+carp_img <- rasterGrob(carp_img, interpolate = T)
+
+shrimp_img<- readPNG("shrimp.png")
+shrimp_img <- rasterGrob(shrimp_img, interpolate = T)
+
+salmon_img<- readPNG("salmon.png")
+salmon_img <- rasterGrob(salmon_img, interpolate = T)
+ 
+tilapia_img<- readPNG("tilapia.png")
+tilapia_img <- rasterGrob(tilapia_img, interpolate = T)
+
+catfish_img<- readPNG("catfish.png")
+catfish_img <- rasterGrob(catfish_img, interpolate = T)
+
+snakehead_img<- readPNG("snakehead.png")
+snakehead_img <- rasterGrob(snakehead_img, interpolate = T)
+
+crab_img<- readPNG("crab.png")
+crab_img <- rasterGrob(crab_img, interpolate = T)
+
+bass_img<- readPNG("bass.png")
+bass_img <- rasterGrob(bass_img, interpolate = T)
+
+eel_img<- readPNG("eel.png")
+eel_img <- rasterGrob(eel_img, interpolate = T)
+
+grouper_img<- readPNG("grouper.png")
+grouper_img <- rasterGrob(grouper_img, interpolate = T)
+
+mullet_img<- readPNG("mullet.png")
+mullet_img <- rasterGrob(mullet_img, interpolate = T)
+
+jack_img<- readPNG("jack.png")
+jack_img <- rasterGrob(jack_img, interpolate = T)
+
+```
+
+
+
+
+
 ## Plotting changes in production over time of species groups and projections based on IMPACT model projections
 
 ```{r}
 
+
 fed_aqua<-read.csv("Fed aquaculture tidy.csv", header = T)
 
-taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
-names(taxons)[names(taxons)=="Name_en"]<-"Species"
+#taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
+#names(taxons)[names(taxons)=="Name_en"]<-"Species"
 
 
 
-fed_aqua <- dplyr::left_join(fed_aqua, taxons, by="Species")
-fed_aqua <- fed_aqua[,c(1:7, 15:23)]
+# fed_aqua <- dplyr::left_join(fed_aqua, taxons, by="Species")
+# fed_aqua <- fed_aqua[,c(1:7, 15:23)]
 
 # diets<-read.csv("fishmeal diet data.csv", header = T)
 # 
@@ -122,30 +175,28 @@ fed_aqua <- fed_aqua[,c(1:7, 15:23)]
 
 
 
-#add IMPACT groups
-
+#add broad groups based off IMPACT model
 fed_aqua$Broad_group <-NA
 fed_aqua$Broad_group<-as.character(fed_aqua$Broad_group)
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Grass carp(=White amur)","Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", "Milkfish")] <- "Carp"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Nile tilapia", "Blue-Nile tilapia, hybrid")] <- "Tilapia"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish")] <- "Catfish"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Pacu", "Pirapatinga", "Cachama")] <- "Freshwater spp., other"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Pacu", "Pirapatinga", "Cachama")] <- "FW fish,other"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Rainbow trout")] <- "Salmonids"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "European seabass", "Gilthead seabream", "Barramundi(=Giant seaperch)")] <- "Major demersal spp."
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic cod", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei","Red drum")] <- "Marine spp., other"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "European seabass", "Gilthead seabream", "Barramundi(=Giant seaperch)")] <- "Demersal fish"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic cod", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei","Red drum")] <- "Mar. fish,other"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Flathead grey mullet" ,"Squaretail mullet", "Thinlip grey mullet", "So-iuy mullet", "Bluespot mullet",  "Lebranche mullet", "Mullets nei")] <- "Mullet"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Chinese mitten crab", "Red claw crayfish")] <- "Crustaceans, other"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Chinese mitten crab", "Red claw crayfish")] <- "Crustaceans,other"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Giant river prawn", "Oriental river prawn", "Whiteleg shrimp", "Giant tiger prawn", "Fleshy prawn")] <- "Shrimp"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Asian swamp eel", "River eels nei")] <- "Eels"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese amberjack")] <- "Pelagic spp., other"
-
-fed_aqua$Broad_group[fed_aqua$Broad_group=="Marine spp., other" & fed_aqua$Environment=="Freshwater"] <- "Freshwater spp., other"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese amberjack")] <- "Pel. fish,other"
+fed_aqua$Broad_group[fed_aqua$Broad_group=="Marine spp., other" & fed_aqua$Environment=="Freshwater"] <- "FW fish,other"
 fed_aqua$Broad_group <- as.factor(fed_aqua$Broad_group)
+
 
 
 #aggregate by broad category for every year
 fed_aqua.global<-aggregate(fed_aqua$Value~fed_aqua$Year+fed_aqua$Broad_group,FUN=sum)
-
 names(fed_aqua.global)[1]<-"Year"
 names(fed_aqua.global)[2]<-"Group"
 names(fed_aqua.global)[3]<-"Value"
@@ -155,25 +206,358 @@ arrange(fed_aqua.global, desc(Year), desc(Value))
 
 #relevel the group factor
 levels(fed_aqua.global$Group)
-fed_aqua.global$Group<-factor(fed_aqua.global$Group, levels(fed_aqua.global$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
+fed_aqua.global$Group<-factor(fed_aqua.global$Group, levels(fed_aqua.global$Group)[c(1,11,12,2,10, 6, 3, 4, 5, 7, 8, 9)])
 
 
-#Look at the ISCAAP production data
-ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+geom_line()+
-  theme_bw()+theme(panel.grid = element_blank())
-ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 5)
+#Look at the group production data to present day
+ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
+  geom_line()+
+  theme_bw()+
+  theme(panel.grid = element_blank(), 
+        legend.text = element_text(size=6),
+        legend.title = element_blank(),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8))+
+  scale_x_continuous(limits = c(1950,2015))+
+  scale_y_continuous()+
+  geom_vline(xintercept = 2015, lty=2)+
+  labs(y=bquote(Production~(T~x10^6)))
 
-ordered<-fed_aqua.global[fed_aqua.global$Year==2015,]
-ordered<-ordered[order(-ordered$Value),]
-
-cols<-
-
-ggplot(data = fed_aqua.global[,c(1,3,4)], aes(x=Year, y=Value, colour=IMPACT_species))+geom_line()
+ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 6, unit="cm")
 
 
+# PROJECTION SCENARIO 1 - Business as usual
+#Create projections from expected changes to total production and proportional among farmed groups
+
+fed_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = NA )
+
+fed_projections$Group<-factor(fed_projections$Group, levels(fed_projections$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
 
 
-diets
+
+#Expected doubled fed aquaculture production to 2050 - see Froehlich 2018 & Tilman and Clark 
+
+Proj_total <- 2* sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
+Growth_rates <- data.frame(Group = levels(fed_aqua.global$Group), Growth= c(1.02, 1.04, 1.04, 1, 1, 1.02, 1,1,1,1,1,0.996 ))
+
+
+
+#Calculate the change in production assuming growth rates from impact model (conservative as this is growth in share of total production -  not fed production) - see World Bank to 2030
+
+
+for (i in 1:length(levels(fed_aqua.global$Group))){
+  Prop <- sum(fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015])/ sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
+  fed_projections$Value[i] <- Proj_total*(Prop*Growth_rates$Growth[i])
+}
+
+years <- seq(from = 2015, to = 2049, by=1)
+
+interpolations <- data.frame(Year = rep(years, length(levels(fed_projections$Group))), Group=rep(levels(fed_projections$Group), each=length(years),1))
+
+interpolations$Group<-factor(interpolations$Group, levels(interpolations$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
+
+
+#add the current data for 2015 for new projections layer
+
+interpolations$Value <- NA
+for (i in 1:length(levels(fed_aqua.global$Group))){
+  interpolations$Value[interpolations$Group==levels(interpolations$Group)[i] & interpolations$Year==2015] <- fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015]
+}
+
+# add 2050 projections and interpolate between 2015 and 2050
+fed_projections <- rbind(interpolations, fed_projections)
+fed_projections <- arrange(fed_projections, (Group), (Year))
+
+for (i in 1:length(levels(fed_projections$Group))){
+  fed_projections$Value[fed_projections$Group==levels(fed_projections$Group)[i]]<-na.approx(fed_projections$Value[fed_projections$Group==levels(fed_projections$Group)[i]])
+
+}
+
+fed_projections
+
+
+
+
+
+
+
+
+#test if this works in the plot
+ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
+  geom_line()+
+  geom_line(data = fed_projections,aes(x=Year, y=Value, colour=Group), linetype=2)+
+  theme_bw()+
+  theme(panel.grid = element_blank(), 
+        legend.text = element_text(size=6),
+        legend.title = element_blank(),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8))+
+  scale_x_continuous(limits = c(1950,2055))+
+  scale_y_continuous()+
+  geom_vline(xintercept = 2015, lty=2)+
+  labs(y=bquote(Production~(T~x10^6)))+
+  guides(colour=F)
+
+ggsave("basic linear proj.tiff", device = "tiff", dpi=600, width = 9, height = 6, unit="cm")
+
+
+
+
+
+#add scenarios for confidence around trajectories
+
+#PROJECTIONS SCENARIO 2 - Shifting preference to high value fish in china
+
+China_Proj_total <- Proj_total*1.24
+Growth_rates <- data.frame(Group = levels(fed_aqua.global$Group), Growth= c(1.03, 3.11, 1.03, 1.03, 2.96, 1.03, 3.05 , 0.96, 1.03, 0.96, 0.96 ,0.87))
+
+
+Chn_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = (NA) )
+
+
+for (i in 1:length(levels(fed_aqua.global$Group))){
+  Chn_projections$Value[i]<- fed_projections$Value[fed_projections$Year==2050 & fed_projections$Group==levels(fed_aqua.global$Group)[i]]*Growth_rates$Growth[i]
+}
+
+#add 2015 and 2050 data from data and projections and interpolate
+
+interpolations <- data.frame(Year = rep(years, length(levels(fed_projections$Group))), Group=rep(levels(fed_projections$Group), each=length(years),1))
+
+interpolations$Group<-factor(interpolations$Group, levels(interpolations$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
+
+
+#add the current data for 2015 for new projections layer
+
+interpolations$Value <- NA
+for (i in 1:length(levels(fed_aqua.global$Group))){
+  interpolations$Value[interpolations$Group==levels(interpolations$Group)[i] & interpolations$Year==2015] <- fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015]
+}
+
+# add 2050 projections and interpolate between 2015 and 2050
+Chn_projections <- rbind(interpolations, Chn_projections)
+Chn_projections <- arrange(Chn_projections, (Group), (Year))
+
+
+for (i in 1:length(levels(Chn_projections$Group))){
+  Chn_projections$Value[Chn_projections$Group==levels(Chn_projections$Group)[i]]<-na.approx(Chn_projections$Value[Chn_projections$Group==levels(Chn_projections$Group)[i]])
+
+}
+
+#test china projections work with plot
+
+ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
+  geom_line()+
+  geom_line(data = Chn_projections,aes(x=Year, y=Value, colour=Group), linetype="dotted")+
+  theme_bw()+
+  theme(panel.grid = element_blank(), 
+        legend.text = element_text(size=6),
+        legend.title = element_blank(),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8))+
+  scale_x_continuous(limits = c(1950,2055))+
+  scale_y_continuous()+
+  geom_vline(xintercept = 2015, lty=2)+
+  labs(y=bquote(Production~(T~x10^6)))+
+  guides(colour=F)
+
+
+# SCENARIO THREE - PESCETARIAN DIETS
+
+
+pesc_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = NA )
+
+pesc_projections$Group<-factor(pesc_projections$Group, levels(pesc_projections$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
+
+
+
+#Expected tripled fed aquaculture production to 2050 under rapid change scenario - see Froehlich 2018 & Tilman and Clark 
+
+Pesc_Proj_total <- 3* sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
+Growth_rates <- data.frame(Group = levels(fed_aqua.global$Group), Growth= c(1.04, 1.1, 1.29, 1.01, 1.11, 1.01, 1.09, 1.06, 1.02, 1.36, 1.15, 0.998))
+
+
+
+#Calculate the change in production assuming growth rates from impact model (conservative as this is growth in share of total production -  not fed production) - see World Bank to 2030
+
+
+for (i in 1:length(levels(fed_projections$Group))){
+  Prop <- sum(fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015])/ sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
+  pesc_projections$Value[i] <- (Pesc_Proj_total*Prop)*Growth_rates$Growth[i]
+}
+
+#Adjust new production to stay in line with x3 growth
+adj<-Pesc_Proj_total/ sum(pesc_projections$Value)
+
+pesc_projections$Value <- pesc_projections$Value*adj
+
+
+
+years <- seq(from = 2015, to = 2049, by=1)
+
+interpolations <- data.frame(Year = rep(years, length(levels(pesc_projections$Group))), Group=rep(levels(pesc_projections$Group), each=length(years),1))
+
+interpolations$Group<-factor(interpolations$Group, levels(interpolations$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
+
+
+#add the current data for 2015 for new projections layer
+
+interpolations$Value <- NA
+for (i in 1:length(levels(fed_aqua.global$Group))){
+  interpolations$Value[interpolations$Group==levels(interpolations$Group)[i] & interpolations$Year==2015] <- fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015]
+}
+
+# add 2050 projections and interpolate between 2015 and 2050
+pesc_projections <- rbind(interpolations, pesc_projections)
+pesc_projections <- arrange(pesc_projections, (Group), (Year))
+
+for (i in 1:length(levels(pesc_projections$Group))){
+  pesc_projections$Value[pesc_projections$Group==levels(pesc_projections$Group)[i]]<-na.approx(pesc_projections$Value[pesc_projections$Group==levels(pesc_projections$Group)[i]])
+
+}
+
+pesc_projections
+
+
+ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
+  geom_line()+
+  geom_line(data = pesc_projections,aes(x=Year, y=Value, colour=Group), linetype=2)+
+  theme_bw()+
+  theme(panel.grid = element_blank(), 
+        legend.text = element_text(size=6),
+        legend.title = element_blank(),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8))+
+  scale_x_continuous(limits = c(1950,2055))+
+  scale_y_continuous()+
+  geom_vline(xintercept = 2015, lty=2)+
+  labs(y=bquote(Production~(T~x10^6)))+
+  guides(colour=F)
+
+ggsave("basic linear proj.tiff", device = "tiff", dpi=600, width = 9, height = 6, unit="cm")
+
+
+#now create min and maxs of all projections from the scenarios
+
+Proj_all <-cbind.data.frame(fed_projections$Value, Chn_projections$Value, pesc_projections$Value)
+names(Proj_all)[1] <- "BAU"
+names(Proj_all)[2] <- "CHN"
+names(Proj_all)[3] <- "PESC"
+
+Proj_all$Group <- fed_projections$Group
+Proj_all$Year <- fed_projections$Year
+Proj_all$min <- pmin(Proj_all$BAU, Proj_all$CHN, Proj_all$PESC)
+Proj_all$max <- pmax(Proj_all$BAU, Proj_all$CHN, Proj_all$PESC)
+Proj_all$Value <- rowMeans(Proj_all[,c(6,7)])
+
+Proj_all$Group <-factor(Proj_all$Group, levels(Proj_all$Group)[c(1:5, 8, 7,9, 6,10,11,12)])
+
+
+
+#make indepdent legend
+cbbPalette <- c("#000000", "#009E73", "#e79f00", "#9ad0f3", "#0072B2", "#D55E00", 
+    "#CC79A7", "#F0E442")
+
+colourCount <- length(unique(Proj_all$Group))
+cols <- colorRampPalette(cbbPalette)
+#Colours
+#"#000000" "#006449" "#7DBEE7" "#D29E0A" "#BCB984" "#3F9E53" "#1C83BD" "#606861" "#D4600F" "#CE7179" #"#D99F82" "#F0E442"
+
+#create custom legend
+# ggplot()+
+#   theme(panel.grid = element_blank(),
+#         panel.background = element_blank(),
+#         axis.text = element_blank(),
+#         axis.ticks = element_blank(),
+#         axis.title = element_blank())+
+#   scale_x_continuous(limits=c(0,1.4))+
+#   scale_y_continuous(limits=c(0.1,1.3))+
+#   annotate("segment", x=c(0.0, 0.0,0,0,0,0), xend = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), yend = c(1.2, 1, 0.8, 0.6, 0.4, 0.2), colour = c("#000000", "#006449", "#3F9E53", "#D29E0A", "#BCB984" ,"#7DBEE7"), size=1)+
+#   annotate("text", x=c(0.16, 0.17, 0.17, 0.17, 0.20, 0.28), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), label =c("Carp", "Shrimp", "Tilapia", "Catfish", "Salmonids", "Freshwater fish, other"))+
+#   annotate("segment", x=c(0.65, 0.65,0.65,0.65,0.65,0.65), xend = c(0.75, 0.75, 0.75, 0.75, 0.75, 0.75), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), yend = c(1.2, 1, 0.8, 0.6, 0.4, 0.2), colour = c("#1C83BD", "#606861", "#D4600F", "#CE7179", "#D99F82", "#F0E442"), size=1)+
+#   annotate("text", x=c(0.91, 0.88, 0.81, 0.9, 0.82, 0.9), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), label =c("Crustaceans, other", "Demersal fish", "Eels", "Marine fish, other" , "Mullet" ,                "Pelagic fish, other"))+
+#   annotation_custom(grob = carp_img, xmin = 0.25, xmax = 0.4, ymin=1.1, ymax = 1.3)+
+#   annotation_custom(grob = shrimp_img, xmin = 0.25, xmax = 0.4, ymin=0.9, ymax = 1.1)+
+#   annotation_custom(grob = tilapia_img, xmin = 0.25, xmax = 0.4, ymin=0.7, ymax = 0.9)+
+#   annotation_custom(grob = catfish_img, xmin = 0.25, xmax = 0.43, ymin=0.5, ymax = 0.7)+
+#   annotation_custom(grob = salmon_img, xmin = 0.3, xmax = 0.47, ymin=0.3, ymax = 0.5)+
+#   annotation_custom(grob = snakehead_img, xmin = 0.47, xmax = 0.6, ymin=0.1, ymax = 0.3)+
+#   annotation_custom(grob = crab_img, xmin = 1, xmax = 1.3, ymin=1.1, ymax = 1.26)+
+#   annotation_custom(grob = bass_img, xmin = 1, xmax = 1.21, ymin=0.9, ymax = 1.1)+
+#   annotation_custom(grob = eel_img, xmin = 0.85, xmax = 1.1, ymin=0.7, ymax = 0.9)+
+#   annotation_custom(grob = grouper_img, xmin = 1.05, xmax = 1.25, ymin=0.5, ymax = 0.7)+
+#   annotation_custom(grob = mullet_img, xmin = 0.89, xmax = 1.07, ymin=0.3, ymax = 0.5)+
+#   annotation_custom(grob = jack_img, xmin = 1.08, xmax = 1.26, ymin=0.1, ymax = 0.3)
+# 
+# 
+# ggsave("f1legend.png", device = "png", dpi=300, width=18, height=13, units="cm")
+
+# legend_grob <- readPNG("f1legend.png")
+# legend_grob <-rasterGrob(legend_grob, interpolate = T)
+
+#MAIN PLOT
+fig1 <- ggplot(data = fed_aqua.global, aes(x=Year, y=Value, colour=Group))+
+  #annotation_custom(legend_grob, xmin = 1932, xmax = 2035, ymin = 19e+06, ymax = 55e+06)+
+  geom_line(size=0.4)+
+  geom_ribbon(data = Proj_all, aes(x=Year, ymin=min, ymax=max, fill=Group), colour=NA, alpha=0.08)+
+  geom_line(data = Proj_all, aes(x=Year, y=Value, colour=Group), linetype="dashed", size=0.3)+
+  theme_bw()+
+  scale_colour_manual(values=c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#606861", "#D4600F", "#CE7179", "#D99F82", "#F0E442"))+
+  scale_fill_manual(values=c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#606861", "#D4600F", "#CE7179", "#D99F82", "#F0E442"))+
+  theme(panel.grid = element_blank(), 
+        legend.text = element_text(size=6),
+        legend.title = element_blank(),
+        legend.key.size = unit(0.3,"cm"),
+        legend.background = element_blank(),
+        legend.position = c(0.3, 0.85),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8))+
+  scale_x_continuous(limits = c(1950,2051), breaks = c(1950, 1970, 1990, 2010, 2030, 2050), labels = c(1950, 1970, 1990, 2010, 2030, 2050))+
+  scale_y_continuous(breaks = c(0, 1e+07, 2e+07, 3e+07, 4e+07, 5e+07), labels = c(0,10,20,30,40,50))+
+  geom_vline(xintercept = 2015, lty=2)+
+  labs(y=bquote(Production~(T~x10^6)))+
+  guides(colour=guide_legend(ncol = 2), fill=F)
+  
+
+ggsave("f1maint.tiff", device = "tiff", width=9, height=7, units = "cm")
+
+
+
+  # annotation_custom(carp_img, xmin = 2050, xmax = 2060, ymin = c(42e+06), ymax = 44e+06)+ 
+  # annotation_custom(shrimp_img, xmin = 2050, xmax = 2060, ymin = c(18e+06), ymax = 24e+06)+ 
+  # annotation_custom(salmon_img, xmin = 2050, xmax = 2060, ymin = c(9e+06), ymax = 15e+06)+ 
+  # annotation_custom(tilapia_img, xmin = 2050, xmax = 2060, ymin = c(6e+06), ymax = 12e+06)+ 
+  # annotation_custom(catfish_img, xmin = 2050, xmax = 2060, ymin = c(5e+06), ymax = 11e+06)+ 
+  # annotation_custom(snakehead_img, xmin = 2050, xmax = 2060, ymin = c(4e+06), ymax = 10e+06)+ 
+  # annotation_custom(bass_img, xmin = 2050, xmax = 2060, ymin = c(3e+06), ymax = 9e+06)+ 
+  # annotation_custom(eel_img, xmin = 2050, xmax = 2060, ymin = c(2e+06), ymax = 8e+06)+ 
+  # annotation_custom(grouper_img, xmin = 2050, xmax = 2060, ymin = c(1e+06), ymax = 7e+06)+ 
+  # annotation_custom(mullet_img, xmin = 2050, xmax = 2060, ymin = c(0.1e+06), ymax = 6.1e+06)+ 
+  # annotation_custom(jack_img, xmin = 2050, xmax = 2060, ymin = c(-0.5e+06), ymax = 5.5e+06)+ 
+  # annotation_custom(carp_img, xmin = 2050, xmax = 2060, ymin = c(-1e+06), ymax = 5e+06)
+
+
+
+ggsave("basic linear proj with scenarios.tiff", device = "tiff", dpi=600, width = 9, height = 7, unit="cm")
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# ADD DIET INFORMATION TO PRODUCTION TRENDS TO CALCULATE CHANGING DEMANDS FOR SEAFOOD
+
+
+```{r}
+
+#need to assign diets at species levels then calculate current demands
+
+sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015]) #Indian Major carps represent 28% of carp production in 2015 - assume that 10% are fed (from Pahlow 2015) - so subtract 90% of IMC from carp production
+
+sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015])*0.9 #i.e. subtract 25.4% from carp production if doing by totals
+
+
+
+fed_aqua <- arrange(fed_aqua, desc(Year), desc(Value))
+
+levels(fed_aqua$Species)
+
+```
+
+
