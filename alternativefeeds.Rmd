@@ -144,6 +144,10 @@ mullet_img <- rasterGrob(mullet_img, interpolate = T)
 jack_img<- readPNG("jack.png")
 jack_img <- rasterGrob(jack_img, interpolate = T)
 
+
+aqua_img<- readPNG("Aquapen.png")
+aqua_img <- rasterGrob(aqua_img, interpolate = T)
+
 ```
 
 
@@ -494,11 +498,24 @@ cols <- colorRampPalette(cbbPalette)
 # legend_grob <- readPNG("f1legend.png")
 # legend_grob <-rasterGrob(legend_grob, interpolate = T)
 
+BAU <- Proj_all[,c(1,4,5)]
+names(BAU)[1] <-"Value"
+CHN <- Proj_all[,c(2,4,5)]
+names(CHN)[1] <-"Value"
+PESC <- Proj_all[,c(3,4,5)]
+names(PESC)[1] <-"Value"
+
+
+
+
 #MAIN PLOT
 fig1 <- ggplot(data = fed_aqua.global, aes(x=Year, y=Value, colour=Group))+
   #annotation_custom(legend_grob, xmin = 1932, xmax = 2035, ymin = 19e+06, ymax = 55e+06)+
   geom_line(size=0.4)+
   geom_ribbon(data = Proj_all, aes(x=Year, ymin=min, ymax=max, fill=Group), colour=NA, alpha=0.08)+
+  # geom_line(data = BAU, aes(x=Year, y=Value, colour=Group), linetype="dashed", size=0.3)+
+  # geom_line(data = CHN, aes(x=Year, y=Value, colour=Group), linetype="dotted", size=0.3)+
+  # geom_line(data = PESC, aes(x=Year, y=Value, colour=Group), linetype="dotdash", size=0.3)+
   geom_line(data = Proj_all, aes(x=Year, y=Value, colour=Group), linetype="dashed", size=0.3)+
   theme_bw()+
   scale_colour_manual(values=c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#606861", "#D4600F", "#CE7179", "#D99F82", "#F0E442"))+
@@ -555,8 +572,26 @@ sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp")
 
 
 fed_aqua <- arrange(fed_aqua, desc(Year), desc(Value))
+diets<-read.csv("fishmeal diet data.csv", header = T)
 
-levels(fed_aqua$Species)
+fed_aqua_diets <- left_join(fed_aqua, diets, by="Species")
+names(fed_aqua_diets)
+
+fed_aqua_diets <-fed_aqua_diets[,c(1:9, 11:17)]
+fed_aqua_diets$Prop <- fed_aqua_diets$Percent/100
+
+## Total fishmeal/oil demand = total production * proportion of feed from fishmeal oil * FCR 
+
+#work out consumption based on average of 2013-2015
+
+fed_aqua_diets <- fed_aqua_diets[fed_aqua_diets$Year>2012,]
+
+fed_aqua_diets <-  aggregate(fed_aqua_diets$Value ~ fed_aqua_diets$Species +fed_aqua_diets$Broad_group + fed_aqua_diets$Year + fed_aqua_diets$Life_stage +  fed_aqua_diets$FCR +fed_aqua_diets$Ingredient + fed_aqua_diets$Prop, FUN = sum)
+
+fed_aqua_diets <- fed_aqua_diets[fed_aqua_diets$`fed_aqua_diets$Prop`>0,]
+
+
+aggregate(fed_aqua_diets$`fed_aqua_diets$Value` ~ fed_aqua_diets$`fed_aqua_diets$Species` +fed_aqua_diets$`fed_aqua_diets$Broad_group` + fed_aqua_diets$`fed_aqua_diets$Life_stage` +  fed_aqua_diets$`fed_aqua_diets$FCR` +fed_aqua_diets$`fed_aqua_diets$Ingredient` + fed_aqua_diets$`fed_aqua_diets$Prop`, FUN = mean)
 
 ```
 
