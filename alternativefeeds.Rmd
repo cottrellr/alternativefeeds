@@ -565,7 +565,7 @@ ggsave("basic linear proj with scenarios.tiff", device = "tiff", dpi=600, width 
 
 #need to assign diets at species levels then calculate current demands
 
-sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015]) #Indian Major carps represent 28% of carp production in 2015 - assume that 10% are fed (from Pahlow 2015) - so subtract 90% of IMC from carp production
+sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015]) #Indian Major carps represent 28% of carp production in 2015 - assume that 10% are fed (from Pahlow 2015) - so subtract 90% of IMC from carp production so....
 
 sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015])*0.9 #i.e. subtract 25.4% from carp production if doing by totals
 
@@ -574,10 +574,28 @@ sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp")
 fed_aqua <- arrange(fed_aqua, desc(Year), desc(Value))
 diets<-read.csv("fishmeal diet data.csv", header = T)
 
-fed_aqua_diets <- left_join(fed_aqua, diets, by="Species")
+fed_aqua_plot1<-  filter(fed_aqua, fed_aqua$Year %in% c(2015)) %>% group_by(Broad_group) %>% summarise(sum(Value))
+
+ggplot(data=fed_aqua_plot1, aes(x=reorder(Broad_group, -`sum(Value)`), y=`sum(Value)`))+geom_bar(stat = "identity")+guides(fill=F)+coord_flip()
+
+
+
+
+
+
+
+diets2 <- aggregate(diets$Percent ~ diets$Species+diets$Ingredient+diets$FCR, FUN = mean)
+diets2 <- aggregate(diets2$`diets$Percent` ~ diets2$`diets$Species` +diets2$`diets$FCR`, FUN = sum)
+names(diets2)[1] <- "Species"
+names(diets2)[2] <- "FCR"
+names(diets2)[3] <- "Percent"
+
+
+
+fed_aqua_diets <- left_join(fed_aqua, diets2, by="Species")
 names(fed_aqua_diets)
 
-fed_aqua_diets <-fed_aqua_diets[,c(1:9, 11:17)]
+
 fed_aqua_diets$Prop <- fed_aqua_diets$Percent/100
 
 ## Total fishmeal/oil demand = total production * proportion of feed from fishmeal oil * FCR 
@@ -586,13 +604,81 @@ fed_aqua_diets$Prop <- fed_aqua_diets$Percent/100
 
 fed_aqua_diets <- fed_aqua_diets[fed_aqua_diets$Year>2012,]
 
-fed_aqua_diets <-  aggregate(fed_aqua_diets$Value ~ fed_aqua_diets$Species +fed_aqua_diets$Broad_group + fed_aqua_diets$Year + fed_aqua_diets$Life_stage +  fed_aqua_diets$FCR +fed_aqua_diets$Ingredient + fed_aqua_diets$Prop, FUN = sum)
+#sum country production
+fed_aqua_diets <-  aggregate(fed_aqua_diets$Value ~ fed_aqua_diets$Species +fed_aqua_diets$Broad_group + fed_aqua_diets$Year  +  fed_aqua_diets$FCR + fed_aqua_diets$Prop, FUN = sum)
 
-fed_aqua_diets <- fed_aqua_diets[fed_aqua_diets$`fed_aqua_diets$Prop`>0,]
+#mean across 2013 to 2015
+fed_aqua_diets<-aggregate(fed_aqua_diets$`fed_aqua_diets$Value` ~ fed_aqua_diets$`fed_aqua_diets$Species` + fed_aqua_diets$`fed_aqua_diets$Broad_group` + fed_aqua_diets$`fed_aqua_diets$FCR` + fed_aqua_diets$`fed_aqua_diets$Prop`, FUN = mean)
+
+names(fed_aqua_diets)[1] <- "Species"
+names(fed_aqua_diets)[2] <- "Broad_group"
+names(fed_aqua_diets)[3] <- "FCR"
+names(fed_aqua_diets)[4] <- "Prop"
+names(fed_aqua_diets)[5] <- "Value"
+
+#current consumption levels
+
+#make assumption that 10% of IMC are fed so adjust production value
+
+fed_aqua_diets$Value[fed_aqua_diets$Species %in% c("Catla", "Roho labeo", "Mrigal carp")] <- fed_aqua_diets$Value[fed_aqua_diets$Species %in% c("Catla", "Roho labeo", "Mrigal carp")]*0.1
+
+sum(fed_aqua_diets$Value) #average total production at 31 million tonnes of fed aquaculture across 2013 - 2015
 
 
-aggregate(fed_aqua_diets$`fed_aqua_diets$Value` ~ fed_aqua_diets$`fed_aqua_diets$Species` +fed_aqua_diets$`fed_aqua_diets$Broad_group` + fed_aqua_diets$`fed_aqua_diets$Life_stage` +  fed_aqua_diets$`fed_aqua_diets$FCR` +fed_aqua_diets$`fed_aqua_diets$Ingredient` + fed_aqua_diets$`fed_aqua_diets$Prop`, FUN = mean)
+fed_aqua_diets$Consumption <- fed_aqua_diets$Prop * fed_aqua_diets$FCR * fed_aqua_diets$Value
+fed_aqua_diets$Scenario <-NA
+
+sum(fed_aqua_diets$Consumption)
+fed_aqua_diets$Broad_group <- as.factor(fed_aqua_diets$Broad_group)
+
+fed_summary <- aggregate(fed_aqua_diets$Consumption ~ fed_aqua_diets$Broad_group, FUN = sum)
+names(fed_summary)[1] <- "Broad_group"
+names(fed_summary)[2] <- "Consumption"
+
+fed_summary <- arrange(fed_summary, desc(Consumption))
+levels(fed_summary$Broad_group)
+fed_summary
+
+
+ggplot(data=fed_summary, aes(x=reorder(Broad_group, -Consumption),y=Consumption))+geom_bar(stat="identity", fill="blue4")+coord_flip()
+
 
 ```
 
+```{r}
+ToothGrowth
+
+data1 <- data.frame(
+  group=c("A","A","A","A","B","B","B","B"), 
+  x= c(1,2,3,4,5,6,7,8),
+  y = c(1,2,3,4,5,6,7,8), 
+  z= c(10,20,30,40,50,60,70,80))  
+
+
+data2 <- data1 %>% 
+  gather(key = Metric, value = Value, -group) %>%
+  group_by(group, Metric) %>%
+  summarise(
+    MU = mean(Value),
+    SD = sd(Value, na.rm = TRUE),
+    N = sum(!is.na(Value)),
+    upper_limit = MU + SD/sqrt(N),
+    lower_limit = MU - SD/sqrt(N)
+  )
+
+
+data2 <- data1 %>% 
+  gather(key = Metric, value = Value, -group, -x) %>%
+  group_by(group, Metric) %>%
+  summarise(
+    MU = mean(Value),
+    SD = sd(Value, na.rm = TRUE),
+    N = sum(!is.na(Value)),
+    upper_limit = MU + SD/sqrt(N),
+    lower_limit = MU - SD/sqrt(N)
+  )
+
+
+
+```
 
