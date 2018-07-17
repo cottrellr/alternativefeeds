@@ -80,11 +80,11 @@ write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
 
 ```{r}
 
+levels(prod.aqua$Species)
+prod.aqua[grep("catfish", prod.aqua$Species),]
+unique(prod.aqua$Species[grep("Sorumbims", prod.aqua$Species)])
 
-prod.aqua[grep("River eel", prod.aqua$Species),]
-unique(prod.aqua$Species[grep("River eel", prod.aqua$Species)])
-
-Fed_Spp <-c("Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", "Nile tilapia", "Blue-Nile tilapia, hybrid", "Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel", "River eels nei", "Pacu", "Pirapatinga", "Cachama", "Atlantic salmon", "Rainbow trout", "Milkfish", "European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Barramundi(=Giant seaperch)", "Atlantic cod" , "European seabass", "Gilthead seabream", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei","Red drum", "Flathead grey mullet" ,"Squaretail mullet"   , "Thinlip grey mullet" , "So-iuy mullet"   ,     "Bluespot mullet"   ,   "Lebranche mullet", "Mullets nei", "Japanese amberjack", "Chinese mitten crab", "Red claw crayfish", "Giant river prawn", "Oriental river prawn", "Whiteleg shrimp", "Giant tiger prawn", "Fleshy prawn")
+Fed_Spp <-c("Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", "Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei",   "Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel", "River eels nei", "Pacu", "Pirapatinga", "Cachama", "Atlantic salmon", "Rainbow trout", "Milkfish", "European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Barramundi(=Giant seaperch)", "Atlantic cod" , "European seabass", "Gilthead seabream", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei","Red drum", "Flathead grey mullet" ,"Squaretail mullet"   , "Thinlip grey mullet" , "So-iuy mullet"   ,     "Bluespot mullet"   ,   "Lebranche mullet", "Mullets nei", "Japanese amberjack", "Chinese mitten crab", "Red claw crayfish", "Giant river prawn", "Oriental river prawn", "Whiteleg shrimp", "Giant tiger prawn", "Fleshy prawn")
 
 
 
@@ -182,20 +182,26 @@ fed_aqua<-read.csv("Fed aquaculture tidy.csv", header = T)
 #add broad groups based off IMPACT model
 fed_aqua$Broad_group <-NA
 fed_aqua$Broad_group<-as.character(fed_aqua$Broad_group)
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Grass carp(=White amur)","Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", "Milkfish")] <- "Carp"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Nile tilapia", "Blue-Nile tilapia, hybrid")] <- "Tilapia"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Grass carp(=White amur)","Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla")] <- "Carps"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Nile tilapia", "Blue-Nile tilapia, hybrid")] <- "Tilapias"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish")] <- "Catfish"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Pacu", "Pirapatinga", "Cachama")] <- "FW fish,other"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Pacu", "Pirapatinga", "Cachama")] <- "FW fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish" ,"Barramundi(=Giant seaperch)")] <- "Diadromous fishes"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Rainbow trout")] <- "Salmonids"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "European seabass", "Gilthead seabream", "Barramundi(=Giant seaperch)")] <- "Demersal fish"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic cod", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei","Red drum")] <- "Mar. fish,other"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Flathead grey mullet" ,"Squaretail mullet", "Thinlip grey mullet", "So-iuy mullet", "Bluespot mullet",  "Lebranche mullet", "Mullets nei")] <- "Mullet"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Chinese mitten crab", "Red claw crayfish")] <- "Crustaceans,other"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Giant river prawn", "Oriental river prawn", "Whiteleg shrimp", "Giant tiger prawn", "Fleshy prawn")] <- "Shrimp"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "European seabass", "Gilthead seabream")] <- "Marine fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic cod", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei","Red drum")] <- "Marine fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Flathead grey mullet" ,"Squaretail mullet", "Thinlip grey mullet", "So-iuy mullet", "Bluespot mullet",  "Lebranche mullet", "Mullets nei")] <- "Marine fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Chinese mitten crab", "Red claw crayfish")] <- "FW Crustaceans"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Giant river prawn", "Oriental river prawn", "Whiteleg shrimp", "Giant tiger prawn", "Fleshy prawn")] <- "Shrimps"
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Asian swamp eel", "River eels nei")] <- "Eels"
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese amberjack")] <- "Pel. fish,other"
-fed_aqua$Broad_group[fed_aqua$Broad_group=="Marine spp., other" & fed_aqua$Environment=="Freshwater"] <- "FW fish,other"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese amberjack")] <- "Marine fishes"
+fed_aqua$Broad_group[fed_aqua$Broad_group=="Marine fishes" & fed_aqua$Environment=="Freshwater"] <- "FW fishes"
 fed_aqua$Broad_group <- as.factor(fed_aqua$Broad_group)
+
+
+##for the Indian Major carps - assume 10% are fed as per Pahlow 2015 
+fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")] <- fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")]*0.1
+
 
 
 
@@ -228,6 +234,17 @@ ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
   labs(y=bquote(Production~(T~x10^6)))
 
 ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 6, unit="cm")
+
+
+#how much of fed aquaculture does our data represent 
+sum(fed_aqua$Value[fed_aqua$Year==2012])/35.7e+06 #denominator taken from Tacon and Metian 2015
+# ~93% of total fed aquaculture is represented by these 39 species given Tacon and Metians estimate from 2012 production
+
+
+
+
+
+##PROJECTIONS BASED FDOR DIFFERENT GROUPS
 
 
 # PROJECTION SCENARIO 1 - Business as usual
@@ -509,7 +526,7 @@ names(PESC)[1] <-"Value"
 
 
 #MAIN PLOT
-fig1 <- ggplot(data = fed_aqua.global, aes(x=Year, y=Value, colour=Group))+
+(fig1 <- ggplot(data = fed_aqua.global, aes(x=Year, y=Value, colour=Group))+
   #annotation_custom(legend_grob, xmin = 1932, xmax = 2035, ymin = 19e+06, ymax = 55e+06)+
   geom_line(size=0.4)+
   geom_ribbon(data = Proj_all, aes(x=Year, ymin=min, ymax=max, fill=Group), colour=NA, alpha=0.08)+
@@ -528,12 +545,11 @@ fig1 <- ggplot(data = fed_aqua.global, aes(x=Year, y=Value, colour=Group))+
         legend.position = c(0.3, 0.85),
         axis.text = element_text(size=8),
         axis.title = element_text(size=8))+
-  scale_x_continuous(limits = c(1950,2051), breaks = c(1950, 1970, 1990, 2010, 2030, 2050), labels = c(1950, 1970, 1990, 2010, 2030, 2050))+
-  scale_y_continuous(breaks = c(0, 1e+07, 2e+07, 3e+07, 4e+07, 5e+07), labels = c(0,10,20,30,40,50))+
+  scale_x_continuous(limits = c(1950,2030), breaks = c(1950, 1970, 1990, 2010, 2030), labels = c(1950, 1970, 1990, 2010, 2030))+
+  scale_y_continuous(breaks = c(0, 1e+07, 2e+07, 3e+07, 4e+07, 5e+07), labels = c(0,10,20,30,40,50), limits = c(0, 3.28e+07))+
   geom_vline(xintercept = 2015, lty=2)+
   labs(y=bquote(Production~(T~x10^6)))+
-  guides(colour=guide_legend(ncol = 2), fill=F)
-  
+  guides(colour=guide_legend(ncol = 2), fill=F))  
 
 ggsave("f1maint.tiff", device = "tiff", width=9, height=7, units = "cm")
 
@@ -563,11 +579,41 @@ ggsave("basic linear proj with scenarios.tiff", device = "tiff", dpi=600, width 
 
 ```{r}
 
+# Construct diet information table for FCRs and fishmeal inclusion and percentage fed
+
+#Tacon and Metain 2015 Feed matters - Pahlow 2015 Water footprint - Tacon and Metian 2008 Fishmeal inclusion - Chiu 2013 Fishmeal use in China
+
+#Range of FCR & fishmeal/oil inputs values  for current values 
+
+#last item is FW crustaceans
+
+FCRs <- c("1.5-1.8", "1.3-1.5", "1.5-2",                  "1.7-2", ) 
+FM <- c("0.01-0.09", "0.03-0.4", "0.02-0.15",             "0.05-0.25")
+FO <- c("0-0.01", "0.01-0.03",  "0.01-0.02",              "0.01-0.04", )
+Fish <- c("0.01-0.1", "0.04-0.43",  "0.03 - 0.17",          "0.06-0.29")
+Prop_fed <- c("55-65", "80-85", "50-60"                "55-65")
+
+
+feeds <- data.frame(Broad_group=levels(fed_aqua$Broad_group), FCR=NA, Fishmeal_prop = NA, Fish_oil_prop = NA, Fish_total = NA, Prop_fed = NA)
+
+
+
+
+```
+
+
+
+
+
 #need to assign diets at species levels then calculate current demands
 
 sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015]) #Indian Major carps represent 28% of carp production in 2015 - assume that 10% are fed (from Pahlow 2015) - so subtract 90% of IMC from carp production so....
 
 sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015])*0.9 #i.e. subtract 25.4% from carp production if doing by totals
+
+
+
+
 
 
 
