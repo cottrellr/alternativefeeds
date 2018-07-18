@@ -82,10 +82,10 @@ write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
 
 levels(prod.aqua$Species)
 prod.aqua[grep("Japanese seabass", prod.aqua$Species),]
-unique(prod.aqua$Species[grep("shrimp", prod.aqua$Species)]) #, , 
+unique(prod.aqua$Species[grep("amberjack", prod.aqua$Species)]) #, , 
 
 Fed_Spp <-c("Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", "Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei",   "Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish", "Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile
-perch", "Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout", "Milkfish", "Barramundi(=Giant seaperch)", "Japanese eel", "Short-finned eel", "European eel", "River eels nei", "European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "Gilthead seabream", "Japanese amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei",   "Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes", "Signal crayfish", "Noble crayfish", "Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Speckled shrimp", "Banana prawn", "Greasyback shrimp", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")
+perch", "Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout", "Milkfish", "Barramundi(=Giant seaperch)", "Japanese eel", "Short-finned eel", "European eel", "River eels nei", "European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei",   "Gilthead seabream", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei",   "Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes", "Signal crayfish", "Noble crayfish", "Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Speckled shrimp", "Banana prawn", "Greasyback shrimp", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")
 
 
 
@@ -154,7 +154,7 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 
 
-## Plotting changes in production over time of species groups and projections based on IMPACT model projections
+## Plotting changes in production over time of species groups and projections based projections
 
 ```{r}
 
@@ -195,7 +195,7 @@ fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish" ,"Barramundi(=Giant seap
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
 
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "Gilthead seabream", "Japanese amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei")] <- "Marine fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "Gilthead seabream", "Japanese amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Marine fishes nei",  "Greater amberjack", "Yellowtail amberjack", "Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna")] <- "Marine fishes"
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes", "Signal crayfish", "Noble crayfish", "Giant river prawn")] <- "FW Crustaceans"
 
@@ -210,6 +210,8 @@ fed_aqua$Broad_group <- as.factor(fed_aqua$Broad_group)
 
 ##for the Indian Major carps - assume 10% are fed as per Pahlow 2015 so adjust production value here
 fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")] <- fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")]*0.1
+
+
 
 
 
@@ -247,9 +249,86 @@ ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 6, uni
 
 #how much of fed aquaculture does our data represent 
 sum(fed_aqua$Value[fed_aqua$Year==2012])/35.7e+06 #denominator taken from Tacon and Metian 2015
-# ~93% of total fed aquaculture is represented by these 39 species given Tacon and Metians estimate from 2012 production
+length(Fed_Spp) #149 species
+# In 2012, ~91% of total fed aquaculture is represented by 149 species mentioned in Tacon and Metian 2015 and Pahlow 2015 estimate from 2012 production
+
+sum(fed_aqua$Value[fed_aqua$Year==2012])/ sum(prod.aqua$Value[prod.aqua$Year==2012])
 
 
+
+#Data sources for scenario building
+
+#Scenarios - 1. Business as usual 2. Shifting diets in China 3. Faster aquaculture growth to compensate for pescetarian diets
+
+#BAU - FAO 2018 SOFIA suggests total aquaculture will increase from 2016 of 37% - but growth will slow down from 5.7% to 2.1% between 2017 and 2030 due to chinese aquaculture. So this gives us a baseline growth for all fed aquaculture:
+
+sum(fed_aqua$Value[fed_aqua$Year==2015])*1.37# FAO suggest 53.6 million by  what happens when we compare this to the growth rates in Tacon and Metian? 
+
+
+# #Using Tacon and Metian growth rates
+# bau_growth_rates <- matrix(data = c(rep(c(1.05,1.04,1.03), each=5), rep(c(1.08,1.06,1.06), each=5), rep(c(1.08,1.06,1.05), each=5), rep(c(1.0,1.0,1.0), each=5), rep(c(1.05,1.05,1.05), each=5), rep(c(1.08,1.06,1.05), each=5) , rep(c(1.08, 1.06,1.05), each=5),rep(c(1.1,1.08,1.05), each=5),rep(c(1.03,1.03,1.03), each=5), rep(c(1.1,1.08,1.08), each=5)), nrow = length(levels(fed_aqua$Broad_group)), ncol=length(seq(2015:2029)), byrow = T)
+# 
+# rownames(bau_growth_rates) <- levels(fed_aqua$Broad_group)
+# colnames(bau_growth_rates) <- seq(2015:2029)
+# 
+# Carps <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Carps" & fed_aqua.global$Year==2015])
+# Catfish <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Catfish" & fed_aqua.global$Year==2015])
+# Diadromous_fishes <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Diadromous fishes" & fed_aqua.global$Year==2015])
+# Eels <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Eels" & fed_aqua.global$Year==2015])
+# FW_Crustaceans <-c(fed_aqua.global$Value[fed_aqua.global$Group=="FW Crustaceans" & fed_aqua.global$Year==2015])
+# FW_fishes <-c(fed_aqua.global$Value[fed_aqua.global$Group=="FW fishes" & fed_aqua.global$Year==2015]) 
+# Marine_fishes <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Marine fishes" & fed_aqua.global$Year==2015])
+# Salmonids <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Salmonids" & fed_aqua.global$Year==2015])
+# Shrimps <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Shrimps" & fed_aqua.global$Year==2015])
+# Tilapias <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Tilapias" & fed_aqua.global$Year==2015])
+# 
+# 
+# #Carps
+# for (i in 1:length(seq(2015:2029))){
+#   Carps <- c(Carps, Carps[i]*bau_growth_rates[1,i])
+# }
+# #Catfish
+# for (i in 1:length(seq(2015:2029))){
+#   Catfish <- c(Catfish, Catfish[i]*bau_growth_rates[2,i])
+# }
+# #diadromous fishes
+# for (i in 1:length(seq(2015:2029))){
+#   Diadromous_fishes <- c(Diadromous_fishes, Diadromous_fishes[i]*bau_growth_rates[3,i])
+# }
+# #Eels
+# for (i in 1:length(seq(2015:2029))){
+#   Eels <- c(Eels, Eels[i]*bau_growth_rates[4,i])
+# }
+# #FW crustaceans
+# for (i in 1:length(seq(2015:2029))){
+#   FW_Crustaceans <- c(FW_Crustaceans, FW_Crustaceans[i]*bau_growth_rates[5,i])
+# }
+# #FW fishes
+# for (i in 1:length(seq(2015:2029))){
+#   FW_fishes <- c(FW_fishes, FW_fishes[i]*bau_growth_rates[6,i])
+# }
+# #Marine fishes
+# for (i in 1:length(seq(2015:2029))){
+#   Marine_fishes <- c(Marine_fishes, Marine_fishes[i]*bau_growth_rates[7,i])
+# }
+# #salmonids
+# for (i in 1:length(seq(2015:2029))){
+#   Salmonids <- c(Salmonids, Salmonids[i]*bau_growth_rates[8,i])
+# }
+# #Shrimps
+# for (i in 1:length(seq(2015:2029))){
+#   Shrimps <- c(Shrimps,Shrimps[i]*bau_growth_rates[9,i])
+# }
+# #Tilapia
+# for (i in 1:length(seq(2015:2029))){
+#   Tilapias <- c(Tilapias, Tilapias[i]*bau_growth_rates[10,i])
+# }
+# 
+# rowSums(cbind.data.frame(Carps, Catfish, Diadromous_fishes, Eels, FW_fishes, FW_Crustaceans, Marine_fishes, Salmonids, Shrimps, Tilapias))
+# 
+# plot(Salmonids)
+
+###################   Tacon and Metian produce ~ 90 million by 2030 with these growth rates - very high - probably won't use for BAU ####
 
 
 
@@ -259,7 +338,7 @@ sum(fed_aqua$Value[fed_aqua$Year==2012])/35.7e+06 #denominator taken from Tacon 
 # PROJECTION SCENARIO 1 - Business as usual
 #Create projections from expected changes to total production and proportional among farmed groups
 
-fed_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = NA )
+fed_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = NA)
 
 fed_projections$Group<-factor(fed_projections$Group, levels(fed_projections$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
 
