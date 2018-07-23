@@ -4,7 +4,7 @@ author: "Richard Cottrell"
 date: "11 May 2018"
 output: word_document
 ---
-
+#LIBRARIES
 ```{r}
 library(dplyr)
 library(tidyr)
@@ -81,15 +81,49 @@ write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
 ```{r}
 
 levels(prod.aqua$Species)
-prod.aqua[grep("Japanese seabass", prod.aqua$Species),]
-unique(prod.aqua$Species[grep("amberjack", prod.aqua$Species)]) #, , 
+prod.aqua[grep("Salmonoid", prod.aqua$Species),]
+unique(prod.aqua$Species[grep("salmonid", prod.aqua$Species)]) #, , 
 
-Fed_Spp <-c("Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", "Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei",   "Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish", "Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile
-perch", "Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout", "Milkfish", "Barramundi(=Giant seaperch)", "Japanese eel", "Short-finned eel", "European eel", "River eels nei", "European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei",   "Gilthead seabream", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei",   "Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes", "Signal crayfish", "Noble crayfish", "Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Speckled shrimp", "Banana prawn", "Greasyback shrimp", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")
+Fed_Spp <-c( #CARPS
+"Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", 
 
+#TILAPIA
+"Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei",  
 
+#CATFISH
+"Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish", 
 
-#,
+#FW FISHES
+"Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile perch", 
+
+#SALMONIDS
+"Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout", 
+
+#DIADROMOUS
+"Milkfish", "Barramundi(=Giant seaperch)", "Striped bass", "Three-spined stickleback",
+
+##EELS,
+"Japanese eel", "Short-finned eel", "European eel", "River eels nei", 
+
+#MARINE FISHES
+"European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei", "Groundfishes nei" , "Finfishes nei",  "Gilthead seabream", "Goldlined seabream", "Silver seabream", "Blackhead seabream", "Crimson seabream", "Filefishes nei", "Mangrove red snapper", "Sixfinger threadfin" , "Emperor red snapper", "Croakers, drums nei",  "Fourfinger threadfin", "Green humphead parrotfish",
+"White-spotted spinefoot", "Snappers nei", "Yellowfin seabream",  "Yellowback seabream",  "Meagre",  "Drums nei", "Sobaity seabream", "Red porgy" , "Sharpsnout seabream", "Shi drum",  "Red drum" , "White seabream",   "Okhotsk atka mackerel" , "Porgies, seabreams nei",  "Common snook", "Mojarras(=Silver-biddies) nei", "Percoids nei", "Sargo breams nei" , "Common dentex" ,"Great blue spotted mudskipper", "Snooks(=Robalos) nei", "Common pandora", "Filefishes, leatherjackets nei", "Spinefeet(=Rabbitfishes) nei" , "Common two-banded seabream", "Gobies nei", "Spotted seabass", "Scats", "Snappers, jobfishes nei", "Pargo breams nei", "Goldsilk seabream",  "Russell's snapper", "Marbled spinefoot","Blackspot(=red) seabream" , "Brown meagre",  "Large yellow croaker","Obscure pufferfish", "John's snapper","Papuan black snapper", "Black seabass", "Spotted rose snapper",  "Trumpet emperor", "Two-spot red snapper" , "Streaked spinefoot", "Waigieu seaperch", "Atlantic spadefish", "Japanese seabream"  , "Whitemouth croaker" , "Mi-iuy (brown) croaker", "Tarpon", "Orbicular batfish" , "Sciaenas nei", "Japanese meagre" , "Pink dentex" , "Pufferfishes nei", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Atlantic wolffish", "Spotted wolffish", "Daggertooth pike conger", "Korean rockfish", "Scorpionfishes nei","Cobia", "Japanese jack mackerel",   "White trevally" , "Bigeye trevally"  , "Giant trevally", "Snubnose pompano" , "Silversides(=Sand smelts) nei", "Jacks, crevalles nei", "Bluefish"   , "Crevalle jack" , "Mackerels nei" , "Florida pompano", "Longfin yellowtail", "Golden trevally" ,  "Big-scale sand smelt",  "Malabar trevally",      
+
+#TUNAS
+"Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna",
+
+#FW CRUSTCEANS
+"Freshwater crustaceans nei", "Sawtooth caridina", "Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes nei",  "Signal crayfish", "Noble crayfish", "Indo-Pacific swamp crab", "Portunus swimcrabs nei", "Gazami crab" , "Callinectes swimcrabs nei","Marine crabs nei", "Blue crab", "Spinous spider crab", "Swimming crabs, etc. nei",  "Blue swimming crab", "Orange mud crab" , "Mediterranean shore crab", "Green crab", "Caribbean spiny lobster",  "Spiny lobsters nei",  "Mud spiny lobster",  "Flathead lobster",  "Japanese spiny lobster", "Palinurid spiny lobsters nei", "Tropical spiny lobsters nei",
+
+#SHRIMPS PRAWNS
+"Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Monsoon river prawn","Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Monkey river prawn",  "Speckled shrimp", "Caramote prawn", "Green tiger prawn", "Brown tiger prawn", "Banana prawn", "Eastern king prawn", "Redtail prawn", "Baltic prawn", "Common prawn", "Greasyback shrimp", "Natantian decapods nei", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")
+
+length(Fed_Spp)
+length(Fed_Spp[grep("nei", Fed_Spp)])
+length(Fed_Spp)-length(Fed_Spp[grep("nei", Fed_Spp)])
+
+levels(prod.aqua2$ISSCAAP_Group)
+unique(prod.aqua2$Species[prod.aqua2$ISSCAAP_Group=="Miscellaneous freshwater fishes"])
 
 
 # Sci_Spp<-c("Ctenopharyngodon idella", "Megalobrama amblycephala", "Cyprinus carpio", "Carassius carassius", "Mylopharyngodon piceus", "Barbonymus gonionotus", "Catla catla", "Labeo rohita", "Cirrhinus cirrhosus", "Oreochromis niloticus", "Oreochromis aureus x O. niloticus", "Ictalurus punctatus", "Ictalurus punctatus x I. furcatus", "Clarias gariepinus x C. macrocephalus", "Clarias gariepinus",  "Silurus asotus" , "Pelteobagrus fulvidraco", "Channa spp",   "Channa argus" , "Siniperca chuatsi", "Monopterus albus", "Piaractus brachypomus", "Colossoma macropomum","Piaractus mesopotamicus", "Anguilla spp", "Salmo salar", "Oncorhynchus mykiss", "Chanos chanos", "Lates calcarifer", "Platichthys flesus", "Bothidae", "Pleuronectidae", "Psetta maxima", "Gadus morhua", "Dicentrarchus labrax", "Sparus aurata", "Epinephelus spp", "Serranidae", "Sciaenops ocellatus", "Mugil cephalus", "Liza vaigiensis", "Liza ramada", "Mugil soiuy", "Valamugil seheli", "Mugil liza", "Seriola quinqueradiata", "Eriocheir sinensis", "Cherax quadricarinatus", "Macrobrachium rosenbergii", "Macrobrachium nipponense", "Penaeus vannamei", "Penaeus monodon", "Penaeus chinensis")
@@ -153,7 +187,6 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 
 
-
 ## Plotting changes in production over time of species groups and projections based projections
 
 ```{r}
@@ -161,45 +194,53 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 fed_aqua<-read.csv("Fed aquaculture tidy.csv", header = T)
 
-#taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
-#names(taxons)[names(taxons)=="Name_en"]<-"Species"
+taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
+names(taxons)[names(taxons)=="Name_en"]<-"Species"
 
+class(taxons$Species)
+taxons$Species <- as.character(taxons$Species)
+class(prod.aqua$Species)
+prod.aqua$Species <- as.character(prod.aqua$Species)
 
-
-# fed_aqua <- dplyr::left_join(fed_aqua, taxons, by="Species")
-# fed_aqua <- fed_aqua[,c(1:7, 15:23)]
+prod.aqua2 <- plyr::join(prod.aqua, taxons, by="Species", type="left")
+prod.aqua2 <- prod.aqua2[,c(1:7, 15:23)]
 
 # diets<-read.csv("fishmeal diet data.csv", header = T)
 # 
 # fed_aqua<-dplyr::left_join(fed_aqua, diets, by="Scientific_Name")
 
+#exclude algae and amphib/reptile species
+prod.aqua2<-prod.aqua2[!(prod.aqua2$Major_Group=="MAMMALIA" | prod.aqua2$Major_Group=="PLANTAE AQUATICAE" |  prod.aqua2$Major_Group=="AMPHIBIA, REPTILIA"),]
 
-#exclude non-fed and amphib/reptile species
-# fed_aqua<-fed_aqua[fed_aqua$Major_Group=="CRUSTACEA" | fed_aqua$Major_Group=="PISCES",]
+prod.aqua2 <-  prod.aqua2[!is.na(prod.aqua2$Value),]
 
 
 
 #add broad groups based off Tacon and Metain
 fed_aqua$Broad_group <-NA
 fed_aqua$Broad_group<-as.character(fed_aqua$Broad_group)
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Grass carp(=White amur)","Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla")] <- "Carps"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla")] <- "Carps"
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei")] <- "Tilapias"
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish")] <- "Catfish"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile perch")] <- "FW fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile perch")] <- "FW fishes"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish" ,"Barramundi(=Giant seaperch)")] <- "Diadromous fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish", "Barramundi(=Giant seaperch)", "Striped bass", "Three-spined stickleback")] <- "Diadromous fishes"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
 
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot", "Gilthead seabream", "Japanese amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Marine fishes nei",  "Greater amberjack", "Yellowtail amberjack", "Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna")] <- "Marine fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei", "Groundfishes nei" , "Finfishes nei",  "Gilthead seabream", "Goldlined seabream", "Silver seabream", "Blackhead seabream", "Crimson seabream", "Filefishes nei", "Mangrove red snapper", "Sixfinger threadfin" , "Emperor red snapper", "Croakers, drums nei",  "Fourfinger threadfin", "Green humphead parrotfish",
+"White-spotted spinefoot", "Snappers nei", "Yellowfin seabream",  "Yellowback seabream",  "Meagre",  "Drums nei", "Sobaity seabream", "Red porgy" , "Sharpsnout seabream", "Shi drum",  "Red drum" , "White seabream",   "Okhotsk atka mackerel" , "Porgies, seabreams nei",  "Common snook", "Mojarras(=Silver-biddies) nei", "Percoids nei", "Sargo breams nei" , "Common dentex" ,"Great blue spotted mudskipper", "Snooks(=Robalos) nei", "Common pandora", "Filefishes, leatherjackets nei", "Spinefeet(=Rabbitfishes) nei" , "Common two-banded seabream", "Gobies nei", "Spotted seabass", "Scats", "Snappers, jobfishes nei", "Pargo breams nei", "Goldsilk seabream",  "Russell's snapper", "Marbled spinefoot","Blackspot(=red) seabream" , "Brown meagre",  "Large yellow croaker","Obscure pufferfish", "John's snapper","Papuan black snapper", "Black seabass", "Spotted rose snapper",  "Trumpet emperor", "Two-spot red snapper" , "Streaked spinefoot", "Waigieu seaperch", "Atlantic spadefish", "Japanese seabream"  , "Whitemouth croaker" , "Mi-iuy (brown) croaker", "Tarpon", "Orbicular batfish" , "Sciaenas nei", "Japanese meagre" , "Pink dentex" , "Pufferfishes nei", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Atlantic wolffish", "Spotted wolffish", "Daggertooth pike conger", "Korean rockfish", "Scorpionfishes nei","Cobia", "Japanese jack mackerel",   "White trevally" , "Bigeye trevally"  , "Giant trevally", "Snubnose pompano" , "Silversides(=Sand smelts) nei", "Jacks, crevalles nei", "Bluefish"   , "Crevalle jack" , "Mackerels nei" , "Florida pompano", "Longfin yellowtail", "Golden trevally" ,  "Big-scale sand smelt",  "Malabar trevally")] <- "Marine fishes"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes", "Signal crayfish", "Noble crayfish", "Giant river prawn")] <- "FW Crustaceans"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Giant river prawn", "Oriental river prawn", "Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Speckled shrimp", "Banana prawn", "Greasyback shrimp", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp", "Freshwater prawns, shrimps nei")] <- "Shrimps"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna")] <- "Tunas"
+
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Freshwater crustaceans nei", "Sawtooth caridina", "Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes nei",  "Signal crayfish", "Noble crayfish", "Indo-Pacific swamp crab", "Portunus swimcrabs nei", "Gazami crab" , "Callinectes swimcrabs nei","Marine crabs nei", "Blue crab", "Spinous spider crab", "Swimming crabs, etc. nei",  "Blue swimming crab", "Orange mud crab" , "Mediterranean shore crab", "Green crab", "Caribbean spiny lobster",  "Spiny lobsters nei",  "Mud spiny lobster",  "Flathead lobster",  "Japanese spiny lobster", "Palinurid spiny lobsters nei", "Tropical spiny lobsters nei")] <- "FW Crustaceans"
+
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Monsoon river prawn","Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Monkey river prawn",  "Speckled shrimp", "Caramote prawn", "Green tiger prawn", "Brown tiger prawn", "Banana prawn", "Eastern king prawn", "Redtail prawn", "Baltic prawn", "Common prawn", "Greasyback shrimp", "Natantian decapods nei", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")] <- "Shrimps"
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese eel", "Short-finned eel", "European eel", "River eels nei")] <- "Eels"
 
@@ -210,8 +251,6 @@ fed_aqua$Broad_group <- as.factor(fed_aqua$Broad_group)
 
 ##for the Indian Major carps - assume 10% are fed as per Pahlow 2015 so adjust production value here
 fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")] <- fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")]*0.1
-
-
 
 
 
@@ -247,13 +286,44 @@ ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
 ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 6, unit="cm")
 
 
+
+
+#how well do our fed spp data match up to IMPACT model in terms of proportions of total aquaculture for 2008 and what do these translate into with growth rates stated by IMPACT model
+
+# - Proportions are respectably similar
+
+Props <- matrix(data = NA, nrow = length(levels(fed_aqua$Broad_group)), ncol=7)
+rownames(Props) <- levels(fed_aqua$Broad_group)
+colnames(Props) <- c("Prop_global", "bau_global", "Bau_prop", "2030_bau", "2030_chn", "2030_pesc", "2030_mean")
+
+for (i in 1: length(levels(fed_aqua$Broad_group))){
+  Props[i,1]<- sum(fed_aqua$Value[fed_aqua$Broad_group==levels(fed_aqua$Broad_group)[i] & fed_aqua$Year==2008])/ sum(prod.aqua2$Value[prod.aqua2$Year==2008])
+  Props[i,2] <- 93612000
+  Props[i,3]<- c(0.18, 0.05, 0.07, 0.01, 0.02, 0.07,0.02, 0.04,0.09, 0.07, 0.00025258)[i]
+  Props[i,4] <- Props[i,2]*Props[i,3]
+  Props[i,5] <- Props[i,4]* c(1,1,1,1,3,1,1,3,3,1,3)[i]
+  Props[i,6] <- Props[i,4]*c(1.04, 1.01,1.01, 1.02, 1.09, 1.01, 1.06, 1.11, 1.1, 1.29, 1.06)[i]
+  Props[i,7] <- mean(c(Props[i,4], Props[i,5], Props[i,6]))
+}
+
+
+sum(fed_aqua$Value[fed_aqua$Broad_group=="Shrimps" &fed_aqua$Year==2008])/sum(prod.aqua2$Value[prod.aqua2$Year==2015])
+sum(Props[,4])/sum(fed_aqua$Value[fed_aqua$Year==2015]) #approximately 45% increase in fed aquaculture by 2030 under bau
+sum(Props[,5])
+
+
 #how much of fed aquaculture does our data represent 
 sum(fed_aqua$Value[fed_aqua$Year==2012])/35.7e+06 #denominator taken from Tacon and Metian 2015
-length(Fed_Spp) #149 species
+length(Fed_Spp) #156 species
 # In 2012, ~91% of total fed aquaculture is represented by 149 species mentioned in Tacon and Metian 2015 and Pahlow 2015 estimate from 2012 production
 
-sum(fed_aqua$Value[fed_aqua$Year==2012])/ sum(prod.aqua$Value[prod.aqua$Year==2012])
 
+prop <- c()
+for (i in 1950:2015){
+  prop <- c(prop, sum(fed_aqua$Value[fed_aqua$Year==i])/ sum(prod.aqua2$Value[prod.aqua2$Year==i]))
+}
+
+plot(prop, type="o")
 
 
 #Data sources for scenario building
