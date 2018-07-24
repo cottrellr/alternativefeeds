@@ -6,6 +6,9 @@ output: word_document
 ---
 #LIBRARIES
 ```{r}
+library(plyr)
+library(mgcv)
+library(visreg)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -80,9 +83,9 @@ write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
 
 ```{r}
 
-levels(prod.aqua$Species)
-prod.aqua[grep("Salmonoid", prod.aqua$Species),]
-unique(prod.aqua$Species[grep("salmonid", prod.aqua$Species)]) #, , 
+# levels(prod.aqua$Species)
+# prod.aqua[grep("Salmonoid", prod.aqua$Species),]
+# unique(prod.aqua$Species[grep("salmonid", prod.aqua$Species)]) #, , 
 
 Fed_Spp <-c( #CARPS
 "Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", 
@@ -118,12 +121,12 @@ Fed_Spp <-c( #CARPS
 #SHRIMPS PRAWNS
 "Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Monsoon river prawn","Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Monkey river prawn",  "Speckled shrimp", "Caramote prawn", "Green tiger prawn", "Brown tiger prawn", "Banana prawn", "Eastern king prawn", "Redtail prawn", "Baltic prawn", "Common prawn", "Greasyback shrimp", "Natantian decapods nei", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")
 
-length(Fed_Spp)
-length(Fed_Spp[grep("nei", Fed_Spp)])
-length(Fed_Spp)-length(Fed_Spp[grep("nei", Fed_Spp)])
-
-levels(prod.aqua2$ISSCAAP_Group)
-unique(prod.aqua2$Species[prod.aqua2$ISSCAAP_Group=="Miscellaneous freshwater fishes"])
+# length(Fed_Spp)
+# length(Fed_Spp[grep("nei", Fed_Spp)])
+# length(Fed_Spp)-length(Fed_Spp[grep("nei", Fed_Spp)])
+# 
+# levels(prod.aqua2$ISSCAAP_Group)
+# unique(prod.aqua2$Species[prod.aqua2$ISSCAAP_Group=="Miscellaneous freshwater fishes"])
 
 
 # Sci_Spp<-c("Ctenopharyngodon idella", "Megalobrama amblycephala", "Cyprinus carpio", "Carassius carassius", "Mylopharyngodon piceus", "Barbonymus gonionotus", "Catla catla", "Labeo rohita", "Cirrhinus cirrhosus", "Oreochromis niloticus", "Oreochromis aureus x O. niloticus", "Ictalurus punctatus", "Ictalurus punctatus x I. furcatus", "Clarias gariepinus x C. macrocephalus", "Clarias gariepinus",  "Silurus asotus" , "Pelteobagrus fulvidraco", "Channa spp",   "Channa argus" , "Siniperca chuatsi", "Monopterus albus", "Piaractus brachypomus", "Colossoma macropomum","Piaractus mesopotamicus", "Anguilla spp", "Salmo salar", "Oncorhynchus mykiss", "Chanos chanos", "Lates calcarifer", "Platichthys flesus", "Bothidae", "Pleuronectidae", "Psetta maxima", "Gadus morhua", "Dicentrarchus labrax", "Sparus aurata", "Epinephelus spp", "Serranidae", "Sciaenops ocellatus", "Mugil cephalus", "Liza vaigiensis", "Liza ramada", "Mugil soiuy", "Valamugil seheli", "Mugil liza", "Seriola quinqueradiata", "Eriocheir sinensis", "Cherax quadricarinatus", "Macrobrachium rosenbergii", "Macrobrachium nipponense", "Penaeus vannamei", "Penaeus monodon", "Penaeus chinensis")
@@ -187,7 +190,7 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 
 
-## Plotting changes in production over time of species groups and projections based projections
+## Plotting changes in production over time of species groups and species based projections
 
 ```{r}
 
@@ -266,7 +269,7 @@ arrange(fed_aqua.global, desc(Year), desc(Value))
 
 #relevel the group factor
 levels(fed_aqua.global$Group)
-fed_aqua.global$Group<-factor(fed_aqua.global$Group, levels(fed_aqua.global$Group)[c(1,11,12,2,10, 6, 3, 4, 5, 7, 8, 9)])
+#fed_aqua.global$Group<-factor(fed_aqua.global$Group, levels(fed_aqua.global$Group)[c(1,11,12,2,10, 6, 3, 4, 5, 7, 8, 9)])
 
 
 #Look at the group production data to present day
@@ -294,7 +297,7 @@ ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 6, uni
 
 Props <- matrix(data = NA, nrow = length(levels(fed_aqua$Broad_group)), ncol=7)
 rownames(Props) <- levels(fed_aqua$Broad_group)
-colnames(Props) <- c("Prop_global", "bau_global", "Bau_prop", "2030_bau", "2030_chn", "2030_pesc", "2030_mean")
+colnames(Props) <- c("Prop_global", "bau_global", "Bau_prop", "BAU", "CHN", "FAQ", "2030_mean")
 
 for (i in 1: length(levels(fed_aqua$Broad_group))){
   Props[i,1]<- sum(fed_aqua$Value[fed_aqua$Broad_group==levels(fed_aqua$Broad_group)[i] & fed_aqua$Year==2008])/ sum(prod.aqua2$Value[prod.aqua2$Year==2008])
@@ -307,9 +310,17 @@ for (i in 1: length(levels(fed_aqua$Broad_group))){
 }
 
 
+
+
+
 sum(fed_aqua$Value[fed_aqua$Broad_group=="Shrimps" &fed_aqua$Year==2008])/sum(prod.aqua2$Value[prod.aqua2$Year==2015])
 sum(Props[,4])/sum(fed_aqua$Value[fed_aqua$Year==2015]) #approximately 45% increase in fed aquaculture by 2030 under bau
 sum(Props[,5])
+
+#BAU - FAO 2018 SOFIA suggests total aquaculture will increase from 2016 of 37% - but growth will slow down from 5.7% to 2.1% between 2017 and 2030 due to chinese aquaculture. So this gives us a baseline growth for all fed aquaculture:
+
+sum(fed_aqua$Value[fed_aqua$Year==2015])*1.37# FAO suggest 55 million by 2030 - our estimate from Props matrix above (58 million)
+sum(Props[,4])
 
 
 #how much of fed aquaculture does our data represent 
@@ -317,7 +328,7 @@ sum(fed_aqua$Value[fed_aqua$Year==2012])/35.7e+06 #denominator taken from Tacon 
 length(Fed_Spp) #156 species
 # In 2012, ~91% of total fed aquaculture is represented by 149 species mentioned in Tacon and Metian 2015 and Pahlow 2015 estimate from 2012 production
 
-
+#how is fed aquaculture changing as a proportion of total fisheries aquaculture
 prop <- c()
 for (i in 1950:2015){
   prop <- c(prop, sum(fed_aqua$Value[fed_aqua$Year==i])/ sum(prod.aqua2$Value[prod.aqua2$Year==i]))
@@ -326,13 +337,96 @@ for (i in 1950:2015){
 plot(prop, type="o")
 
 
+#GAMS for fit to data?
+fed_aqua.global$Year <-as.numeric(fed_aqua.global$Year)
+plot(x= fed_aqua.global$Year, y=fed_aqua.global$Value, col=fed_aqua.global$Group, type="p")
+
+#Set data frame with years, scenarios, groups and Values
+Proj_data <- data.frame(Scenario = rep(c("BAU", "CHN", "FAQ"), each=length(seq(2016,2030))*length(levels(fed_aqua.global$Group))), Group=rep(levels(fed_aqua.global$Group), each=length(seq(2016,2030)), 3), Year=rep(seq(2016,2030),3*length(levels(fed_aqua.global$Group))))
+
+#Insert production values from the Props matrix 
+Proj_data$Value <- NA
+Props_new <- Props[,c(4,5,6)]
+
+for (i in 1:length(levels(Proj_data$Scenario))){
+  for (j in 1:length(levels(Proj_data$Group))){
+    Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario==levels(Proj_data$Scenario)[i] & Proj_data$Group==levels(Proj_data$Group)[j]] <- Props_new[j,i]
+  }
+}
+
+
+#Join projections to data
+
+Proj_data <- Proj_data[,c(3,2,4,1)]
+fed_aqua.global$Scenario <-"Data"
+
+fed_aqua_proj <- rbind(fed_aqua.global, Proj_data)
+fed_aqua_proj$Scenario <- as.factor(fed_aqua_proj$Scenario)
+fed_aqua_proj$Scenario <- factor(fed_aqua_proj$Scenario, levels(fed_aqua_proj$Scenario)[c(3,1,2,4)])
+
+(fed_aqua_proj <- arrange(fed_aqua_proj, Group, Year))
+
+
+plot(y=fed_aqua_proj$Value, x=fed_aqua_proj$Year, col=fed_aqua_proj$Group, pch=16, cex=0.5)
+
+data1<-fed_aqua_proj[fed_aqua_proj$Group=="Diadromous fishes",]
+model1 <- gam(Value ~ s(Year), data=data1, family = "gaussian"(link = "identity"))
+
+(plotdata<-visreg(model1, type = "contrast", plot = T))
+
+
+fit_df<-data.frame(x=plotdata$fit[[plotdata$meta$x]], y=plotdata$fit$visregFit+plotdata$fit$Value,lwr=plotdata$fit$visregLwr+plotdata$fit$Value,upper=plotdata$fit$visregUpr+plotdata$fit$Value)
+
+for (i in 1:length(fit_df$y)){
+  if(fit_df$y[i] <0){
+  fit_df$y[i] <- 0
+  }
+}
+
+for (i in 1:length(fit_df$lwr)){
+  if(fit_df$lwr[i] <0){
+  fit_df$lwr[i] <- 0
+  }
+}
+
+for (i in 1:length(fit_df$upper)){
+  if(fit_df$upper[i] <0){
+  fit_df$upper[i] <- 0
+  }
+}
+
+
+res_df <- data.frame(x=plotdata$res[[plotdata$meta$x]], y=plotdata$res$visregRes+plotdata$res$Value)
+
+for (i in 1:length(res_df$y)){
+  if(res_df$y[i] <0){
+  res_df$y[i] <- 0
+  }
+}
+
+
+ggplot(fit_df, aes(x=x,y=y))+geom_line()+
+  geom_line(aes(x=x, y=lwr), linetype="dotted")+
+  geom_line(aes(x=x, y=upper), linetype="dotted")+
+  geom_point(data = res_df, aes(x=x, y=y))
+
+
+
+
+
+
+
+
+
+
+```
+
+
 #Data sources for scenario building
 
 #Scenarios - 1. Business as usual 2. Shifting diets in China 3. Faster aquaculture growth to compensate for pescetarian diets
 
-#BAU - FAO 2018 SOFIA suggests total aquaculture will increase from 2016 of 37% - but growth will slow down from 5.7% to 2.1% between 2017 and 2030 due to chinese aquaculture. So this gives us a baseline growth for all fed aquaculture:
 
-sum(fed_aqua$Value[fed_aqua$Year==2015])*1.37# FAO suggest 53.6 million by  what happens when we compare this to the growth rates in Tacon and Metian? 
 
 
 # #Using Tacon and Metian growth rates
