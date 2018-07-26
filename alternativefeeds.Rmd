@@ -6,6 +6,7 @@ output: word_document
 ---
 #LIBRARIES
 ```{r}
+library(gridExtra)
 library(plyr)
 library(mgcv)
 library(visreg)
@@ -17,8 +18,9 @@ library(readr)
 library(broom)
 library(stringr)
 library(ggsci)
-library(ggforce)
-library(png)
+library(ggforce) #geom circle and others
+library(ggpubr) #ggarrange
+library(png) #load png files
 library(grid) 
 library(taxize)
 library(zoo)
@@ -190,7 +192,7 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 
 
-## Plotting changes in production over time of species groups and species based projections
+## Figure 1 - Plotting changes in production over time of species groups and species based projections
 
 ```{r}
 
@@ -226,7 +228,7 @@ fed_aqua$Broad_group[fed_aqua$Species %in% c("Grass carp(=White amur)", "Common 
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei")] <- "Tilapias"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish")] <- "Catfish"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish")] <- "Catfishes"
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile perch")] <- "FW fishes"
 
@@ -300,9 +302,9 @@ rownames(Props) <- levels(fed_aqua$Broad_group)
 colnames(Props) <- c("Prop_global", "bau_global", "Bau_prop", "BAU", "CHN", "FAQ", "2030_mean")
 
 for (i in 1: length(levels(fed_aqua$Broad_group))){
-  Props[i,1]<- sum(fed_aqua$Value[fed_aqua$Broad_group==levels(fed_aqua$Broad_group)[i] & fed_aqua$Year==2008])/ sum(prod.aqua2$Value[prod.aqua2$Year==2008])
+  Props[i,1]<- sum(fed_aqua$Value[fed_aqua$Broad_group==levels(fed_aqua$Broad_group)[i] & fed_aqua$Year==2015])/ sum(prod.aqua2$Value[prod.aqua2$Year==2015])
   Props[i,2] <- 93612000
-  Props[i,3]<- c(0.18, 0.05, 0.07, 0.01, 0.02, 0.07,0.02, 0.04,0.09, 0.07, 0.00025258)[i]
+  Props[i,3]<- c(Props[i,1]+0.02,Props[i,1], Props[i,1], Props[i,1], Props[i,1], Props[i,1], Props[i,1], Props[i,1],Props[i,1]+0.02, Props[i,1]+0.02, Props[i,1])[i]
   Props[i,4] <- Props[i,2]*Props[i,3]
   Props[i,5] <- Props[i,4]* c(1,1,1,1,3,1,1,3,3,1,3)[i]
   Props[i,6] <- Props[i,4]*c(1.04, 1.01,1.01, 1.02, 1.09, 1.01, 1.06, 1.11, 1.1, 1.29, 1.06)[i]
@@ -315,18 +317,20 @@ for (i in 1: length(levels(fed_aqua$Broad_group))){
 
 sum(fed_aqua$Value[fed_aqua$Broad_group=="Shrimps" &fed_aqua$Year==2008])/sum(prod.aqua2$Value[prod.aqua2$Year==2015])
 sum(Props[,4])/sum(fed_aqua$Value[fed_aqua$Year==2015]) #approximately 45% increase in fed aquaculture by 2030 under bau
-sum(Props[,5])
+sum(Props[,6])
 
 #BAU - FAO 2018 SOFIA suggests total aquaculture will increase from 2016 of 37% - but growth will slow down from 5.7% to 2.1% between 2017 and 2030 due to chinese aquaculture. So this gives us a baseline growth for all fed aquaculture:
 
-sum(fed_aqua$Value[fed_aqua$Year==2015])*1.37# FAO suggest 55 million by 2030 - our estimate from Props matrix above (58 million)
+sum(fed_aqua$Value[fed_aqua$Year==2015])*1.37# FAO suggest 55 million by 2030 - our estimate from Props matrix above (52 million)
 sum(Props[,4])
 
 
 #how much of fed aquaculture does our data represent 
 sum(fed_aqua$Value[fed_aqua$Year==2012])/35.7e+06 #denominator taken from Tacon and Metian 2015
-length(Fed_Spp) #156 species
-# In 2012, ~91% of total fed aquaculture is represented by 149 species mentioned in Tacon and Metian 2015 and Pahlow 2015 estimate from 2012 production
+length(Fed_Spp) #280 species or nei
+length(Fed_Spp)-length(Fed_Spp[grep("nei", Fed_Spp)]) # 225 species/ 55 nei categories
+# Comparing production of these 225 species in 2012 to the Tacon Metian estimare = 95% of their estimate of total fed aquaculture
+
 
 #how is fed aquaculture changing as a proportion of total fisheries aquaculture
 prop <- c()
@@ -337,7 +341,7 @@ for (i in 1950:2015){
 plot(prop, type="o")
 
 
-#GAMS for fit to data?
+#GAMS for fit to data based off of the future calculations
 fed_aqua.global$Year <-as.numeric(fed_aqua.global$Year)
 plot(x= fed_aqua.global$Year, y=fed_aqua.global$Value, col=fed_aqua.global$Group, type="p")
 
@@ -369,59 +373,141 @@ fed_aqua_proj$Scenario <- factor(fed_aqua_proj$Scenario, levels(fed_aqua_proj$Sc
 
 plot(y=fed_aqua_proj$Value, x=fed_aqua_proj$Year, col=fed_aqua_proj$Group, pch=16, cex=0.5)
 
-data1<-fed_aqua_proj[fed_aqua_proj$Group=="Diadromous fishes",]
-model1 <- gam(Value ~ s(Year), data=data1, family = "gaussian"(link = "identity"))
 
-(plotdata<-visreg(model1, type = "contrast", plot = T))
+#assemble GAM data for each group
+for (i in 1:length(levels(fed_aqua_proj$Group))){
+  df <- fed_aqua_proj[fed_aqua_proj$Group==levels(fed_aqua_proj$Group)[i],]
+  model <- gam(Value ~ s(Year), data=df, family = "gaussian"(link = "identity"))
+  plotdata <-visreg(model, type = "contrast", plot =F)
+  assign(paste("df",i, sep = ""),data.frame(Group = rep(levels(fed_aqua_proj$Group)[i]), x=plotdata$fit[[plotdata$meta$x]], y=plotdata$fit$visregFit+plotdata$fit$Value,lwr=plotdata$fit$visregLwr+plotdata$fit$Value,upper=plotdata$fit$visregUpr+plotdata$fit$Value))
+  assign(paste("resids",i, sep = ""),data.frame(Group = rep(levels(fed_aqua_proj$Group)[i]), x=plotdata$res[[plotdata$meta$x]], y=plotdata$res$visregRes+plotdata$res$Value))
+}
+
+fit_df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11)
+res_df <- rbind(resids1, resids2, resids3, resids4, resids5, resids6, resids7, resids8, resids9, resids10, resids11)
+
+fit_df$y[fit_df$y <0] <-0
+fit_df$lwr[fit_df$lwr <0] <-0
+fit_df$upper[fit_df$upper <0] <-0
+
+res_df$y[res_df$y <0] <-0
+
+res_df2<-res_df[res_df$x < 2030,]
+
+fit_df$Group <- factor(fit_df$Group,levels(fit_df$Group)[c(1, 9, 10, 8, 2, 5, 7, 6, 3, 4, 11)])
+res_df$Group <- factor(res_df$Group,levels(res_df$Group)[c(1, 9, 10, 8, 2, 5, 7, 6, 3, 4, 11)])
+
+ggplot(fit_df, aes(x=x,y=y))+geom_line(aes(colour=Group), linetype="dashed", size=0.3)+
+  geom_ribbon(aes(x=x, ymin = lwr, ymax=upper, fill=Group), alpha=0.1)+
+  geom_point(data = res_df2, aes(x=x, y=y, colour=Group), size=0.6)+
+  scale_x_continuous(limits = c(1950,2030), breaks = c(1950,1970,1990,2010, 2030), labels = c(1950, 1970, 1990, 2010, 2030))+
+  scale_y_continuous(limits = c(0,19e+06), breaks=c(0, 5e+06, 10e+6, 15e+06), labels = c(0,5,10,15))+
+  labs(x=bquote(Year), y=bquote(Production~(T~x10^6)))+
+  scale_colour_manual(values=c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#D4600F", "#CE7179", "#D99F82", "#F0E442"))+
+  scale_fill_manual(values=c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD",  "#D4600F", "#CE7179", "#D99F82", "#F0E442"))+
+  theme_bw()+
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8),
+        legend.title = element_blank(),
+        legend.key.size = unit(0.3, "cm"),
+        legend.text = element_text(size=6),
+        legend.position = c(0.3,0.8),
+        legend.background = element_blank())+
+  guides(colour= guide_legend(ncol=2))
+  
+
+ggsave("fig1 - draft.tiff", device = "tiff", dpi=300, width = 10, height = 7, units="cm")
+
+```
+
+#Fig 2 - Fishmeal consumption of each group under different scenarios current vs 2030
+```{r}
+# Construct diet information table for FCRs and fishmeal inclusion and percentage fed
 
 
-fit_df<-data.frame(x=plotdata$fit[[plotdata$meta$x]], y=plotdata$fit$visregFit+plotdata$fit$Value,lwr=plotdata$fit$visregLwr+plotdata$fit$Value,upper=plotdata$fit$visregUpr+plotdata$fit$Value)
+feeds <- data.frame(Broad_group=levels(fed_aqua$Broad_group), FCR_min=NA, FCR_max=NA, FMFO_min = NA, FMFO_max = NA, Fed_min = NA, Fed_max=NA)
 
-for (i in 1:length(fit_df$y)){
-  if(fit_df$y[i] <0){
-  fit_df$y[i] <- 0
+#Tacon and Metain 2015 Feed matters - Pahlow 2015 Water footprint - Tacon and Metian 2008 Fishmeal inclusion - Chiu 2013 Fishmeal use in China
+
+
+feeds$FCR_min <- c(1.1, 1.3, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 4.6)
+feeds$FCR_max <- c(1.6, 1.5, 1.7, 1.5, 1.8, 1.7, 1.6, 1.3, 1.6, 1.6,7.4)
+# feeds$FMFO_min <- c(0.02, 0.03, 0.15, 0.25, 0.05, 0.15, 0.08, 0.08, 0.05, 0.01, 0.01)
+# feeds$FMFO_max <- c(0.05, 0.4,0.25, 0.67, 0.24, 0.25, 0.5, 0.4, 0.24, 0.22, 0.02)
+# feeds$FO_min <- c(0, 0.01, 0, 0, 0.8, 0, 0.017, 0.04, 0.01, 0, 0.005)
+# feeds$FO_max <- c(0.01, 0.03, 3, 3, 4, 3, 0.11, 0.18, 0.015, 0.05, 0.01)
+feeds$FMFO_min <- c(0.02, 0.06, 0.02, 0.24, 0.04, 0.06, 0.08, 0.1,0.06, 0.01,0.1)
+feeds$FMFO_max <- c(0.05, 0.11, 0.03, 0.33, 0.09, 0.11, 0.15, 0.2, 0.09, 0.02, 0.2)
+feeds$Fed_min <- c(1,1,1,1,1,1,1,1,1,1,1)
+feeds$Fed_max <- c(1,1,1,1,1,1,1,1,1,1,1)
+
+# feeds$Fed_min <- c(0.55, 0.80, 0.40, 0.97, 0.55, 0.4, 0.8, 1.00, 0.85, 0.9, 1.00)
+# feeds$Fed_max <- c(0.65, 0.85, 0.60, 1.00, 0.65, 0.6, 0.9, 1.00, 0.9, 1.00, 1.00)
+
+Proj_new <- cbind(Props_new, DATA = fed_aqua.global$Value[fed_aqua.global$Year==2015]) 
+
+Consumption_df <- matrix(data=NA, ncol = 3)
+colnames(Consumption_df) <- c("Group", "Scenario", "Consumption")
+
+for (i in 1:500){
+  for (g in 1:length(feeds$Broad_group)){
+    for (s in 1:ncol(Proj_new)){
+      fcr <- runif(1, feeds$FCR_min[g], feeds$FCR_max[g])
+      fmfo <- runif(1, feeds$FMFO_min[g], feeds$FMFO_max[g])
+      fed <- runif(1, feeds$Fed_min[g], feeds$Fed_max[g])
+      prod <- Proj_new[g,s]
+      Group <- levels(feeds$Broad_group)[g]
+      Scenario <- colnames(Proj_new)[s]
+      Consumption <- prod*fcr*fmfo*fed
+      Consumption_df <- rbind(Consumption_df, c(Group, Scenario, Consumption))
+    }
   }
 }
 
-for (i in 1:length(fit_df$lwr)){
-  if(fit_df$lwr[i] <0){
-  fit_df$lwr[i] <- 0
-  }
-}
-
-for (i in 1:length(fit_df$upper)){
-  if(fit_df$upper[i] <0){
-  fit_df$upper[i] <- 0
-  }
-}
-
-
-res_df <- data.frame(x=plotdata$res[[plotdata$meta$x]], y=plotdata$res$visregRes+plotdata$res$Value)
-
-for (i in 1:length(res_df$y)){
-  if(res_df$y[i] <0){
-  res_df$y[i] <- 0
-  }
-}
-
-
-ggplot(fit_df, aes(x=x,y=y))+geom_line()+
-  geom_line(aes(x=x, y=lwr), linetype="dotted")+
-  geom_line(aes(x=x, y=upper), linetype="dotted")+
-  geom_point(data = res_df, aes(x=x, y=y))
+Consumption_df <- as.data.frame(Consumption_df)
+Consumption_df <- Consumption_df[2:nrow(Consumption_df),]
+Consumption_df$Consumption <- as.numeric(Consumption_df$Consumption)
 
 
 
+Consump_summ <- Consumption_df %>%
+  group_by(Scenario, Group) %>%
+  summarise(mean=mean(Consumption), sd=sd(Consumption))
+
+Consump_summ$Scenario <- factor(Consump_summ$Scenario, levels(Consump_summ$Scenario)[c(3,1,2,4)])
+
+  
+#plot all facets in ascending order
+names <- levels(Consump_summ$Scenario)
+
+for (i in 1:length(names)) {
+    dat <- subset(Consump_summ, Scenario == names[i])
+    dat$Group <- factor(dat$Group, levels=dat[order(-dat$mean),]$Group)
+
+    assign(paste("p",i, sep = ""), ggplot(dat, aes(x = Group, y = mean, fill = Scenario, width=0.75)) + 
+    labs(y = bquote(Forage~fish~consumption~(T~x10^6)), x = NULL, fill = NULL) +
+    geom_bar(stat = "identity") +
+    geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd))+
+    facet_wrap(~Scenario) +
+    coord_flip() +
+    guides(fill=FALSE) +
+    theme_bw() + 
+    theme(panel.grid = element_blank(),
+    panel.border = element_blank()) +
+    scale_fill_brewer(palette="Set2"))
+}   
 
 
-
-
-
-
+ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
+ggsave("FMFO consumption.tiff", device = "tiff", dpi=600, width=18, height=13, units = "cm")
 
 ```
 
 
+#OLD CODE
+
+```{r}
 #Data sources for scenario building
 
 #Scenarios - 1. Business as usual 2. Shifting diets in China 3. Faster aquaculture growth to compensate for pescetarian diets
@@ -831,22 +917,7 @@ ggsave("basic linear proj with scenarios.tiff", device = "tiff", dpi=600, width 
 
 ```{r}
 
-# Construct diet information table for FCRs and fishmeal inclusion and percentage fed
 
-#Tacon and Metain 2015 Feed matters - Pahlow 2015 Water footprint - Tacon and Metian 2008 Fishmeal inclusion - Chiu 2013 Fishmeal use in China
-
-#Range of FCR & fishmeal/oil inputs values  for current values 
-
-#last item is FW crustaceans
-
-FCRs <- c("1.5-1.8", "1.3-1.5", "1.5-2",                  "1.7-2", ) 
-FM <- c("0.01-0.09", "0.03-0.4", "0.02-0.15",             "0.05-0.25")
-FO <- c("0-0.01", "0.01-0.03",  "0.01-0.02",              "0.01-0.04", )
-Fish <- c("0.01-0.1", "0.04-0.43",  "0.03 - 0.17",          "0.06-0.29")
-Prop_fed <- c("55-65", "80-85", "50-60"                "55-65")
-
-
-feeds <- data.frame(Broad_group=levels(fed_aqua$Broad_group), FCR=NA, Fishmeal_prop = NA, Fish_oil_prop = NA, Fish_total = NA, Prop_fed = NA)
 
 
 
