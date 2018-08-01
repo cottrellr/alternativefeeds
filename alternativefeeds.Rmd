@@ -40,7 +40,8 @@ names(aqua.raw)[names(aqua.raw)=="Species..ASFIS.species."]<-"Species"
 names(aqua.raw)[names(aqua.raw)=="Aquaculture.area..FAO.major.fishing.area."]<-"Area"
 names(aqua.raw)[names(aqua.raw)=="Environment..Environment."]<-"Environment"
 
-aqua.raw2<-aqua.raw %>% gather(Year, Value, -c(Country, Species, Area, Environment, Unit))
+aqua.raw2<-aqua.raw %>% 
+  gather(Year, Value, -c(Country, Species, Area, Environment, Unit))
 head(aqua.raw2)
 levels(aqua.raw2$Unit)
 
@@ -234,7 +235,7 @@ fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese seabass", "Snakeheads(=Mu
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish", "Barramundi(=Giant seaperch)", "Striped bass", "Three-spined stickleback")] <- "Diadromous fishes"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
 
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei", "Groundfishes nei" , "Finfishes nei",  "Gilthead seabream", "Goldlined seabream", "Silver seabream", "Blackhead seabream", "Crimson seabream", "Filefishes nei", "Mangrove red snapper", "Sixfinger threadfin" , "Emperor red snapper", "Croakers, drums nei",  "Fourfinger threadfin", "Green humphead parrotfish",
@@ -283,7 +284,8 @@ sum(fed_aqua.2015$Value) #39 million in 2015
 
 fed_aqua_proj <- fed_aqua %>% 
   filter(Year==2015) %>%
-  group_by(Country, Species, Area, Environment, Year, Value, Broad_group) %>%
+  group_by(Country, Year, Broad_group) %>%
+  summarise(Value=sum(Value))%>%
   mutate(bau = Value*1.37) #37% increase overall and in developing countries
 
 sum(fed_aqua_proj$bau)
@@ -457,7 +459,7 @@ getPalette = colorRampPalette(cbbPalette)
 #c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#D4600F", "#CE7179", "#D99F82", "#F0E442")
 #c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD",  "#D4600F", "#CE7179", "#D99F82", "#F0E442")
 
-ggplot(fit_df, aes(x=x,y=y))+geom_line(aes(colour=Broad_group), linetype="dashed", size=0.3)+
+fig1a <- ggplot(fit_df, aes(x=x,y=y))+geom_line(aes(colour=Broad_group), linetype="dashed", size=0.3)+
   geom_ribbon(aes(x=x, ymin = lwr, ymax=upper, fill=Broad_group), alpha=0.1)+
   geom_point(data = res_df2, aes(x=x, y=y, colour=Broad_group), size=0.5)+
   scale_x_continuous(limits = c(1970,2030), breaks = c(1950,1970,1990,2010, 2030), labels = c(1950, 1970, 1990, 2010, 2030))+
@@ -481,8 +483,25 @@ ggplot(fit_df, aes(x=x,y=y))+geom_line(aes(colour=Broad_group), linetype="dashed
 ggsave("fig1 - draft.tiff", device = "tiff", dpi=600, width = 10, height = 7, units="cm")
 ggsave("fig1 - draft.pdf", device = pdf, dpi=600, width = 10, height = 7, units="cm")
 
-levels(fit_df$Broad_group)
-arrange(fed_aqua, -Year, -Value)
+Proj_mean <- c(sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="BAU"]), sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="CHN"]), sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="FAQ"]))
+
+Now_2030  <- data.frame(Year=as.factor(c("2015", "2030")),Mean=c(sum(fed_aqua.data$Value[fed_aqua.data$Year==2015]), mean(Proj_mean)), sd=c(NA, sd(Proj_mean)))
+
+fig1b <- ggplot(data = Now_2030, aes(x=Year, y=Mean, fill=Year))+geom_bar(stat="identity", width = 0.5)+
+  geom_errorbar(aes(ymin=Mean-sd, ymax=Mean+sd), width=0.1, size=0.1)+
+  theme_bw()+
+  scale_fill_manual(values = c("dodgerblue4", "dodgerblue"))+
+  scale_y_continuous(breaks = c(0, 2.5e+07, 5e+07, 7.5e+07), labels=c(0,25,50,75))+
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8))+
+  guides(fill=F)+
+  labs(x="", y=bquote(Production~(T~x10^6)))
+
+ggarrange(fig1b, fig1a, labels=c("a", "b"), nrow = 2, ncol=1)
+ggsave("Fig1.tiff", device = "tiff", dpi=600, height=12, width = 10, unit="cm")
+ggsave("Fig1.pdf", device = pdf, dpi=600, height=12, width = 10, unit="cm")
+
 ```
 
 #Fig 2 - Fishmeal consumption of each group under different scenarios current vs 2030
@@ -495,10 +514,11 @@ feeds <- data.frame(Broad_group=levels(fed_aqua$Broad_group), FCR_min=NA, FCR_ma
 #Tacon and Metain 2015 Feed matters - Pahlow 2015 Water footprint - Tacon and Metian 2008 Fishmeal inclusion - Chiu 2013 Fishmeal use in China
 
 
+
 feeds$FCR_min <- c(1.6, 1.3, 1.7, 1.5, 1.7, 1.7, 1.5, 1.3, 1.5, 1.6, 3.4)
-feeds$FCR_max <- c(1.7, 1.4, 1.8, 1.5, 1.9, 1.8, 1.7, 1.3, 1.7, 1.7, 7.6)
+feeds$FCR_max <- c(1.8, 1.4, 1.8, 1.5, 1.9, 1.8, 1.7, 1.3, 1.7, 1.7, 7.6)
 feeds$FM_min <- c(0.01, 0.02, 0.02, 0.25, 0.05, 0.15, 0.08, 0.08, 0.05, 0.01, 0.1)
-feeds$FM_max <- c(0.06, 0.03, 0.05, 0.35, 0.1, 0.25, 0.16, 0.12, 0.08, 0.02, 0.2)
+feeds$FM_max <- c(0.06, 0.34, 0.05, 0.35, 0.1, 0.25, 0.20, 0.12, 0.25, 0.02, 0.2)
 feeds$FO_min <- c(0, 0.01, 0.01, 0.02, 0.008, 0.02, 0.03, 0.06, 0.01, 0, 0.05)
 feeds$FO_max <- c(0.01, 0.014, 0.01, 0.03, 0.01, 0.03, 0.04, 0.08, 0.015, 0,0.05)
 feeds$FMFO_min <- c(0.02, 0.06, 0.02, 0.24, 0.04, 0.06, 0.08, 0.1, 0.06, 0.01, 0.1)
@@ -506,76 +526,131 @@ feeds$FMFO_max <- c(0.05, 0.11, 0.02, 0.33, 0.09, 0.11, 0.15, 0.2, 0.09, 0.02, 0
 feeds$Fed_min <- c(0.55, 0.80, 0.40, 0.97, 0.55, 0.4, 0.8, 1.00, 0.95, 0.9, 1)
 feeds$Fed_max <- c(0.65, 0.85, 0.60, 1.00, 0.65, 0.6, 0.9, 1.00, 0.95, 1.00, 1)
 
-fed_aqua_proj
+fed_aqua_proj$fcr <- NA
+fed_aqua_proj$fm <- NA
+fed_aqua_proj$fo <-NA
+fed_aqua_proj$fed <- NA
 
-fed_aqua_proj %>% 
+fed_aqua_proj$fm_demand <- NA
+fed_aqua_proj$fm_biomass <- NA
+fed_aqua_proj$fo_demand <- NA
+fed_aqua_proj$fo_from_fm <- NA
+fed_aqua_proj$surplus <- NA
+fed_aqua_proj$consumption <- NA
+
+
+fed_aqua_list <- fed_aqua_proj %>% 
   group_by(Country, Broad_group, Value, bau, chn, faq) %>%
   split(.,.$Country)
 
 
-
-
-
-#calculate fishmeal consumption based ooff 2015 data
-
-
-
-
-
-
-```
-
-
-
-Proj_new <- cbind(Props_new, DATA = fed_aqua.global$Value[fed_aqua.global$Year==2015]) 
-
-Consumption_df <- matrix(data=NA, ncol = 4)
-colnames(Consumption_df) <- c("Repeat","Group", "Scenario", "Consumption")
-
-for (i in seq(1:1000)){
-  for (s in 1:ncol(Proj_new)){
-    for (g in 1:length(feeds$Broad_group)){
-      #production and feed requirements from distributions
-      fed <- runif(1, feeds$Fed_max[g], feeds$Fed_max[g])
-      prod <- Proj_new[g,s]
-      fcr <- runif(1, feeds$FCR_min[g], feeds$FCR_max[g])
-      #fmfo <- runif(1, feeds$FMFO_min[g], feeds$FMFO_max[g])
-      #conversion <-4.44444
-      fm <- runif(1, feeds$FM_min[g], feeds$FM_max[g])
-      fo <-runif(1, feeds$FM_min[g], feeds$FM_max[g])
+for (i in 1:length(fed_aqua_list)){
+  for (j in 1:nrow(feeds)){
+    fed_aqua_list[[i]]$fcr[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- runif(1, feeds$FCR_min[j], feeds$FCR_max[j])
+    
+    fed_aqua_list[[i]]$fm[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- runif(1, feeds$FM_min[j], feeds$FM_max[j])
+    
+    fed_aqua_list[[i]]$fo[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- runif(1, feeds$FO_min[j], feeds$FO_max[j])
+    
+    fed_aqua_list[[i]]$fed[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- feeds$Fed_max[j]#runif(1, feeds$Fed_min[j], feeds$Fed_max[j])
+    
+    fed_aqua_list[[i]]$fm_demand <- fed_aqua_list[[i]]$fcr*fed_aqua_list[[i]]$fm*fed_aqua_list[[i]]$fed*fed_aqua_list[[i]]$Value
+    
+    fed_aqua_list[[i]]$fm_biomass <- fed_aqua_list[[i]]$fm_demand/0.225
+    
+    fed_aqua_list[[i]]$fo_demand <- fed_aqua_list[[i]]$fcr*fed_aqua_list[[i]]$fo*fed_aqua_list[[i]]$fed*fed_aqua_list[[i]]$Value
+    
+    fed_aqua_list[[i]]$fo_from_fm <- fed_aqua_list[[i]]$fm_biomass*0.05
       
-      #forage fish conversion
-      fm_demand <- prod*fcr*fm*fed
-      fm_biomass <- fm_demand/0.225
-      fo_demand <- prod*fcr*fo*fed
-      from_fm_biomass<- fm_biomass*0.05
-      gap <- fo_demand-from_fm_biomass
-      if (gap > 0 ){
-        surplus <- gap/0.05
-      } else {
-        surplus <- 0
-      }
-      total_forage <- fm_biomass+surplus
-      
-      Repeat <- i
-      Group <- levels(feeds$Broad_group)[g]
-      Scenario <- colnames(Proj_new)[s]
-      Consumption <- total_forage#prod*fed*fcr*fmfo*conversion#
-      Consumption_df <- rbind(Consumption_df, c(Repeat, Group, Scenario, Consumption))
+    fed_aqua_list[[i]]$surplus <- fed_aqua_list[[i]]$fo_demand - fed_aqua_list[[i]]$fo_from_fm
+    
+    fed_aqua_list[[i]]$consumption <- fed_aqua_list[[i]]$fm_biomass+fed_aqua_list[[i]]$surplus
+  }
+} 
+
+
+df <- dplyr::bind_rows(fed_aqua_list)
+
+df$consumption[df$surplus< 0] <- df$fm_biomass[df$surplus< 0]
+
+sum(df$consumption)
+
+
+## Current forage fish use
+
+FF_consumption <- vector("list", 100000)
+  
+  #matrix(data = NA, ncol = 14)
+#colnames(FF_consumption) <- c("Repeat", "Country", "Group", "Prod", "fcr", "fm", "fo",  "fed",  "fm_demand",  "fm_biomass", " fo_demand" ,"fo_from_fm", "surplus", "consumption")
+#if(levels(fed_aqua_proj$Broad_group)[4] %in% unique(data$Broad_group)){
+
+for (i in 1:length(levels(fed_aqua_proj$Country))){
+  for (j in 1:length(levels(fed_aqua_proj$Broad_group))){
+    dat <- fed_aqua_proj[fed_aqua_proj$Country==levels(fed_aqua_proj$Country)[i],]
+    Prod <-  sum(dat$Value[dat$Broad_group==levels(fed_aqua_proj$Broad_group)[j]])
+    Country <-levels(fed_aqua_proj$Country)[i]
+    Group <- levels(fed_aqua_proj$Broad_group)[j]
+    fcr <- runif(1, feeds$FCR_min[j], feeds$FCR_max[j])
+    fm <-runif(1, feeds$FM_min[j], feeds$FM_max[j])
+    fo <- runif(1, feeds$FO_min[j], feeds$FO_max[j])
+    fed <- runif(1, feeds$Fed_min[j], feeds$Fed_max[j])
+    Repeat <- r
+    
+    #Consumption calculations
+    fm_demand <- Prod*fcr*fm*fed
+    fm_biomass <- fm_demand/0.225
+    fo_demand <- Prod*fcr*fo*fed
+    fo_from_fm <- fm_biomass*0.05
+    surplus <- (fo_demand-fo_from_fm)/0.05
+    if(surplus>0){
+      consumption <- fm_biomass+surplus
+    } else {
+      consumption <- fm_biomass
     }
+    
+    new <- c(Repeat, Country, Group, Prod, fcr, fm, fo, fed, fm_demand, fm_biomass, fo_demand, fo_from_fm, surplus, consumption)
+    FF_consumption[[i*j]] <- new
   }
 }
 
 
-Consumption_df <- as.data.frame(Consumption_df)
-Consumption_df <- Consumption_df[2:nrow(Consumption_df),]
-Consumption_df$Consumption <- as.numeric(levels(Consumption_df$Consumption))[Consumption_df$Consumption]
+FF_consumption <- data.frame(matrix(unlist(FF_consumption), ncol=14, byrow=T))
 
 
 
-Consump_summ <- Consumption_df %>%
-  group_by(Scenario, Group) %>%
-  summarise(mean=median(Consumption), sd=sd(Consumption))
+FF_consumption<- as.data.frame(FF_consumption, row.names = F)
+FF_consumption<-FF_consumption[2:nrow(FF_consumption),]
+
+#make numeric
+for (i in 4:ncol(FF_consumption)){
+  FF_consumption[,i] <- as.numeric(levels(FF_consumption[,i]))[FF_consumption[,i]]
+}
+
+nrow(FF_consumption)
+
+sum(FF_consumption$consumption)
+
+
+Consump_summ <- FF_consumption %>%
+  group_by(Group) %>%
+  summarise(Value=sum(consumption), sd=sd(consumption))
+
+ggplot(data = Consump_summ, aes(x=reorder(Group, -Value), y=Value, fill=Group))+geom_bar(stat = "identity")+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.3)+
+  coord_flip()
+
+
+Consump_summ <- FF_consumption %>%
+  group_by(Country) %>%
+  summarise(Value=sum(consumption), sd=sd(consumption))
+
+ggplot(data = Consump_summ[Consump_summ$Value>0.1e+06,], aes(x=reorder(Country, Value), y=Value))+geom_bar(stat = "identity")+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.3)+
+  coord_flip()
+
+
+
+
 
 
 Consump_summ$Scenario <- factor(Consump_summ$Scenario, levels(Consump_summ$Scenario)[c(3,1,2,4)])
@@ -609,10 +684,22 @@ ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
 #ggsave("FMFO consumption.tiff", device = "tiff", dpi=600, width=18, height=13, units = "cm")
 
 class(dat$mean)
+FF_consumption[FF_consumption$X2=="Albania",]
 
+fed_aqua_proj
+data$Broad_group
+df
 ```
 
 
+```{r}
+length(levels(fed_aqua_proj$Broad_group))*length(levels(fed_aqua_proj$Country))
+
+
+
+fed_aqua_proj[fed_aqua_proj$Country=="Albania",]
+
+```
 #OLD CODE
 
 ```{r}
