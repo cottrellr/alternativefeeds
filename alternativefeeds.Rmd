@@ -77,7 +77,7 @@ prod.aqua<- prod.aqua[prod.aqua$Country!="Totals",]
 
 write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
 
-
+rm(list = c("aqua.raw", "aqua.raw2"))
 
 
 ```
@@ -194,7 +194,7 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 
 
-## Figure 1 - Plotting changes in production over time of species groups and species based projections
+## Figure 1a - Plotting changes in production over time of species groups and species based projections
 
 ```{r}
 
@@ -234,13 +234,13 @@ fed_aqua$Broad_group[fed_aqua$Species %in% c("Striped catfish", "Pangas catfish"
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile perch")] <- "FW fishes"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish",  "Striped bass", "Three-spined stickleback")] <- "Diadromous fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish", "Striped bass", "Three-spined stickleback")] <- "Diadromous fishes"
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
 
 
-fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei", "Groundfishes nei" , "Finfishes nei",  "Gilthead seabream", "Goldlined seabream", "Silver seabream", "Blackhead seabream", "Crimson seabream", "Filefishes nei", "Mangrove red snapper", "Sixfinger threadfin" , "Emperor red snapper", "Croakers, drums nei",  "Fourfinger threadfin", "Green humphead parrotfish",  
-"White-spotted spinefoot", "Snappers nei", "Yellowfin seabream",  "Yellowback seabream",  "Meagre",  "Drums nei", "Sobaity seabream", "Red porgy" , "Sharpsnout seabream", "Shi drum",  "Red drum" , "White seabream",   "Okhotsk atka mackerel" , "Porgies, seabreams nei",  "Common snook", "Mojarras(=Silver-biddies) nei", "Percoids nei", "Sargo breams nei" , "Common dentex" ,"Great blue spotted mudskipper", "Snooks(=Robalos) nei", "Common pandora", "Filefishes, leatherjackets nei", "Spinefeet(=Rabbitfishes) nei" , "Common two-banded seabream", "Gobies nei", "Spotted seabass", "Scats", "Snappers, jobfishes nei", "Pargo breams nei", "Goldsilk seabream",  "Russell's snapper", "Marbled spinefoot","Blackspot(=red) seabream" , "Brown meagre",  "Large yellow croaker","Obscure pufferfish", "John's snapper","Papuan black snapper", "Black seabass", "Spotted rose snapper",  "Trumpet emperor", "Two-spot red snapper" , "Streaked spinefoot", "Waigieu seaperch", "Atlantic spadefish", "Japanese seabream"  , "Whitemouth croaker" , "Mi-iuy (brown) croaker", "Tarpon", "Orbicular batfish" , "Sciaenas nei", "Japanese meagre" , "Pink dentex" , "Pufferfishes nei", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Atlantic wolffish", "Spotted wolffish", "Daggertooth pike conger", "Korean rockfish", "Scorpionfishes nei","Cobia", "Japanese jack mackerel",   "White trevally" , "Bigeye trevally"  , "Giant trevally", "Snubnose pompano" , "Silversides(=Sand smelts) nei", "Jacks, crevalles nei", "Bluefish"   , "Crevalle jack" , "Mackerels nei" , "Florida pompano", "Longfin yellowtail", "Golden trevally" ,  "Big-scale sand smelt",  "Malabar trevally")] <- "Marine fishes"
+fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei", "Groundfishes nei" , "Finfishes nei",  "Gilthead seabream", "Goldlined seabream", "Silver seabream", "Blackhead seabream", "Crimson seabream", "Filefishes nei", "Mangrove red snapper", "Sixfinger threadfin" , "Emperor red snapper", "Croakers, drums nei",  "Fourfinger threadfin", "Green humphead parrotfish",
+"White-spotted spinefoot", "Snappers nei", "Yellowfin seabream",  "Yellowback seabream",  "Meagre",  "Drums nei", "Sobaity seabream", "Red porgy" , "Sharpsnout seabream", "Shi drum",  "Red drum" , "White seabream",   "Okhotsk atka mackerel" , "Porgies, seabreams nei",  "Common snook", "Mojarras(=Silver-biddies) nei", "Percoids nei", "Sargo breams nei" , "Common dentex" ,"Great blue spotted mudskipper", "Snooks(=Robalos) nei", "Common pandora", "Filefishes, leatherjackets nei", "Spinefeet(=Rabbitfishes) nei" , "Common two-banded seabream", "Gobies nei", "Spotted seabass", "Scats", "Snappers, jobfishes nei", "Pargo breams nei", "Goldsilk seabream",  "Russell's snapper", "Marbled spinefoot","Blackspot(=red) seabream" , "Brown meagre",  "Large yellow croaker","Obscure pufferfish", "John's snapper","Papuan black snapper", "Black seabass", "Spotted rose snapper",  "Trumpet emperor", "Two-spot red snapper" , "Streaked spinefoot", "Waigieu seaperch", "Atlantic spadefish", "Japanese seabream"  , "Whitemouth croaker" , "Mi-iuy (brown) croaker", "Tarpon", "Orbicular batfish" , "Sciaenas nei", "Japanese meagre" , "Pink dentex" , "Pufferfishes nei", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Atlantic wolffish", "Spotted wolffish", "Daggertooth pike conger", "Korean rockfish", "Scorpionfishes nei","Cobia", "Japanese jack mackerel",   "White trevally" , "Bigeye trevally"  , "Giant trevally", "Snubnose pompano" , "Silversides(=Sand smelts) nei", "Jacks, crevalles nei", "Bluefish"   , "Crevalle jack" , "Mackerels nei" , "Florida pompano", "Longfin yellowtail", "Golden trevally" ,  "Big-scale sand smelt",  "Malabar trevally", "Barramundi(=Giant seaperch)")] <- "Marine fishes"
 
 
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna")] <- "Tunas"
@@ -252,7 +252,7 @@ fed_aqua$Broad_group[fed_aqua$Species %in% c("Giant river prawn", "Freshwater pr
 fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese eel", "Short-finned eel", "European eel", "River eels nei")] <- "Eels"
 
 
-fed_aqua$Broad_group[fed_aqua$Broad_group=="Marine fishes" & fed_aqua$Environment=="Freshwater"] <- "FW fishes"
+#fed_aqua[fed_aqua$Broad_group=="Marine fishes" & fed_aqua$Environment=="Freshwater",] <- "FW fishes"
 fed_aqua$Broad_group <- as.factor(fed_aqua$Broad_group)
 
 
@@ -488,27 +488,27 @@ Proj_mean <- c(sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="B
 
 Now_2030  <- data.frame(Year=as.factor(c("2015", "2030")),Mean=c(sum(fed_aqua.data$Value[fed_aqua.data$Year==2015]), mean(Proj_mean)), sd=c(NA, sd(Proj_mean)))
 
-fig1b <- ggplot(data = Now_2030, aes(x=Year, y=Mean, fill=Year))+geom_bar(stat="identity", width = 0.5)+
-  geom_errorbar(aes(ymin=Mean-sd, ymax=Mean+sd), width=0.1, size=0.1)+
-  theme_bw()+
-  scale_fill_manual(values = c("dodgerblue4", "dodgerblue"))+
-  scale_y_continuous(breaks = c(0, 2.5e+07, 5e+07, 7.5e+07), labels=c(0,25,50,75))+
-  theme(panel.grid = element_blank(),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8))+
-  guides(fill=F)+
-  labs(x="", y=bquote(Production~(T~x10^6)))
-
-ggarrange(fig1b, fig1a, labels=c("a", "b"), nrow = 2, ncol=1)
-ggsave("Fig1.tiff", device = "tiff", dpi=600, height=12, width = 10, unit="cm")
-ggsave("Fig1.pdf", device = pdf, dpi=600, height=12, width = 10, unit="cm")
+# fig1b <- ggplot(data = Now_2030, aes(x=Year, y=Mean, fill=Year))+geom_bar(stat="identity", width = 0.4)+
+#   geom_errorbar(aes(ymin=Mean-sd, ymax=Mean+sd), width=0.1, size=0.5)+
+#   theme_bw()+
+#   scale_fill_manual(values = c("dodgerblue4", "dodgerblue"))+
+#   scale_y_continuous(breaks = c(0, 2.5e+07, 5e+07, 7.5e+07), labels=c(0,25,50,75))+
+#   theme(panel.grid = element_blank(),
+#         axis.text = element_text(size=8),
+#         axis.title = element_text(size=8))+
+#   guides(fill=F)+
+#   labs(x="", y=bquote(Production~(T~x10^6)))
+# 
+# ggarrange(fig1b, fig1a, labels=c("a", "b"), nrow = 2, ncol=1)
+# ggsave("Fig1.tiff", device = "tiff", dpi=600, height=11, width = 9, unit="cm")
+# ggsave("Fig1.pdf", device = pdf, dpi=600, height=12, width = 10, unit="cm")
 
 ```
 
 
 
 
-#Fig 2 - Fishmeal consumption of each group under different scenarios current vs 2030
+#Fig 1b-d - Fishmeal consumption of each group under different scenarios current vs 2030
 ```{r}
 # Construct diet information table for FCRs and fishmeal inclusion and percentage fed
 
@@ -533,6 +533,9 @@ feeds$Fed_max <- c(0.65, 0.85, 0.60, 1.00, 0.65, 0.6, 0.9, 1.00, 0.95, 1.00, 1)
 feeds_as_list <- split(feeds, feeds$Broad_group)
 
 
+
+
+#FOR LOOP METHOD
 
 # fed_aqua_proj$Repeat <- NA
 # fed_aqua_proj$fcr <- NA
@@ -591,106 +594,270 @@ feeds_as_list <- split(feeds, feeds$Broad_group)
 #   df_list[[r]] <- df
 # }
 
+# df_new <- dplyr::bind_rows(df_list)
+# #df_new$consumption[df_new$surplus< 0] <- df_new$fm_biomass[df_new$surplus< 0]
+# 
+# #Consumption for other scenarios
+# #bau
+# df_new$bau_fm_demand <- df_new$bau*df_new$fcr*df_new$fm
+# df_new$bau_fm_biomass <- df_new$bau_fm_demand/0.225
+# df_new$bau_fo_demand <- df_new$bau*df_new$fcr*df_new$fo
+# df_new$bau_from_fm <- df_new$bau_fm_biomass*0.05
+# df_new$bau_surplus <- (df_new$bau_fo_demand- df_new$bau_from_fm)/0.05
+# df_new$bau_consumption <- df_new$bau_fm_biomass + df_new$bau_surplus
+# #df_new$bau_consumption[df_new$bau_surplus< 0] <- df_new$bau_fm_biomass[df_new$bau_surplus< 0]
+# 
+# #chn
+# df_new$chn_fm_demand <- df_new$chn*df_new$fcr*df_new$fm
+# df_new$chn_fm_biomass <- df_new$chn_fm_demand/0.225
+# df_new$chn_fo_demand <- df_new$chn*df_new$fcr*df_new$fo
+# df_new$chn_from_fm <- df_new$chn_fm_biomass*0.05
+# df_new$chn_surplus <- (df_new$chn_fo_demand- df_new$chn_from_fm)/0.05
+# df_new$chn_consumption <- df_new$chn_fm_biomass + df_new$chn_surplus
+# #df_new$chn_consumption[df_new$chn_surplus< 0] <- df_new$chn_fm_biomass[df_new$chn_surplus< 0]
+# 
+# #faq
+# df_new$faq_fm_demand <- df_new$faq*df_new$fcr*df_new$fm
+# df_new$faq_fm_biomass <- df_new$faq_fm_demand/0.225
+# df_new$faq_fo_demand <- df_new$faq*df_new$fcr*df_new$fo
+# df_new$faq_from_fm <- df_new$faq_fm_biomass*0.05
+# df_new$faq_surplus <- (df_new$faq_fo_demand- df_new$faq_from_fm)/0.05
+# df_new$faq_consumption <- df_new$faq_fm_biomass + df_new$faq_surplus
+# #df_new$faq_consumption[df_new$faq_surplus< 0] <- df_new$faq_fm_biomass[df_new$faq_surplus< 0]
 
+
+
+
+#LAPPLY METHOD 
 
 a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
   target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
   temp_df <- bind_rows(lapply(1:500, function(rep_id){
-    a <- feeds_as_list[[target_row[["Broad_group"]]]]
-    b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])
-    c <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])
-    rep_id_row_as_df <- data.frame(c(target_row, rep_id=rep_id, b=b, c=c))
+    #isolate each row 
+    a <- feeds_as_list[[target_row[["Broad_group"]]]] 
+    
+    #assign consumption parameters
+    b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
+    c <- runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]])   # assign random fishmeal inclusion from range 
+    d <- runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])   #assign random fish oil inclusion from range
+    e <- runif(n = 1, min = a[["Fed_min"]], max = a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
+    f <- a[["Fed_max"]]    # assume highest proportion are fed for future scenarios
+    
+    #Consumption calculations
+    
+    #current consumption
+    g <- target_row[["Value"]]*b*c*e    #fm demand
+    h <- g/0.225       # forage fish biomass needed for fm demand
+    i <- target_row[["Value"]]*b*d*e    #fo demand
+    j <- h*0.05   # amount of fish oil coming from the fm biomass
+    k <- (i-j)/0.05
+    l <- case_when(k>=0 ~ h+k,
+                   k<0 ~ h)
+    
+    #baseline consumption (from FAO 37%)
+    m <- target_row[["bau"]]*b*c*f    #fm demand
+    n <- m/0.225       # forage fish biomass needed for fm demand
+    o <- target_row[["bau"]]*b*d*f    #fo demand
+    p <- n*0.05   # amount of fish oil coming from the fm biomass
+    q <- (o-p)/0.05
+    r <- case_when(q>=0 ~ n+q,
+                   q<0 ~ n)
+    
+    #pescatarian diets
+    s <- target_row[["faq"]]*b*c*f    #fm demand
+    t <- s/0.225       # forage fish biomass needed for fm demand
+    u <- target_row[["faq"]]*b*d*f    #fo demand
+    v <- t*0.05   # amount of fish oil coming from the fm biomass
+    w <- (u-v)/0.05
+    x <- case_when(w>=0 ~ t+w,
+                   w<0 ~ t)
+    
+    # chinese dietary shift
+    aa <- target_row[["chn"]]*b*c*f    #fm demand
+    bb <- aa/0.225       # forage fish biomass needed for fm demand
+    cc <- target_row[["chn"]]*b*d*f    #fo demand
+    dd <- bb*0.05   # amount of fish oil coming from the fm biomass
+    ee <- (cc-dd)/0.05
+    ff <- case_when(ee>=0 ~ bb+ee,
+                   ee<0 ~ bb)
+    
+    #chinese + more efficient scenario (fcrs decrease by 0.2)
+    gg <- target_row[["chn"]]*(b-0.2)*c*f    #fm demand
+    hh <- gg/0.225       # forage fish biomass needed for fm demand
+    ii <- target_row[["chn"]]*(b-0.2)*d*f    #fo demand
+    jj <- hh*0.05   # amount of fish oil coming from the fm biomass
+    kk <- (ii-jj)/0.05
+    ll <- case_when(kk>=0 ~ hh+kk,
+                   kk<0 ~ hh)
+    
+    #bind new objects to end of target row
+    rep_id_row_as_df <- data.frame(
+      c(target_row, 
+        rep_id=rep_id,
+        
+        #params
+        fcr=b, 
+        fm=c, 
+        fo=d,  
+        fed=e, 
+        fed_future = f, 
+        
+        #2015 consumption
+        fm_demand = g, 
+        fm_biomass = h,
+        fo_demand = i,
+        fo_from_fm = j, 
+        surplus = k,
+        current_consumption = l,
+        
+        #baseline consumption
+        baseline_demand = m, 
+        baseline_fm_biomass = n,
+        baseline_fo_demand = o,
+        baseline_from_fm = p, 
+        baseline_surplus = q,
+        baseline_consumption = r,
+        
+        #pesc consumption
+        pesc_demand = s, 
+        pesc_fm_biomass = t,
+        pesc_fo_demand = u,
+        pesc_from_fm = v, 
+        pesc_surplus = w,
+        pesc_consumption = x,
+        
+        #chinese consumption
+        chn_demand = aa, 
+        chn_fm_biomass = bb,
+        chn_fo_demand = cc,
+        chn_from_fm = dd, 
+        chn_surplus = ee,
+        chn_consumption = ff,
+        
+        #chinese diets and more efficient
+        effchn_demand = gg, 
+        effchn_fm_biomass = hh,
+        effchn_fo_demand = ii,
+        effchn_from_fm = jj, 
+        effchn_surplus = kk,
+        effchn_consumption = ll))
     return(rep_id_row_as_df)
   })) #close lapply function, lapply call, and bind_rows
   return(temp_df)
 }))#close lapply function, lapply call, and bind_rows
 
+write_csv(a_test, "forage fish consumption.csv")
 
-(fed_aqua_proj[1,])
-class(fed_aqua_proj[1,])
 
-lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row){
-  x <- fed_aqua_proj[target_row,]
-  print(x)
-})
+
+
+#iINSET PIC FOR CONSUMPTION PLOT
+
+#feed supply data from FAOSTAT
+feed_fish <- read_csv("forage_feed.csv")
+
+feed_fish <- feed_fish %>%
+  group_by(Year) %>%
+  summarise(Value = sum(Value)*1000)
+
+mean(feed_fish$Value[feed_fish$Year==2013])*0.75 #reasonably similar to our 2015 aquaculture usage
+
+ggplot(feed_fish, aes(x=Year, y=Value))+geom_line()
+
+
+#Capture production
+forage_fish <- read_csv("Marine fisheries Production 1950-2014.csv")
+
+unique(forage_fish$TaxonName)[grep("sardin", unique(forage_fish$TaxonName))]
+unique(forage_fish$CommonName)[grep("pilchard", unique(forage_fish$CommonName))]
+
+#From Froelich
+
+feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus", "Sardinella aurita",   "Sardinella",           "Sardinella brasiliensis", "Sardinella maderensis", "Sardinella longiceps" , "Sardinella gibbosa",  "Sardinella lemuru",     "Sardinella zunasi",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
+
+
+forage_fish <- forage_fish %>%
+  filter(forage_fish$TaxonName %in% feed_spp) %>%
+  group_by(Year) %>%
+  summarise(Value=sum(Value))
+
+tile<-ggplot(data = forage_fish, aes(x=Year, y=Value))+geom_line(colour="firebrick", linetype=1)+
+  geom_line(data = feed_fish, aes(x=Year, y=Value), colour="black", linetype=1)+
+  annotate("segment", x=2000, xend = 2015, y=mean(forage_fish$Value[forage_fish$Year>1999]), yend = mean(forage_fish$Value[forage_fish$Year>1999]), colour="firebrick", linetype=2)+
+  annotate("segment", x=2000, xend = 2015, y=mean(feed_fish$Value[feed_fish$Year>2010])*0.75, yend = mean(feed_fish$Value[feed_fish$Year>2010])*0.75, colour="black", linetype=2)+
+  scale_x_continuous(limits=c(1980,2016), breaks = c(1985, 2015), labels = c(1985, 2015))+
+  scale_y_continuous(limits = c(0,4e+07), labels = c(0,40), breaks = c(0,  4e+07))+
+  labs(x=bquote(Year), y=bquote(Production~(T~x10^6)))+
+  theme_bw()+
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size=14),
+        axis.title = element_text(size=14))+
+  annotate("text", x=1983, y=5e+06, label="c", size=11)
+
+
+ggsave( "foragefishsupply.png", device="png", dpi=300, width = 8, height = 5.5, units = "cm")
+
+supplyimg <-readPNG("foragefishsupply.png")
+supplyimg <-rasterGrob(supplyimg)
+
+
+Consumption_df <- read_csv("forage fish consumption.csv")
+
+# CONSUMPTION DATA BY SCENARIO
+Scenario_consump_df <- bind_rows(Current <- Consumption_df %>%
+  group_by(rep_id) %>%
+  summarise(Scenario="2015", Value= sum(current_consumption)),
+Baseline <- Consumption_df %>%
+  group_by(rep_id) %>%
+  summarise(Scenario="Baseline", Value= sum(baseline_consumption)),
+Pesc<- Consumption_df %>%
+  group_by(rep_id) %>%
+  summarise(Scenario="PESC", Value=sum(pesc_consumption)),
+Chn_diets <- Consumption_df %>%
+  group_by(rep_id) %>%
+  summarise(Scenario="CHN",Value= sum(chn_consumption)),
+Chn_Eff <- Consumption_df %>%
+  group_by(rep_id) %>%
+  summarise(Scenario="CHN_FCR", Value=sum(effchn_consumption))) %>%
+  group_by(Scenario) %>%
+  summarise(Mean=mean(Value), sd=sd(Value))
+
+Scenario_consump_df$Scenario <-as.factor(Scenario_consump_df$Scenario)
+Scenario_consump_df$Scenario <- factor(Scenario_consump_df$Scenario, levels(Scenario_consump_df$Scenario)[c(4,3,5,2,1)])
+
+fig1b <- ggplot(data= Scenario_consump_df, aes(x=Scenario, y=Mean))+
+  geom_hline(yintercept = mean(feed_fish$Value[feed_fish$Year>2010])*0.75, lty=2, colour="black")+
+  annotation_custom(supplyimg, xmin = 3, xmax = 5.5, ymin = 3.2e+07, ymax = 6e+07)+
+  geom_bar(stat="identity", fill="dodgerblue", width=0.75)+
+  geom_errorbar(aes(ymin=Mean-sd, ymax=Mean+sd), width=0.2)+
+  coord_flip()+
+  labs(y=bquote(Forage~fish~consumption~(T~x10^6)), x="")+
+  theme_bw()+
+  theme(panel.grid = element_blank(),
+        axis.title = element_text(size = 8),
+        axis.text  = element_text(size = 7),
+        plot.margin = unit(c(0.2, 0.2, 0.2, -0.4), units = "cm"))+
+  scale_y_continuous(limits = c(0, 6e+07), labels = c(0,  20,  40,  60), breaks = c(0,  20e+06,  40e+06, 60e+06))+
+  geom_hline(yintercept = mean(forage_fish$Value[forage_fish$Year>1999]), lty=2, colour="firebrick")
   
-x <- list(foo = "", bar = 0)
-bind_rows(rep(list(x), 2))
+
+ggarrange(fig1a, fig1b, labels = c("a", "b"), nrow = 1, ncol = 2, align="h")
+  
+ggsave("Fig1.tiff", device = "tiff", dpi=600, width=18, height = 7, units="cm")
+ggsave("Fig1.pdf", device = pdf, dpi=600, width=18, height = 7, units="cm")
 
 
-Production_list <- lapply(Countries_list_of_df, function(target_country){
-  # expand.grid(Country=target_country$Country,
-  #             Broad_group=target_country$Broad_group,
-  #             Current_production = target_country$Value)
-   data.frame(Country=target_country$Country,
-               Broad_group=target_country$Broad_group,
-               Current_production = target_country$Value)
 
-    })
+  mean(feed_fish$Value[feed_fish$Year>1989])*0.75
+mean(forage_fish$Value[forage_fish$Year>1999])
 
-length(Countries_df[[2]]$Broad_group)
-Production_list[[2]]
-names(fed_aqua_proj)
-
-
-Countries_df[[2]][["Broad_group"]]
-
-a_different_a <- bind_rows(
-  lapply(feeds_as_list, function(target_animal){
-    x <- target_animal[["FCR_min"]]*0.5; 
-    y <- target_animal[["FCR_max"]]; 
-    z <- abs(y-x); 
-    out_df <- data.frame(testx=x, y=y, z=z); 
-    return(out_df) 
-  }), 
-.id="Broad Group"
-)
-
-number_of_reps <- 500
-
-?expand.grid
-
-
-expand.grid(Production_list2)
-
-expand.grid(height = seq(60, 80, 5), weight = seq(100, 300, 50),
-            sex = c("Male","Female", "NA"))
 
 ```
 
 
-df_new <- dplyr::bind_rows(df_list)
-#df_new$consumption[df_new$surplus< 0] <- df_new$fm_biomass[df_new$surplus< 0]
 
-#Consumption for other scenarios
-#bau
-df_new$bau_fm_demand <- df_new$bau*df_new$fcr*df_new$fm
-df_new$bau_fm_biomass <- df_new$bau_fm_demand/0.225
-df_new$bau_fo_demand <- df_new$bau*df_new$fcr*df_new$fo
-df_new$bau_from_fm <- df_new$bau_fm_biomass*0.05
-df_new$bau_surplus <- (df_new$bau_fo_demand- df_new$bau_from_fm)/0.05
-df_new$bau_consumption <- df_new$bau_fm_biomass + df_new$bau_surplus
-#df_new$bau_consumption[df_new$bau_surplus< 0] <- df_new$bau_fm_biomass[df_new$bau_surplus< 0]
 
-#chn
-df_new$chn_fm_demand <- df_new$chn*df_new$fcr*df_new$fm
-df_new$chn_fm_biomass <- df_new$chn_fm_demand/0.225
-df_new$chn_fo_demand <- df_new$chn*df_new$fcr*df_new$fo
-df_new$chn_from_fm <- df_new$chn_fm_biomass*0.05
-df_new$chn_surplus <- (df_new$chn_fo_demand- df_new$chn_from_fm)/0.05
-df_new$chn_consumption <- df_new$chn_fm_biomass + df_new$chn_surplus
-#df_new$chn_consumption[df_new$chn_surplus< 0] <- df_new$chn_fm_biomass[df_new$chn_surplus< 0]
 
-#faq
-df_new$faq_fm_demand <- df_new$faq*df_new$fcr*df_new$fm
-df_new$faq_fm_biomass <- df_new$faq_fm_demand/0.225
-df_new$faq_fo_demand <- df_new$faq*df_new$fcr*df_new$fo
-df_new$faq_from_fm <- df_new$faq_fm_biomass*0.05
-df_new$faq_surplus <- (df_new$faq_fo_demand- df_new$faq_from_fm)/0.05
-df_new$faq_consumption <- df_new$faq_fm_biomass + df_new$faq_surplus
-#df_new$faq_consumption[df_new$faq_surplus< 0] <- df_new$faq_fm_biomass[df_new$faq_surplus< 0]
-
-write.csv(df_new, "forage fish consumption.csv", row.names = F)
 
 
 
@@ -1287,6 +1454,50 @@ ggsave("f1maint.tiff", device = "tiff", width=9, height=7, units = "cm")
 
 
 
+(fed_aqua_proj[1,])
+class(fed_aqua_proj[1,])
+
+lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row){
+  x <- fed_aqua_proj[target_row,]
+  print(x)
+})
+  
+x <- list(foo = "", bar = 0)
+bind_rows(rep(list(x), 2))
+
+
+Production_list <- lapply(Countries_list_of_df, function(target_country){
+  # expand.grid(Country=target_country$Country,
+  #             Broad_group=target_country$Broad_group,
+  #             Current_production = target_country$Value)
+   data.frame(Country=target_country$Country,
+               Broad_group=target_country$Broad_group,
+               Current_production = target_country$Value)
+
+    })
+
+length(Countries_df[[2]]$Broad_group)
+Production_list[[2]]
+names(fed_aqua_proj)
+
+
+Countries_df[[2]][["Broad_group"]]
+
+a_different_a <- bind_rows(
+  lapply(feeds_as_list, function(target_animal){
+    x <- target_animal[["FCR_min"]]*0.5; 
+    y <- target_animal[["FCR_max"]]; 
+    z <- abs(y-x); 
+    out_df <- data.frame(testx=x, y=y, z=z); 
+    return(out_df) 
+  }), 
+.id="Broad Group"
+)
+
+
+
+
+
 ggsave("basic linear proj with scenarios.tiff", device = "tiff", dpi=600, width = 9, height = 7, unit="cm")
 
 ```
@@ -1402,7 +1613,7 @@ data1 <- data.frame(
   y = c(1,2,3,4,5,6,7,8), 
   z= c(10,20,30,40,50,60,70,80))  
 
-
+```
 data2 <- data1 %>% 
   gather(key = Metric, value = Value, -group) %>%
   group_by(group, Metric) %>%
