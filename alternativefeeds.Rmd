@@ -7,6 +7,7 @@ output: word_document
 #LIBRARIES
 ```{r}
 library(gridExtra)
+library(data.table)
 library(plyr)
 library(mgcv)
 library(visreg)
@@ -488,7 +489,8 @@ Proj_mean <- c(sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="B
 
 Now_2030  <- data.frame(Year=as.factor(c("2015", "2030")),Mean=c(sum(fed_aqua.data$Value[fed_aqua.data$Year==2015]), mean(Proj_mean)), sd=c(NA, sd(Proj_mean)))
 
-# fig1b <- ggplot(data = Now_2030, aes(x=Year, y=Mean, fill=Year))+geom_bar(stat="identity", width = 0.4)+
+# fig1b <- ggplot(data = Now_2030, aes(x=Year, y=Mean, fill=Year))+
+#   geom_bar(stat="identity", width = 0.4)+
 #   geom_errorbar(aes(ymin=Mean-sd, ymax=Mean+sd), width=0.1, size=0.5)+
 #   theme_bw()+
 #   scale_fill_manual(values = c("dodgerblue4", "dodgerblue"))+
@@ -773,13 +775,28 @@ unique(forage_fish$CommonName)[grep("pilchard", unique(forage_fish$CommonName))]
 
 #From Froelich
 
-feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus", "Sardinella aurita",   "Sardinella",           "Sardinella brasiliensis", "Sardinella maderensis", "Sardinella longiceps" , "Sardinella gibbosa",  "Sardinella lemuru",     "Sardinella zunasi",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
+feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus",   "Sardinella",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
 
 
 forage_fish <- forage_fish %>%
   filter(forage_fish$TaxonName %in% feed_spp) %>%
   group_by(Year) %>%
   summarise(Value=sum(Value))
+
+
+ggplot(data = forage_fish, aes(x=Year, y=Value))+geom_line(colour="firebrick", linetype=1)+
+  geom_line(data = feed_fish, aes(x=Year, y=Value), colour="black", linetype=1)+
+  #annotate("segment", x=2000, xend = 2015, y=mean(forage_fish$Value[forage_fish$Year>1999]), yend = mean(forage_fish$Value[forage_fish$Year>1999]), colour="firebrick", linetype=2)+
+  #annotate("segment", x=2000, xend = 2015, y=mean(feed_fish$Value[feed_fish$Year>2010])*0.75, yend = mean(feed_fish$Value[feed_fish$Year>2010])*0.75, colour="black", linetype=2)+
+  # scale_x_continuous(limits=c(1960,2016), breaks = c(1985, 2015), labels = c(1985, 2015))+
+  # scale_y_continuous(limits = c(0,4e+07), labels = c(0,40), breaks = c(0,  4e+07))+
+  labs(x=bquote(Year), y=bquote(Biomass~(T~x10^6)))+
+  theme_bw()+
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size=10),
+        axis.title = element_text(size=10))+
+  #annotate("text", x=1983, y=5e+06, label="c", size=11)+
+  ggsave("total forage fish landings plot.tiff", device="tiff", dpi=600, width = 11, height=9, units = "cm")
 
 tile<-ggplot(data = forage_fish, aes(x=Year, y=Value))+geom_line(colour="firebrick", linetype=1)+
   geom_line(data = feed_fish, aes(x=Year, y=Value), colour="black", linetype=1)+
@@ -823,25 +840,25 @@ Chn_Eff <- Consumption_df %>%
   summarise(Mean=mean(Value), sd=sd(Value))
 
 Scenario_consump_df$Scenario <-as.factor(Scenario_consump_df$Scenario)
-Scenario_consump_df$Scenario <- factor(Scenario_consump_df$Scenario, levels(Scenario_consump_df$Scenario)[c(4,3,5,2,1)])
+Scenario_consump_df$Scenario <- factor(Scenario_consump_df$Scenario, levels(Scenario_consump_df$Scenario)[c(1,2,5,3,4)])
 
 fig1b <- ggplot(data= Scenario_consump_df, aes(x=Scenario, y=Mean))+
   geom_hline(yintercept = mean(feed_fish$Value[feed_fish$Year>2010])*0.75, lty=2, colour="black")+
-  annotation_custom(supplyimg, xmin = 3, xmax = 5.5, ymin = 3.2e+07, ymax = 6e+07)+
+  #annotation_custom(supplyimg, xmin = 3, xmax = 5.5, ymin = 3.2e+07, ymax = 6e+07)+
   geom_bar(stat="identity", fill="dodgerblue", width=0.75)+
   geom_errorbar(aes(ymin=Mean-sd, ymax=Mean+sd), width=0.2)+
-  coord_flip()+
+  #coord_flip()+
   labs(y=bquote(Forage~fish~consumption~(T~x10^6)), x="")+
   theme_bw()+
   theme(panel.grid = element_blank(),
         axis.title = element_text(size = 8),
         axis.text  = element_text(size = 7),
-        plot.margin = unit(c(0.2, 0.2, 0.2, -0.4), units = "cm"))+
+        plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), units = "cm"))+
   scale_y_continuous(limits = c(0, 6e+07), labels = c(0,  20,  40,  60), breaks = c(0,  20e+06,  40e+06, 60e+06))+
-  geom_hline(yintercept = mean(forage_fish$Value[forage_fish$Year>1999]), lty=2, colour="firebrick")
+  geom_hline(yintercept = mean(forage_fish$Value[forage_fish$Year>1980]), lty=2, colour="firebrick")
   
 
-ggarrange(fig1a, fig1b, labels = c("a", "b"), nrow = 1, ncol = 2, align="h")
+ggarrange(fig1a, fig1b, labels = c("a", "b"), widths = c(1,0.7), nrow = 1, ncol = 2, align="h")
   
 ggsave("Fig1.tiff", device = "tiff", dpi=600, width=18, height = 7, units="cm")
 ggsave("Fig1.pdf", device = pdf, dpi=600, width=18, height = 7, units="cm")
@@ -850,13 +867,6 @@ ggsave("Fig1.pdf", device = pdf, dpi=600, width=18, height = 7, units="cm")
 
   mean(feed_fish$Value[feed_fish$Year>1989])*0.75
 mean(forage_fish$Value[forage_fish$Year>1999])
-
-
-```
-
-
-
-
 
 
 
@@ -926,6 +936,10 @@ ggplot(faq_consumption, aes(x=reorder(Broad_group, -Consumption), y=Consumption)
   coord_flip()
 
 ```
+
+#not sure what this code is
+
+```{r}
 
 ## Current forage fish use
 
@@ -1043,14 +1057,84 @@ df
 ```
 
 
+#Growth data from metaanalysis
+
 ```{r}
-length(levels(fed_aqua_proj$Broad_group))*length(levels(fed_aqua_proj$Country))
+#Tidy - uniqu/levels etc
+
+growth_data <- 
+  fread("growth_data.csv", header=T) %>% 
+  select(-c(V24, V25, V26, Author, Journal, Supplement_type)) %>% 
+  filter(Year>2007) %>% 
+  mutate(Amino_supp = case_when(Amino_supp=="" ~ "N",
+                                T ~ Amino_supp)) %>% 
+  mutate(Fish_group = case_when(Fish_group=="Shrimp" ~ "Shrimps",
+                                Fish_group=="Tilapia" ~ "Tilapias",
+                                Fish_group=="Carp" ~ "Carps",
+                                Fish_group=="Diadromous fish" ~ "Diadromous fishes",
+                                Fish_group=="Catfish" ~ "Catfishes",
+                                T ~ Fish_group)) %>% 
+  mutate(Fish_sp = case_when(Fish_sp == "Chinese Mittern Crab" ~ "Chinese Mitten Crab",
+                             T~ Fish_sp)) %>% 
+  mutate(Fish_scientific = case_when(Fish_scientific == "Acanthopagrus schlegeli" ~ "Acanthopagrus schlegelii",
+                                     Fish_scientific =="Cyprinus carpio var.  Jian"~ "Cyprinus carpio var. Jian",
+                                     Fish_scientific %in% c("Machrobrachium rosenbergii", "Macrobrachium rosenbergiiS" ) ~ "Macrobrachium rosenbergii",
+                                     Fish_scientific =="Morone chrysops x Morone saxatilis"~ "Morone chrysops x M. saxatilis",
+                                     Fish_scientific =="Oreochromis niolticus"~ "Oreochromis niloticus",
+                                     Fish_scientific =="Sciaenops ocellatus:" ~ "Sciaenops ocellatus",
+                                     T ~ Fish_scientific)) %>% 
+  mutate(Life_stage = case_when(Life_stage %in% c("Juveniles") ~  "Juvenile",
+                                Life_stage == "Smolts" ~ "Smolt",
+                                T ~ Life_stage)) %>% 
+  mutate(Tissue = case_when(Tissue == "Total lipids" ~ "Whole body",
+                            T ~ Tissue))
 
 
 
-fed_aqua_proj[fed_aqua_proj$Country=="Albania",]
+
+#Exploration
+
+fishmeal <- growth_data %>% 
+  filter(FM_FO == "FM")
+fish_oil <- growth_data %>% 
+  filter(FM_FO == "FO")
+complete <- growth_data %>% 
+  filter(FM_FO == "Both")
+  
+
+ggplot(data = fishmeal, aes(x=Replacement, y=FCR, colour=Feed_general))+geom_point(alpha=.7)+
+  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
+  ggsave("growth_fishmeal.tiff", device="tiff", dpi=150, width=7, height=10)
+
+ggplot(data = fish_oil, aes(x=Replacement, y=FCR, colour=Feed_general))+geom_point(alpha=.7)+
+  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
+  ggsave("growth_fish_oil.tiff", device="tiff", dpi=150, width=7, height=10)
+
+ggplot(data = complete, aes(x=Replacement, y=FCR, colour=Feed_general))+geom_point(alpha=.7)+
+  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
+  ggsave("both_growth.tiff", device="tiff", dpi=150, width=7, height=10)
+
+ggplot(data = fish_oil, aes(x=Replacement, y=n3n6, colour=Feed_general))+geom_point(alpha=.7)+
+  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
+  ggsave("nutrition_fish_oil.tiff", device="tiff", dpi=150, width=7, height=10)
+
+ggplot(data = fish_oil, aes(x=Replacement, y=n3n6, colour=Feed_general))+geom_point(alpha=.7)+
+  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
+  ggsave("nutrition_both.tiff", device="tiff", dpi=150, width=7, height=10)
+
+
+length(unique(fishmeal$Study_id))+
+length(unique(fish_oil$Study_id))+
+length(unique(complete$Study_id))
+
 
 ```
+
+
+
+
+
+
 #OLD CODE
 
 ```{r}
