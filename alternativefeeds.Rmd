@@ -1102,7 +1102,7 @@ complete <- growth_data %>%
   filter(FM_FO == "Both")
   
 
-ggplot(data = fishmeal, aes(x=Replacement, y=FCR, colour=Feed_general))+geom_point(alpha=.7)+
+ggplot(data = fishmeal, aes(x=Replacement, y=FCR))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
   facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
   ggsave("growth_fishmeal.tiff", device="tiff", dpi=150, width=7, height=10)
 
@@ -1130,7 +1130,7 @@ length(unique(complete$Study_id))
 
 ```
 
-
+#Model fitting for growth data
 
 
 
