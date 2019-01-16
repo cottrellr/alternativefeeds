@@ -1102,23 +1102,24 @@ complete <- growth_data %>%
   filter(FM_FO == "Both")
   
 
-ggplot(data = fishmeal, aes(x=Replacement, y=FCR))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
-  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
-  ggsave("growth_fishmeal.tiff", device="tiff", dpi=150, width=7, height=10)
+ggplot(data = fishmeal, aes(x=Replacement, y=FCR))+geom_point(alpha=.3,(aes(colour=Feed_general)))+#geom_line(aes(colour=Feed_general, group=Study_id))+
+  facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
+  scale_y_continuous(limits = c(0,5))+
+  ggsave("growth_fishmeal.tiff", device="tiff", dpi=300, width=11, height=7)
 
-ggplot(data = fish_oil, aes(x=Replacement, y=FCR, colour=Feed_general))+geom_point(alpha=.7)+
-  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
-  ggsave("growth_fish_oil.tiff", device="tiff", dpi=150, width=7, height=10)
+ggplot(data = fish_oil, aes(x=Replacement, y=FCR))+geom_point(alpha=.7,(aes(colour=Feed_general)))+geom_line(aes(colour=Feed_general, group=Study_id))+
+  facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
+  ggsave("growth_fish-oil.tiff", device="tiff", dpi=300, width=11, height=7)
 
 ggplot(data = complete, aes(x=Replacement, y=FCR, colour=Feed_general))+geom_point(alpha=.7)+
   facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
   ggsave("both_growth.tiff", device="tiff", dpi=150, width=7, height=10)
 
-ggplot(data = fish_oil, aes(x=Replacement, y=n3n6, colour=Feed_general))+geom_point(alpha=.7)+
-  facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
-  ggsave("nutrition_fish_oil.tiff", device="tiff", dpi=150, width=7, height=10)
+ggplot(data = fish_oil, aes(x=Replacement, y=n3n6))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
+  facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
+  ggsave("nutrition_fish_oil.tiff", device="tiff", dpi=300, width=11, height=7)
 
-ggplot(data = fish_oil, aes(x=Replacement, y=n3n6, colour=Feed_general))+geom_point(alpha=.7)+
+ggplot(data = fish_oil, aes(x=Replacement, y=n3n6, colour=Feed_general))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
   facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
   ggsave("nutrition_both.tiff", device="tiff", dpi=150, width=7, height=10)
 
@@ -1126,6 +1127,10 @@ ggplot(data = fish_oil, aes(x=Replacement, y=n3n6, colour=Feed_general))+geom_po
 length(unique(fishmeal$Study_id))+
 length(unique(fish_oil$Study_id))+
 length(unique(complete$Study_id))
+
+ggplot(data = fishmeal, aes(x=Replacement, y=Marine_ingredient_change))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
+  facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
+  ggsave("fish_oil trade off.tiff", device="tiff", dpi=300, width=11, height=7)
 
 
 ```
