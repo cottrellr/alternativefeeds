@@ -8,6 +8,7 @@ output: word_document
 ```{r}
 library(gridExtra)
 library(data.table)
+library(purrr)
 library(plyr)
 library(mgcv)
 library(visreg)
@@ -1087,9 +1088,13 @@ growth_data <-
                                 Life_stage == "Smolts" ~ "Smolt",
                                 T ~ Life_stage)) %>% 
   mutate(Tissue = case_when(Tissue == "Total lipids" ~ "Whole body",
-                            T ~ Tissue))
+                            T ~ Tissue)) %>% 
+  group_by(Feed_general, Fish_group,   Study_id) %>% 
+  nest() %>% 
+  mutate(Relative_FCR = purrr::map(data, relative)) %>% 
+  unnest(data, Relative_FCR) 
 
-
+names(growth_data)
 
 
 #Exploration
@@ -1102,12 +1107,12 @@ complete <- growth_data %>%
   filter(FM_FO == "Both")
   
 
-ggplot(data = fishmeal, aes(x=Replacement, y=FCR))+geom_point(alpha=.3,(aes(colour=Feed_general)))+#geom_line(aes(colour=Feed_general, group=Study_id))+
+ggplot(data = fishmeal, aes(x=Replacement, y=Relative_FCR))+geom_line(aes(colour=Feed_general, group=Study_id))+geom_point()+
   facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
-  scale_y_continuous(limits = c(0,5))+
+  #scale_y_continuous(limits = c(0,80))+
   ggsave("growth_fishmeal.tiff", device="tiff", dpi=300, width=11, height=7)
 
-ggplot(data = fish_oil, aes(x=Replacement, y=FCR))+geom_point(alpha=.7,(aes(colour=Feed_general)))+geom_line(aes(colour=Feed_general, group=Study_id))+
+  ggplot(data = fish_oil, aes(x=Replacement, y=Relative_FCR))+geom_point(alpha=.7,(aes(colour=Feed_general)))+geom_line(aes(colour=Feed_general, group=Study_id))+
   facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
   ggsave("growth_fish-oil.tiff", device="tiff", dpi=300, width=11, height=7)
 
@@ -1123,14 +1128,67 @@ ggplot(data = fish_oil, aes(x=Replacement, y=n3n6, colour=Feed_general))+geom_po
   facet_grid(rows = vars(Fish_group), cols= vars(Feed_general), scales="free")+
   ggsave("nutrition_both.tiff", device="tiff", dpi=150, width=7, height=10)
 
-
-length(unique(fishmeal$Study_id))+
-length(unique(fish_oil$Study_id))+
-length(unique(complete$Study_id))
+#fish oil change with fishmeal replacement
 
 ggplot(data = fishmeal, aes(x=Replacement, y=Marine_ingredient_change))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
   facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
   ggsave("fish_oil trade off.tiff", device="tiff", dpi=300, width=11, height=7)
+
+
+ggplot(data = fish_oil, aes(x=Replacement, y=Marine_ingredient_change))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
+  facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
+  ggsave("fishmeal trade off.tiff", device="tiff", dpi=300, width=11, height=7)
+
+relative_FCR <- function(x){
+  fcr <- x$FCR/(x$FCR[1])
+}
+
+
+
+
+carps <- 
+  fishmeal %>% 
+  filter(Fish_group=="Marine fishes" & Feed_general=="Soy") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+# %>% 
+  ggplot(data=carps,aes(x=Replacement, y=Relative))+geom_point(alpha=.5)+geom_line(aes(group=Study_id))
+
+library(mgcv)
+model1 <- gam(FCR ~ s(Replacement), data=carps)
+
+plot(model1, resid = T, pch = 16)
+
+plot(FCR~Replacement, pch=16, data=carps, ylim= c(0,5))
+
+lines(0:100, predict(model1, newdata=data.frame(Replacement=0:100)), col="Red")
+
+plot(model1, all.terms=F, residuals=T)
+
+?gam::gam
+# Model:
+#   -Response: FCR
+#   -Fixed effects: Amino_supp,  Replacement
+#   -Random effects: Country, Study_id, Life_stage, Feed_specific, Fish_scientific
+
+
+
+  
+library(lme4)
+
+mod.1 <- lmer(Relative~ Replacement + (1|Amino_supp) +(1|Fish_scientific), data=carps)
+
+  summary(mod.1)
+
+
+carps %>% 
+  mutate(Predicts = predict(mod.1)) %>% 
+  ggplot(aes(x = Replacement, y = FCR)) +
+  geom_point(size=3) +
+  geom_line(aes(y = predict(mod.1)),size=1) 
+
+
+
 
 
 ```
