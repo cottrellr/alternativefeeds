@@ -30,6 +30,7 @@ library(zoo)
 library(colorspace)
 library(grDevices)
 library(RColorBrewer)
+library(car)
 ```
 
 #IMPORT AND TIDY AQUACULTURE DATA
@@ -1063,6 +1064,11 @@ df
 ```{r}
 #Tidy - uniqu/levels etc
 
+relative_FCR <- function(x){
+  fcr <- x$FCR/(x$FCR[1])
+}
+
+
 growth_data <- 
   fread("growth_data.csv", header=T) %>% 
   select(-c(V24, V25, V26, Author, Journal, Supplement_type)) %>% 
@@ -1089,12 +1095,13 @@ growth_data <-
                                 T ~ Life_stage)) %>% 
   mutate(Tissue = case_when(Tissue == "Total lipids" ~ "Whole body",
                             T ~ Tissue)) %>% 
-  group_by(Feed_general, Fish_group,   Study_id) %>% 
+  group_by(Feed_general, Fish_group,  Study_id) %>% 
   nest() %>% 
-  mutate(Relative_FCR = purrr::map(data, relative)) %>% 
+  mutate(Relative_FCR = purrr::map(data, relative_FCR)) %>% 
   unnest(data, Relative_FCR) 
 
 names(growth_data)
+
 
 
 #Exploration
@@ -1107,7 +1114,7 @@ complete <- growth_data %>%
   filter(FM_FO == "Both")
   
 
-ggplot(data = fishmeal, aes(x=Replacement, y=Relative_FCR))+geom_line(aes(colour=Feed_general, group=Study_id))+geom_point()+
+ggplot(data = fishmeal, aes(x=Replacement, y=Relative_FCR))+geom_line(aes(colour=Feed_general, group=Study_id, alpha=Year))+geom_point(aes(alpha=Year))+
   facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
   #scale_y_continuous(limits = c(0,80))+
   ggsave("growth_fishmeal.tiff", device="tiff", dpi=300, width=11, height=7)
@@ -1138,12 +1145,44 @@ ggplot(data = fishmeal, aes(x=Replacement, y=Marine_ingredient_change))+geom_poi
 ggplot(data = fish_oil, aes(x=Replacement, y=Marine_ingredient_change))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
   facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
   ggsave("fishmeal trade off.tiff", device="tiff", dpi=300, width=11, height=7)
-
-relative_FCR <- function(x){
-  fcr <- x$FCR/(x$FCR[1])
-}
+```
 
 
+
+
+#individual plots and model fitting
+```{r}
+
+#Algae
+
+til_alg <- 
+  fishmeal %>% 
+  filter(Fish_group=="Tilapias" & Feed_general=="Algae") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+model1 <- gam(Relative_FCR ??? s(Replacement, fx=FALSE, k=-1, bs="cr")+
+                factor(Study_id), data=til_alg)
+plot(model1, se = TRUE)
+gam.check(model1)
+
+
+
+
+par(mar = c(2, 2, 2, 2))
+vis.gam(model1, theta=240)
+summary(model1)
+anova(model1)
+
+
+plot(model1$fitted.values, resid(model1)) #no serial pattern
+plot(resid(model1), til_alg$Replacement) #looks pretty random
+hist(resid(model1)) # there is heterogeneity - an even spread of the residual values
+
+
+
+hist(til_alg$Relative_FCR)
+```
 
 
 carps <- 
@@ -1165,20 +1204,16 @@ lines(0:100, predict(model1, newdata=data.frame(Replacement=0:100)), col="Red")
 
 plot(model1, all.terms=F, residuals=T)
 
+hist(carps$Relative_FCR)
+
+
 ?gam::gam
+
 # Model:
 #   -Response: FCR
 #   -Fixed effects: Amino_supp,  Replacement
 #   -Random effects: Country, Study_id, Life_stage, Feed_specific, Fish_scientific
 
-
-
-  
-library(lme4)
-
-mod.1 <- lmer(Relative~ Replacement + (1|Amino_supp) +(1|Fish_scientific), data=carps)
-
-  summary(mod.1)
 
 
 carps %>% 
@@ -1188,6 +1223,12 @@ carps %>%
   geom_line(aes(y = predict(mod.1)),size=1) 
 
 
+```
+
+
+#Playing with GAMs
+
+```{r}
 
 
 
