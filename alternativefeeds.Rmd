@@ -1204,7 +1204,7 @@ arrange(fishmeal, Feed_general, Fish_group)
 
 #=======================================
 
-#Carps and Algae
+#Carps and Algae - model looks good
 
 carp_algae <- 
   fishmeal %>% 
@@ -1238,8 +1238,8 @@ carp_bacteria <-
            as.factor)
 
 #Analysis
-myknots <- seq(min(carp_bacteria$Replacement), max(carp_bacteria$Replacement), length.out = 5)[-c(1,5)]
-fit_carp_bacteria <- sme(object = carp_bacteria$Relative_FCR, tme = carp_bacteria$Replacement, ind = carp_bacteria$Study_id, criteria = "AIC")#, knots = myknots)
+myknots <- seq(min(carp_bacteria$Replacement), max(carp_bacteria$Replacement), length.out = 4)[-c(1,4)]
+fit_carp_bacteria <- sme(object = carp_bacteria$Relative_FCR, tme = carp_bacteria$Replacement, ind = carp_bacteria$Study_id, criteria = "AICc", knots = myknots)
 
 #Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
 fit_carp_bacteria$info
@@ -1256,7 +1256,7 @@ plot(fit_carp_bacteria,type="model",xlab="",ylab="Relative FCR", showIndividuals
 
 #==========================================================
 
-#carps and yeast
+#carps and yeast - x limits need sorting
 
 carp_yeast <- 
   fishmeal %>% 
@@ -1282,7 +1282,7 @@ plot(fit_carp_yeast,type="model",xlab="",ylab="Relative FCR", showIndividuals=F,
 
 #==========================================================
 
-#carps and soy
+#carps and soy - model is satisfactory
 
 
 carp_soy <- 
@@ -1292,20 +1292,20 @@ carp_soy <-
            as.factor)
 
 #Analysis
-myknots <- seq(min(carp_soy$Replacement), max(carp_soy$Replacement), length.out = 6)[-c(1,6)]
-fit_carp_soy <- sme(object = carp_soy$Relative_FCR, tme = carp_soy$Replacement, ind = carp_soy$Study_id,criteria = "AICc")
+myknots <- seq(min(carp_soy$Replacement), max(carp_soy$Replacement), length.out = 4)[-c(1,4)]
+fit_carp_soy <- sme(object = carp_soy$Relative_FCR, tme = carp_soy$Replacement, ind = carp_soy$Study_id,criteria = "AICc", knots = myknots)
 
 #Diagnostics 
 fit_carp_soy$info
 plot(fit, type="diagnostic")
 
 
-plot(fit_carp_soy,type="model",xlab="",ylab="Relative FCR", showIndividuals=F, xlim=c(0,100), xaxs="i", showConfidenceBands=T, col.meanCurve='goldenrod', col=alpha("grey50", 0.5), pch=16, panel.first = c(abline(h=1.05, lty=2, lwd=2, col='black')))
+plot(fit_carp_soy,type="model",xlab="",ylab="Relative FCR", showIndividuals=F,  xaxs="i", showConfidenceBands=T, col.meanCurve='goldenrod', col=alpha("grey50", 0.5), pch=16, panel.first = c(abline(h=1.05, lty=2, lwd=2, col='black')))
 
 
 
 
-#carps and insects
+#carps and insects - model looks good
 
 
 carp_insects <- 
