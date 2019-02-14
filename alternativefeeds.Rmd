@@ -31,6 +31,7 @@ library(colorspace)
 library(grDevices)
 library(RColorBrewer)
 library(car)
+library(sme)
 ```
 
 #IMPORT AND TIDY AQUACULTURE DATA
@@ -1072,7 +1073,7 @@ relative_FCR <- function(x){
 growth_data <- 
   fread("growth_data.csv", header=T) %>% 
   select(-c(V24, V25, V26, Author, Journal, Supplement_type)) %>% 
-  filter(Year>2007) %>% 
+  filter(Year>2007 & Study_id!= 206.1) %>% 
   mutate(Amino_supp = case_when(Amino_supp=="" ~ "N",
                                 T ~ Amino_supp)) %>% 
   mutate(Fish_group = case_when(Fish_group=="Shrimp" ~ "Shrimps",
@@ -1108,19 +1109,37 @@ names(growth_data)
 
 fishmeal <- growth_data %>% 
   filter(FM_FO == "FM")
+
+
+
+
 fish_oil <- growth_data %>% 
   filter(FM_FO == "FO")
 complete <- growth_data %>% 
   filter(FM_FO == "Both")
   
 
-ggplot(data = fishmeal, aes(x=Replacement, y=Relative_FCR))+geom_line(aes(colour=Feed_general, group=Study_id, alpha=Year))+geom_point(aes(alpha=Year))+
-  facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
+ggplot(data = fishmeal, aes(x=Replacement, y=Relative_FCR))+
+  #geom_line(aes(colour=Feed_general, group=Study_id, alpha=Year))+
+  geom_point(alpha=.2)+
+  facet_grid(cols = vars(Feed_general), rows= vars(Fish_group), scales="free")+
+  geom_smooth(method="loess", aes(colour=interaction(Feed_general, Fish_group)))+
+  guides(colour=F)+
+  theme_bw()+
+  theme(panel.grid = element_blank())+
+  labs(x= "Fishmeal replacement (%)", y=bquote(Relative~FCR))+
   #scale_y_continuous(limits = c(0,80))+
-  ggsave("growth_fishmeal.tiff", device="tiff", dpi=300, width=11, height=7)
+  ggsave("growth_fishmeal.tiff", device="tiff", dpi=300, width=20, height=22, units = "cm")
 
-  ggplot(data = fish_oil, aes(x=Replacement, y=Relative_FCR))+geom_point(alpha=.7,(aes(colour=Feed_general)))+geom_line(aes(colour=Feed_general, group=Study_id))+
-  facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
+  ggplot(data = fish_oil, aes(x=Replacement, y=Relative_FCR))+
+    geom_point(alpha=.4)+
+    #geom_line(aes(colour=Feed_general, group=Study_id))+
+    facet_grid(cols = vars(Feed_general), rows= vars(Fish_group), scales="free")+
+  geom_smooth(method="loess", aes(colour=interaction(Feed_general, Fish_group)))+
+  guides(colour=F)+
+  theme_bw()+
+  theme(panel.grid = element_blank())+
+  labs(x= "Fish oil replacement (%)", y=bquote(Relative~FCR))+
   ggsave("growth_fish-oil.tiff", device="tiff", dpi=300, width=11, height=7)
 
 ggplot(data = complete, aes(x=Replacement, y=FCR, colour=Feed_general))+geom_point(alpha=.7)+
@@ -1145,6 +1164,10 @@ ggplot(data = fishmeal, aes(x=Replacement, y=Marine_ingredient_change))+geom_poi
 ggplot(data = fish_oil, aes(x=Replacement, y=Marine_ingredient_change))+geom_point(alpha=.7)+geom_line(aes(colour=Feed_general, group=Study_id))+
   facet_grid(rows = vars(Feed_general), cols= vars(Fish_group), scales="free")+
   ggsave("fishmeal trade off.tiff", device="tiff", dpi=300, width=11, height=7)
+
+
+arrange(fishmeal, Feed_general, Fish_group)
+
 ```
 
 
@@ -1153,26 +1176,44 @@ ggplot(data = fish_oil, aes(x=Replacement, y=Marine_ingredient_change))+geom_poi
 #individual plots and model fitting
 ```{r}
 
-#Algae
+#Smoothing splines mixed effects models?? SME package
 
-til_alg <- 
+#Carps
+
+carp_algae <- 
   fishmeal %>% 
-  filter(Fish_group=="Tilapias" & Feed_general=="Algae") %>% 
+  filter(Fish_group=="Carps" & Feed_general=="Algae") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)
 
+ggplot(data=carp_algae, aes(x=Replacement, y=Relative_FCR))+
+  geom_point()+facet_wrap(~Study_id)
+
+
+fit <- loess()
+
+
+```
+
+
+
+
 model1 <- gam(Relative_FCR ??? s(Replacement, fx=FALSE, k=-1, bs="cr")+
                 factor(Study_id), data=til_alg)
-plot(model1, se = TRUE)
+plot(model1)
+
+model1 <- gam(FCR ??? s(Replacement, bs="re"), family="poisson", data=til_alg)
+plot(model1)
 gam.check(model1)
-
-
-
-
+  
 par(mar = c(2, 2, 2, 2))
 vis.gam(model1, theta=240)
 summary(model1)
 anova(model1)
+
+model1 <- gamm(Relative_FCR ~ s(Replacement), data=til_alg,random=list(Study_id=~ 1), family = "poisson" )
+
+
 
 
 plot(model1$fitted.values, resid(model1)) #no serial pattern
@@ -1180,9 +1221,11 @@ plot(resid(model1), til_alg$Replacement) #looks pretty random
 hist(resid(model1)) # there is heterogeneity - an even spread of the residual values
 
 
+ggplot(data=til_alg, aes(x=Replacement, y=Relative_FCR))+geom_point()+geom_smooth(method = "loess")
+
+?geom_smooth()
 
 hist(til_alg$Relative_FCR)
-```
 
 
 carps <- 
