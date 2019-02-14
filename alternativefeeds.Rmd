@@ -1176,9 +1176,35 @@ arrange(fishmeal, Feed_general, Fish_group)
 #individual plots and model fitting
 ```{r}
 
-#Smoothing splines mixed effects models?? SME package
+#Smoothing splines mixed effects models. SME package
 
-#Carps
+#EXAMPLE with steps of
+# #FIRST MODEL
+# fit <- sme(object = carp_algae$Relative_FCR, tme = carp_algae$Replacement, ind = carp_algae$Study_id, lambda.mu = 0, lambda.v = 0)
+# plot(fit,type="model",xlab="Fishmeal replacement",ylab="Relative FCR")
+# fit$info #should show zero if converged
+# 
+# 
+# fit <- sme(object = carp_algae$Relative_FCR, tme = carp_algae$Replacement, ind = carp_algae$Study_id, lambda.mu = 1e+7, lambda.v = 1e+7)
+# plot(fit,type="model",xlab="Fishmeal replacement",ylab="Relative FCR")
+# fit$info #should show zero if converged
+# 
+# 
+# fit <- sme(object = carp_algae$Relative_FCR, tme = carp_algae$Replacement, ind = carp_algae$Study_id,criteria = "AIC")
+# plot(fit,type="model",xlab="Fishmeal replacement",ylab="Relative FCR")
+# fit$info #should show zero if converged
+# 
+# 
+# fit <- sme(object = carp_algae$Relative_FCR, tme = carp_algae$Replacement, ind = carp_algae$Study_id,criteria = "AIC", knots=myknots)
+# plot(fit,type="model",xlab="Fishmeal replacement",ylab="Relative FCR")
+# fit$info #should show zero if converged
+
+
+
+
+#=======================================
+
+#Carps and Algae
 
 carp_algae <- 
   fishmeal %>% 
@@ -1186,12 +1212,141 @@ carp_algae <-
   mutate(Study_id = Study_id %>% 
            as.factor)
 
-ggplot(data=carp_algae, aes(x=Replacement, y=Relative_FCR))+
-  geom_point()+facet_wrap(~Study_id)
+#Analysis
+myknots <- seq(min(carp_algae$Replacement), max(carp_algae$Replacement), length.out = 10)[-c(1,10)]
+fit_carp_algae <- sme(object = carp_algae$Relative_FCR, tme = carp_algae$Replacement, ind = carp_algae$Study_id,criteria = "AICc")
+
+plot(fit_carp_algae,type="model", xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#2c7bb6', col=alpha("grey50", 0.5), pch=16, panel.first = c(abline(h=1.05, lty=2, lwd=2, col='black')))
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_carp_algae$info
+plot(fit_carp_algae, type="diagnostic")
 
 
-fit <- loess()
 
+
+
+
+#============================================
+
+#carps and bacteria - insufficient data for model to converge
+
+carp_bacteria <- 
+  fishmeal %>% 
+  filter(Fish_group=="Carps" & Feed_general=="Bacteria") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+#Analysis
+myknots <- seq(min(carp_bacteria$Replacement), max(carp_bacteria$Replacement), length.out = 5)[-c(1,5)]
+fit_carp_bacteria <- sme(object = carp_bacteria$Relative_FCR, tme = carp_bacteria$Replacement, ind = carp_bacteria$Study_id, criteria = "AIC")#, knots = myknots)
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_carp_bacteria$info
+plot(fit_carp_bacteria, "diagnostic")
+
+
+plot(fit_carp_bacteria,type="model",xlab="",ylab="Relative FCR", showIndividuals=F, showConfidenceBands=T, col.meanCurve="#abd9e9", col=alpha("grey50", 0.5), pch=16, panel.first = c(abline(h=1.05, lty=2, lwd=2, col='black')))
+
+
+
+
+
+
+
+#==========================================================
+
+#carps and yeast
+
+carp_yeast <- 
+  fishmeal %>% 
+  filter(Fish_group=="Carps" & Feed_general=="Yeast") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+#Analysis
+myknots <- seq(min(carp_yeast$Replacement), max(carp_yeast$Replacement), length.out = 6)[-c(1,6)]
+fit_carp_yeast <- sme(object = carp_yeast$Relative_FCR, tme = carp_yeast$Replacement, ind = carp_yeast$Study_id,criteria = "AICc", knots = myknots)
+
+#Diagnostics 
+fit_carp_yeast$info
+plot(fit, type="diagnostic")
+
+
+plot(fit_carp_yeast,type="model",xlab="",ylab="Relative FCR", showIndividuals=F, showConfidenceBands=T, col.meanCurve='goldenrod', col=alpha("grey50", 0.5), pch=16, panel.first = c(abline(h=1.05, lty=2, lwd=2, col='black')))
+
+
+
+
+
+
+#==========================================================
+
+#carps and soy
+
+
+carp_soy <- 
+  fishmeal %>% 
+  filter(Fish_group=="Carps" & Feed_general=="Soy") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+#Analysis
+myknots <- seq(min(carp_soy$Replacement), max(carp_soy$Replacement), length.out = 6)[-c(1,6)]
+fit_carp_soy <- sme(object = carp_soy$Relative_FCR, tme = carp_soy$Replacement, ind = carp_soy$Study_id,criteria = "AICc")
+
+#Diagnostics 
+fit_carp_soy$info
+plot(fit, type="diagnostic")
+
+
+plot(fit_carp_soy,type="model",xlab="",ylab="Relative FCR", showIndividuals=F, xlim=c(0,100), xaxs="i", showConfidenceBands=T, col.meanCurve='goldenrod', col=alpha("grey50", 0.5), pch=16, panel.first = c(abline(h=1.05, lty=2, lwd=2, col='black')))
+
+
+
+
+#carps and insects
+
+
+carp_insects <- 
+  fishmeal %>% 
+  filter(Fish_group=="Carps" & Feed_general=="Insect") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+#Analysis
+myknots <- seq(min(carp_insects$Replacement), max(carp_insects$Replacement), length.out = 7)[-c(1,7)]
+fit_carp_insects <- sme(object = carp_insects$Relative_FCR, tme = carp_insects$Replacement, ind = carp_insects$Study_id,criteria = "AICc", knots=myknots)
+
+#Diagnostics - no real patterns in residuals or in qq-plot except in the extremes - which is largely to be expected with diverging data sets. No difference between AIC and BICn lambda selection. Use data points as knots creates better fit 
+
+
+fit_carp_insects$info
+plot(fit_carp_insects, type="diagnostic")
+
+plot(fit_carp_insects,type="model",xlab="",ylab="Relative FCR", showIndividuals=F, showConfidenceBands=T, col.meanCurve="#d7191c", pch=16, col=alpha("grey50", 0.5),  panel.first = c(abline(h=1.05, lty=2, lwd=1, col="black")))
+
+
+```
+
+
+
+
+
+
+#create your own length of knots
+
+plot(fit,type="model",xlab="Fishmeal replacement",ylab="Relative FCR", showConfidenceBands=T, col="blue")
+
+
+
+
+
+
+
+fit2 <- sme(MTB[MTB$variable==6031,c("y","tme","ind")],
++ criteria == "AIC")
+plot(fit2,type="model",xlab="Hour",ylab="Gene Expression")
 
 ```
 
