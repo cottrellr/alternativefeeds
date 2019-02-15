@@ -1268,9 +1268,7 @@ fit_carp_yeast$info
 plot(fit_carp_yeast, type="diagnostic")
 
 
-plotSmeModel(fit_carp_yeast, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='goldenrod', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='black')) ))
-
-
+plotSmeModel(fit_carp_yeast, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#fed98e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='black')) ))
 
 
 
@@ -1298,7 +1296,7 @@ fit_carp_soy$info
 plot(fit_carp_soy, type="diagnostic")
 
 
-plotSmeModel(fit_carp_soy,xlab="",ylab="Relative FCR", showIndividuals=F,  xaxs="i", showConfidenceBands=T, col.meanCurve='goldenrod', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=37, lty=2, lwd=1, col='black'))))
+plotSmeModel(fit_carp_soy,xlab="",ylab="Relative FCR", showIndividuals=F,  xaxs="i", showConfidenceBands=T, col.meanCurve='#d95f0e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=37, lty=2, lwd=1, col='black'))))
 
 
 
@@ -1326,11 +1324,24 @@ plot(fit_carp_insects, type="diagnostic")
 plotSmeModel(fit_carp_insects,xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve="#d7191c", pch=16, col=alpha("grey50", 0.5),  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black'))))
 
 
+op<-par(mfrow=c(1,5))
+
+plotSmeModel(fit_carp_algae, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#2c7bb6', lwd=3, col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+
+plotSmeModel(fit_carp_bacteria, xlab="",ylab="Relative FCR", showIndividuals=F, showConfidenceBands=T, col.meanCurve="#abd9e9", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
 
 
+plotSmeModel(fit_carp_yeast, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#fed98e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='black'))))
 
 
+plotSmeModel(fit_carp_soy,xlab="",ylab="Relative FCR", showIndividuals=F,  xaxs="i", showConfidenceBands=T, col.meanCurve='#d95f0e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=37, lty=2, lwd=1, col='black'))))
 
+plotSmeModel(fit_carp_insects,xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve="#d7191c", pch=16, col=alpha("grey50", 0.5),  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black'))))
+
+par(op)
+
+
+?png
 ```
 
 #Catfishes
@@ -1355,8 +1366,14 @@ fit_catfish_algae$info
 plot(fit_catfish_algae, type="diagnostic")
 
 
+
+#PLOT
 plotSmeModel(fit_catfish_algae, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#2c7bb6', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='black'))))
 
+
+#====================================================
+
+#Catfish and bacteria
 
 
 
@@ -1378,6 +1395,9 @@ plot(fit_catfish_bacteria, type="diagnostic") ##NUP linear model for trends of t
 #plotSmeModel(fit_catfish_bacteria, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#2c7bb6', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='black'))))
 
 
+
+#PLOT
+
 plot(x=catfish_bacteria$Replacement, y=catfish_bacteria$Relative_FCR, xlab="",ylab="Relative FCR", col=alpha("grey50", 0.5), pch=16, xlim=c(0,100), ylim=c(min(catfish_bacteria$Relative_FCR),1.05))+
   abline(lm(Relative_FCR~Replacement, data = catfish_bacteria), col="#abd9e9", lwd=3)+
   abline(h=1.05, lwd=1, lty=2)
@@ -1387,63 +1407,110 @@ plot(x=catfish_bacteria$Replacement, y=catfish_bacteria$Relative_FCR, xlab="",yl
 
 
 
-```
 
+#===========================================================
+##Catfish and yeast
 
-
-
-
-
-
-
-carps <- 
+catfish_yeast <- 
   fishmeal %>% 
-  filter(Fish_group=="Marine fishes" & Feed_general=="Soy") %>% 
+  filter(Fish_group=="Catfishes" & Feed_general=="Yeast") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)
-# %>% 
-  ggplot(data=carps,aes(x=Replacement, y=Relative))+geom_point(alpha=.5)+geom_line(aes(group=Study_id))
-
-library(mgcv)
-model1 <- gam(FCR ~ s(Replacement), data=carps)
-
-plot(model1, resid = T, pch = 16)
-
-plot(FCR~Replacement, pch=16, data=carps, ylim= c(0,5))
-
-lines(0:100, predict(model1, newdata=data.frame(Replacement=0:100)), col="Red")
-
-plot(model1, all.terms=F, residuals=T)
-
-hist(carps$Relative_FCR)
-
-
-?gam::gam
-
-# Model:
-#   -Response: FCR
-#   -Fixed effects: Amino_supp,  Replacement
-#   -Random effects: Country, Study_id, Life_stage, Feed_specific, Fish_scientific
 
 
 
-carps %>% 
-  mutate(Predicts = predict(mod.1)) %>% 
-  ggplot(aes(x = Replacement, y = FCR)) +
-  geom_point(size=3) +
-  geom_line(aes(y = predict(mod.1)),size=1) 
+#Analysis
+myknots <- seq(min(catfish_yeast$Replacement), max(catfish_yeast$Replacement), length.out = 4)[-c(1,4)]
+
+fit_catfish_yeast <- sme(object = catfish_yeast$Relative_FCR, tme = catfish_yeast$Replacement, ind = catfish_yeast$Study_id,criteria = "AICc",  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_catfish_yeast$info
+plot(fit_catfish_yeast, type="diagnostic")
+
+
+plotSmeModel(fit_catfish_yeast, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#fed98e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=94, lty=2, lwd=1, col='black'))))
+
+
+
+#=========================================================
+
+#Catfish and Soy
+
+
+
+catfish_soy <- 
+  fishmeal %>% 
+  filter(Fish_group=="Catfishes" & Feed_general=="Soy") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+
+
+#Analysis
+myknots <- seq(min(catfish_soy$Replacement), max(catfish_soy$Replacement), length.out = 4)[-c(1,4)]
+
+fit_catfish_soy <- sme(object = catfish_soy$Relative_FCR, tme = catfish_soy$Replacement, ind = catfish_soy$Study_id,criteria = "AICc")
+#,  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_catfish_yeast$info
+plot(fit_catfish_yeast, type="diagnostic")
+
+
+plotSmeModel(fit_catfish_soy, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#d95f0e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=50, lty=2, lwd=1, col='grey20'))))
+
+
+
+#==================================================
+
+#Catfish and Insects
+
+catfish_insects <- 
+  fishmeal %>% 
+  filter(Fish_group=="Catfishes" & Feed_general=="Insect") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor) 
+
+
+#Analysis
+myknots <- seq(min(catfish_insects$Replacement), max(catfish_insects$Replacement), length.out = 6)[-c(1,6)]
+
+fit_catfish_insects <- sme(object = catfish_insects$Relative_FCR, tme = catfish_insects$Replacement, ind = catfish_insects$Study_id,criteria = "AICc")#,  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_catfish_insects$info
+plot(fit_catfish_insects, type="diagnostic")
+
+
+plotSmeModel(fit_catfish_insects, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#d7191c', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
+
 
 
 ```
 
 
-#Playing with GAMs
+#FW fishes
+
 
 ```{r}
 
+#FW fishes & Algae (no data)
+
+plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
+  abline(0,1)
+
 
 
 ```
+
+
+
+
+
 
 #Model fitting for growth data
 
