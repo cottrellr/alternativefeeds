@@ -1503,13 +1503,212 @@ plotSmeModel(fit_catfish_insects, xlab="",ylab="Relative FCR", showIndividuals=F
 plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
   abline(0,1)
 
+#FW fishes & Bacteria (no data)
+FW_bateria <- 
+  fishmeal %>% 
+  filter(Fish_group=="Freshwater fishes" & Feed_general=="Bacteria") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+myknots <- seq(min(FW_bateria$Replacement), max(FW_bateria$Replacement), length.out = 4)[-c(1,4)]
+
+fit_FW_bacteria <- sme(object = FW_bateria$Relative_FCR, tme = FW_bateria$Replacement, ind = FW_bateria$Study_id,criteria = "AICc")#,  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_FW_bacteria$info
+plot(fit_FW_soy, type="diagnostic")
+
+
+plotSmeModel(fit_FW_bacteria, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#abd9e9', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='grey20'))))
+
+
+
+
+
+#FW fishes & Yeast (no data)
+
+plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
+  abline(0,1)
+
+
+#FW fishes & Soy 
+
+
+FW_soy <- 
+  fishmeal %>% 
+  filter(Fish_group=="Freshwater fishes" & Feed_general=="Soy") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+myknots <- seq(min(FW_soy$Replacement), max(FW_soy$Replacement), length.out = 4)[-c(1,4)]
+
+fit_FW_soy <- sme(object = FW_soy$Relative_FCR, tme = FW_soy$Replacement, ind = FW_soy$Study_id,criteria = "AICc")#,  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_FW_soy$info
+plot(fit_FW_soy, type="diagnostic")
+
+
+plotSmeModel(fit_FW_soy, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#d95f0e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=57, lty=2, lwd=1, col='grey20'))))
+
+
+
+#FW fishes & Insects (no data)
+
+plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
+  abline(0,1)
+
+
 
 
 ```
 
+#Tilapias 
+
+```{r}
+
+#Tilapias and algae
+
+
+tilapia_algae <- 
+  fishmeal %>% 
+  filter(Fish_group=="Tilapias" & Feed_general=="Algae") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+myknots <- seq(min(tilapia_algae$Replacement), max(tilapia_algae$Replacement), length.out = 9)[-c(1,9)]
+
+fit_tilapia_algae <- sme(object = tilapia_algae$Relative_FCR, tme = tilapia_algae$Replacement, ind = tilapia_algae$Study_id,criteria = "AICc",  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_tilapia_algae$info
+plot(fit_tilapia_algae, type="diagnostic")
+
+
+plotSmeModel(fit_tilapia_algae, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#2c7bb6', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=62, lty=2, lwd=1, col='grey20'))))
 
 
 
+#Tilapias and bacteria
+
+tilapia_bacteria <- 
+  fishmeal %>% 
+  filter(Fish_group=="Tilapias" & Feed_general=="Bacteria") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+myknots <- seq(min(tilapia_bacteria$Replacement), max(tilapia_bacteria$Replacement), length.out = 4)[-c(1,4)]
+
+fit_tilapia_bacteria <- sme(object = tilapia_bacteria$Relative_FCR, tme = tilapia_bacteria$Replacement, ind = tilapia_bacteria$Study_id,criteria = "AICc",  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_tilapia_bacteria$info
+plot(fit_tilapia_bacteria, type="diagnostic")
+
+
+plotSmeModel(fit_tilapia_bacteria, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#abd9e9', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
+
+
+
+
+
+#Tilapias and yeast
+
+
+tilapia_yeast <- 
+  fishmeal %>% 
+  filter(Fish_group=="Tilapias" & Feed_general=="Yeast") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+myknots <- seq(min(tilapia_yeast$Replacement), max(tilapia_yeast$Replacement), length.out = 11)[-c(1,11)]
+
+fit_tilapia_yeast <- sme(object = tilapia_yeast$Relative_FCR, tme = tilapia_yeast$Replacement, ind = tilapia_yeast$Study_id,criteria = "AIC",  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_tilapia_yeast$info
+plot(fit_tilapia_yeast, type="diagnostic")
+
+
+plotSmeModel(fit_tilapia_yeast, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#fed98e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=38, lty=2, lwd=1, col='grey20'))))
+
+
+
+
+#Tilapias and soy
+
+
+tilapia_soy <- 
+  fishmeal %>% 
+  filter(Fish_group=="Tilapias" & Feed_general=="Soy") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+myknots <- seq(min(tilapia_soy$Replacement), max(tilapia_soy$Replacement), length.out = 4)[-c(1,4)]
+
+fit_tilapia_soy <- sme(object = tilapia_soy$Relative_FCR, tme = tilapia_soy$Replacement, ind = tilapia_soy$Study_id,criteria = "AICc",  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_tilapia_soy$info
+plot(fit_tilapia_soy, type="diagnostic")
+
+
+plotSmeModel(fit_tilapia_soy, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#d95f0e', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=71, lty=2, lwd=1, col='grey20'))))
+
+
+
+
+
+
+#Tilapias and insects
+
+
+tilapia_insect <- 
+  fishmeal %>% 
+  filter(Fish_group=="Tilapias" & Feed_general=="Insect") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)%>% 
+  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+                                  T ~ Relative_FCR))
+
+
+myknots <- seq(min(tilapia_insect$Replacement), max(tilapia_insect$Replacement), length.out = 4)[-c(1,4)]
+
+fit_tilapia_insect <- sme(object = tilapia_insect$Relative_FCR, tme = tilapia_insect$Replacement, ind = tilapia_insect$Study_id,criteria = "AICc",  knots = myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_tilapia_insect$info
+plot(fit_tilapia_insect, type="diagnostic")
+
+
+plotSmeModel(fit_tilapia_insect, xlab="",ylab="Relative FCR", showIndividuals=F,  showConfidenceBands=T, col.meanCurve='#d7191c', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=90, lty=2, lwd=1, col='grey20'))))
+
+
+
+
+
+
+
+
+```
 
 
 #Model fitting for growth data
