@@ -2181,16 +2181,117 @@ plotSmeModel(fit_marine_yeast, xlab="",ylab="", showIndividuals=T,  showConfiden
 
 
 
+#marine fishes and soy
+
+
+
+marine_soy <- 
+  fishmeal %>% 
+  filter(Fish_group=="Marine fishes" & Feed_general=="Soy") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+#Analysis
+myknots <- seq(min(marine_soy$Replacement), max(marine_soy$Replacement), length.out = 10)[-c(1,10)]
+
+fit_marine_soy <- sme(object = marine_soy$Relative_FCR, tme = marine_soy$Replacement, ind = marine_soy$Study_id,criteria = "AICc", deltaNM = 0.001)#,knots=myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_marine_soy$info
+plot(fit_marine_soy, type="diagnostic")
+
+
+#PLOT
+plotSmeModel(fit_marine_soy, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3288BD', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='grey20'))))
+
+
+
+
+
+#MARINE FISHES AND INSECTS
+
+
+marine_insect <- 
+  fishmeal %>% 
+  filter(Fish_group=="Marine fishes" & Feed_general=="Insect") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+#Analysis
+myknots <- seq(min(marine_insect$Replacement), max(marine_insect$Replacement), length.out = 6)[-c(1,6)]
+
+fit_marine_insect <- sme(object = marine_insect$Relative_FCR, tme = marine_insect$Replacement, ind = marine_insect$Study_id,criteria = "AICc",knots=myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_marine_insect$info
+plot(fit_marine_insect, type="diagnostic")
+
+
+#PLOT
+plotSmeModel(fit_marine_insect, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3288BD', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=78, lty=2, lwd=1, col='grey20'))))
+
+
+
+
 ```
 
 
 
 #Tunas
 
+```{r}
+
+tuna_soy <- 
+  fishmeal %>% 
+  filter(Fish_group=="Tunas" & Feed_general=="Soy") %>% 
+  mutate(Study_id = Study_id %>% 
+           as.factor)
+
+#Analysis
+myknots <- seq(min(tuna_soy$Replacement), max(tuna_soy$Replacement), length.out = 4)[-c(1,4)]
+
+fit_tuna_soy <- sme(object = tuna_soy$Relative_FCR, tme = tuna_soy$Replacement, ind = tuna_soy$Study_id, criteria = "AICc", knots=myknots)
+
+#Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
+fit_tuna_soy$info
+plot(fit_tuna_soy, type="diagnostic")
+
+
+#PLOT
+plotSmeModel(fit_tuna_soy, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3288BD', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=18, lty=2, lwd=1, col='grey20'))))
+
+
+
+```
+
+
+
+#Fishmeal FCR figure
+
+```{r}
+
+
+pdf("fcr-fishmeal.pdf")
+op <- par(mfrow=c(1,5), mar=)
+#carp_algae
+plotSmeModel(fit_carp_algae, xlab="", ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#9E0142", lwd=3, col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+#carps bacteria
+plotSmeModel(fit_carp_bacteria, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#9E0142", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+#carp_yeast
+plotSmeModel(fit_carp_yeast, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#9E0142', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='black')) ))
+#carp_soy
+plotSmeModel(fit_carp_soy,xlab="",ylab="", showIndividuals=T,  xaxs="i", showConfidenceBands=T, col.meanCurve='#9E0142', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=37, lty=2, lwd=1, col='black'))))
+#carp_insects
+par(op)
+dev.off()
 
 
 
 
+
+
+
+```
 
 
 #Model fitting for growth data
