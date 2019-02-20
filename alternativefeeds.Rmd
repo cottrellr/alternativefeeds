@@ -35,6 +35,7 @@ library(RColorBrewer)
 library(car)
 library(sme)
 library(beyonce)
+
 ```
 
 #IMPORT AND TIDY AQUACULTURE DATA
@@ -2278,12 +2279,17 @@ plotSmeModel(fit_tuna_soy, xlab="",ylab="", showIndividuals=T,  showConfidenceBa
 #Fishmeal FCR figure
 
 ```{r}
+library(grid)
 
 
-pdf("fcr-fishmeal.pdf", 
-    width=6.5,
-    height=8.3)
-op <- par(mfrow=c(10,5), mai=c(0.2,0.3,0.1,0.1), mgp=c(3,0.5,0))
+
+pdf("Fig 2 - FCR and fishmeal replacement.pdf", 
+    width=7.20472441,
+    height=8.1)
+op <- par(mfrow=c(9,5), 
+          mai=c(0.2,0.3,0.1,0.1), #spacing around each plot
+          mgp=c(3,0.5,0), # middle value distance of labels to ticks
+          oma = c(3, 3, 3, 3)) #space for the overall x and y axis titles
 #carp_algae
 plotSmeModel(fit_carp_algae, xlab=F, ylab=F, xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#9E0142", lwd=3, col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
@@ -2455,30 +2461,36 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #tunas algae
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-#tunas_bacteria
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-#tunas yeast
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-#tunas soy
-plotSmeModel(fit_tuna_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3288BD', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=18, lty=2, lwd=1, col='grey20'))))
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
+# plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+#   abline(0,1, col="grey90")
+# axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
+# #tunas_bacteria
+# plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
+#   abline(0,1, col="grey90")
+# axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
+# #tunas yeast
+# plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
+#   abline(0,1, col="grey90")
+# axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
+# #tunas soy
+# plotSmeModel(fit_tuna_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3288BD', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=18, lty=2, lwd=1, col='grey20'))))
+# axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
+# 
+# #tunas_insects
+# plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
+#   abline(0,1, col="grey90")
+# axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
-#tunas_insects
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
+mtext("Fishmeal replacement (%)", side = 1, line=1, outer = T)
+mtext("Relative feed conversion ratio",side = 2, line=1, outer = T)
+mtext(c("Algae", "Bacteria", "Yeast", "Soy", "Insects"), side=3, line = 0, outer = T, at=c(.12, .32, .52, .72, .92), cex = 0.8)
+mtext(c("Carps", "Catfishes", "FW fishes", "Tilapias", "Crustaceans", "Diad.fishes", "Salmonids", "Shrimps", "Marine fishes"), side=4, line = 0, outer = T, at=rev(seq(from =.06, to=.95, length.out = 9)), cex = 0.75)
 
 
 par(op)
 dev.off()
 
+?mtext
 
 
 
