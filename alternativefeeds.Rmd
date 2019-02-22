@@ -3055,7 +3055,7 @@ plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", showIndividuals=T, showConfiden
 ```
 
 
-#FISH OIL REPLACEMENT HEALTH TRADE_OFFS
+#FIG 3 - FISH OIL REPLACEMENT HEALTH TRADE_OFFS
 
 
 ```{r}
@@ -3105,14 +3105,318 @@ dev.off()
 ```
 
 
+# FIGURE X 
+# Change in fish oil from fishmeal replacement
+
+
+#Plotting settings
+```{r}
+#Smoothing splines mixed effects models. SME package
+
+
+######   BEFORE PLOTTING GO INTO BACKDOOR OF plotSmeModel TO MANUALLY STANDARDISE X AXIS LIMITS (EQUIVALENT OF XLIM=C(0,100)) AND MAKE SURE THAT YLIM IS AT LEAST WITHIN 5% OF ORIGINAL FCR
+
+fix(plotSmeModel) 
+#original xlim code - range(as.numeric(colnames(x$coefficients)))
+#change xlim code -  range(as.numeric(c(colnames(x$coefficients),100)))
+
+
+#show individual studies makes it clearer
+#old code - lines(fs[[i]], lty = "dashed")
+#change code - lines(fs[[i]], lty = "dotted", col=alpha("grey80", 1))
+
+
+
+
+#Colours to use for species grousp
+
+brewer.pal(10, "Spectral")
+
+#[1] "#9E0142" "#D53E4F" "#F46D43" "#FDAE61" "#FEE08B" "#E6F598"
+# [7] "#ABDDA4" "#66C2A5" "#3288BD" "#5E4FA2"
+
+
+viridisLite::viridis(n=10)
+# [1] "#440154FF" "#482878FF" "#3E4A89FF" "#31688EFF" "#26828EFF" "#1F9E89FF"
+#  [7] "#35B779FF" "#6DCD59FF" "#B4DE2CFF" "#FDE725FF"
+# 
+# viridisLite::viridis(n=9)
+# [1] "#440154FF" "#472D7BFF" "#3B528BFF" "#2C728EFF" "#21908CFF" "#27AD81FF"
+# [7] "#5DC863FF" "#AADC32FF" "#FDE725FF"
+
+
+
+```
+
+
+
+#Sort data
+
+```{r}
+
+fish_oil_tradeoffs <- 
+  fishmeal %>% 
+  filter(!(is.na(Marine_ingredient_change)))
+
+
+
+```
+
+#CARPS
+```{r}
+
+carp_fo_algae <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Carps" & Feed_general=="Algae") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor)
+
+myknots <- seq(min(carp_fo_algae$Replacement), max(carp_fo_algae$Replacement), length.out = 4)[-c(1,4)]
+
+fit_carp_fo_algae <- sme(object = carp_fo_algae$Marine_ingredient_change, tme = carp_fo_algae$Replacement, ind = carp_fo_algae$Study_id, criteria = "AICc",knots = myknots,deltaEM = 0.1)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_carp_fo_algae$info
+plot(fit_carp_fo_algae, "diagnostic")
+
+
+plotSmeModel(fit_carp_fo_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black')),(abline(v=0.1, lty=2, lwd=1, col='black')) ))
+
+
+
+#carps and bacteria
+
+carp_fo_bacteria <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Carps" & Feed_general=="Bacteria") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor)
+
+myknots <- c(30,80) 
+  
+  seq(min(carp_fo_bacteria$Replacement), max(carp_fo_bacteria$Replacement), length.out = 4)[-c(1,4)]
+
+fit_carp_fo_bacteria <- sme(object = carp_fo_bacteria$Marine_ingredient_change, tme = carp_fo_bacteria$Replacement, ind = carp_fo_bacteria$Study_id, criteria = "AICc",knots = myknots, deltaEM = 0.1)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_carp_fo_bacteria$info
+plot(fit_carp_fo_bacteria, "diagnostic")
+
+
+plotSmeModel(fit_carp_fo_bacteria, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black')),(abline(h=0.1, lty=2, lwd=1, col='black')) ))
+
+
+
+
+#carps and yeast
+
+carp_fo_yeast <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Carps" & Feed_general=="Yeast") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor) 
+
+myknots <- seq(min(carp_fo_yeast$Replacement), max(carp_fo_yeast$Replacement), length.out = 4)[-c(1,4)]
+
+fit_carp_fo_yeast <- sme(object = carp_fo_yeast$Marine_ingredient_change, tme = carp_fo_yeast$Replacement, ind = carp_fo_yeast$Study_id, criteria = "AICc", deltaNM =0.1)#knots = myknots)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_carp_fo_yeast$info
+plot(fit_carp_fo_yeast, "diagnostic")
+
+
+plotSmeModel(fit_carp_fo_yeast, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+
+
+
+
+#carps and soy
+
+carp_fo_soy <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Carps" & Feed_general=="Soy") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor) 
+
+myknots <- seq(min(carp_fo_soy$Replacement), max(carp_fo_soy$Replacement), length.out = 4)[-c(1,4)]
+
+fit_carp_fo_soy <- sme(object = carp_fo_soy$Marine_ingredient_change, tme = carp_fo_soy$Replacement, ind = carp_fo_soy$Study_id, criteria = "AICc", deltaEM =0.1,knots = myknots)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_carp_fo_soy$info
+plot(fit_carp_fo_soy, "diagnostic")
+
+
+plotSmeModel(fit_carp_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+
+
+
+# Carps and insects
+
+carp_fo_insects <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Carps" & Feed_general=="Insect") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor) 
+
+myknots <- seq(min(carp_fo_insects$Replacement), max(carp_fo_insects$Replacement), length.out = 4)[-c(1,4)]
+
+fit_carp_fo_insects <- sme(object = carp_fo_insects$Marine_ingredient_change, tme = carp_fo_insects$Replacement, ind = carp_fo_insects$Study_id, criteria = "AICc", deltaEM =0.1,knots = myknots)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_carp_fo_insects$info
+plot(fit_carp_fo_insects, "diagnostic")
+
+
+plotSmeModel(fit_carp_fo_insects, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+
+
+
+```
+
+#CATFISHES
+```{r}
+
+
+#catfishes and algae
+
+catfish_fo_algae <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Catfishes" & Feed_general=="Algae") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor)
+
+myknots <- seq(min(catfish_fo_algae$Replacement), max(catfish_fo_algae$Replacement), length.out = 4)[-c(1,4)]
+
+fit_catfish_fo_algae <- sme(object = catfish_fo_algae$Marine_ingredient_change, tme = catfish_fo_algae$Replacement, ind = catfish_fo_algae$Study_id, criteria = "AICc")#,knots = myknots,deltaEM = 0.1)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_catfish_fo_algae$info
+plot(fit_catfish_fo_algae, "diagnostic")
+
+
+plotSmeModel(fit_catfish_fo_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=10, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
 
 
 
 
 
 
+#carps and bacteria
 
 
+
+#catfishes and yeast
+
+catfishes_fo_yeast <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Catfishes" & Feed_general=="Yeast") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor) 
+
+myknots <- seq(min(catfishes_fo_yeast$Replacement), max(catfishes_fo_yeast$Replacement), length.out = 4)[-c(1,4)]
+
+fit_catfishes_fo_yeast <- sme(object = catfishes_fo_yeast$Marine_ingredient_change, tme = catfishes_fo_yeast$Replacement, ind = catfishes_fo_yeast$Study_id, criteria = "AICc", deltaNM =0.1,knots = myknots)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_catfishes_fo_yeast$info
+plot(fit_catfishes_fo_yeast, "diagnostic")
+
+
+plotSmeModel(fit_catfishes_fo_yeast, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+
+
+
+
+#carps and soy
+
+catfishes_fo_soy <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Catfishes" & Feed_general=="Soy") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor) 
+
+myknots <- seq(min(catfishes_fo_soy$Replacement), max(catfishes_fo_soy$Replacement), length.out = 4)[-c(1,4)]
+
+fit_catfishes_fo_soy <- sme(object = catfishes_fo_soy$Marine_ingredient_change, tme = catfishes_fo_soy$Replacement, ind = catfishes_fo_soy$Study_id, criteria = "AICc", deltaEM =0.1,knots = myknots)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_catfishes_fo_soy$info
+plot(fit_catfishes_fo_soy, "diagnostic")
+
+
+plotSmeModel(fit_catfishes_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+
+
+
+# catfish and insects
+
+catfishes_fo_insects <- fish_oil_tradeoffs %>% 
+  filter(Fish_group == "Catfishes" & Feed_general=="Insect") %>% 
+  mutate(Study_id=Study_id %>% 
+           as.factor) 
+
+myknots <- seq(min(catfishes_fo_insects$Replacement), max(catfishes_fo_insects$Replacement), length.out = 10)[-c(1,10)]
+
+fit_catfishes_fo_insects <- sme(object = catfishes_fo_insects$Marine_ingredient_change, tme = catfishes_fo_insects$Replacement, ind = catfishes_fo_insects$Study_id, criteria = "AICc")#, knots = myknots)
+
+
+
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+fit_catfishes_fo_insects$info
+plot(fit_catfishes_fo_insects, "diagnostic")
+
+
+plotSmeModel(fit_catfishes_fo_insects, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+
+
+
+
+
+```
+
+#FW FISHES
+```{r}
+
+```
+
+#TILAPIAS
+```{r}
+
+```
+
+#CRUSTACEANS
+```{r}
+
+```
+
+#DIADROMOUS FISHES
+```{r}
+
+```
+
+#SALMONIDS
+```{r}
+
+```
+
+#SHRIMPS
+```{r}
+
+```
+
+#MARINE FISHES
+```{r}
+
+```
 
 
 
