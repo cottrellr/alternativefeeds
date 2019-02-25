@@ -2292,9 +2292,6 @@ plotSmeModel(fit_tuna_soy, xlab="",ylab="", showIndividuals=T,  showConfidenceBa
 
 ```{r}
 
-
-
-
 pdf("Fig 2 - FCR and fishmeal replacement.pdf", 
     width=7.20472441,
     height=8.1)
@@ -2303,40 +2300,40 @@ op <- par(mfrow=c(9,5),
           mgp=c(3,0.5,0), # middle value distance of labels to ticks
           oma = c(3, 3, 3, 3)) #space for the overall x and y axis titles
 #carp_algae
-plotSmeModel(fit_carp_algae, xlab=F, ylab=F, xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#FDE725FF", lwd=3, col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_carp_algae, xlab=F, ylab=F, xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#FDE725FF", lwd=3, col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carps bacteria
-plotSmeModel(fit_carp_bacteria, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_carp_bacteria, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carp_yeast
-plotSmeModel(fit_carp_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#FDE725FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_carp_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#FDE725FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carp_soy
-plotSmeModel(fit_carp_soy,xlab="",ylab="",  xaxt="n",showIndividuals=T,  xaxs="i", showConfidenceBands=T, col.meanCurve='#FDE725FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=37, lty=2, lwd=1, col='black'))))
+plotSmeModel(fit_carp_soy,xlab="",ylab="",  xaxt="n",showIndividuals=T,  xaxs="i", showConfidenceBands=T, col.meanCurve='#FDE725FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=37, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carp_insects
-plotSmeModel(fit_carp_insects,xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#FDE725FF", pch=16, col=alpha("grey50", 0.5),  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black'))))
+plotSmeModel(fit_carp_insects,xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#FDE725FF", pch=16, col=alpha("grey50", 0.5),  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 
 #catfish algae
-plotSmeModel(fit_catfish_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='black'))))
+plotSmeModel(fit_catfish_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish_bacteria
 plot(x=catfish_bacteria$Replacement, y=catfish_bacteria$Relative_FCR, xlab="",ylab="",  xaxt="n",col=alpha("grey50", 0.5), pch=16, xlim=c(0,100), ylim=c(min(catfish_bacteria$Relative_FCR),1.05))+
   abline(lm(Relative_FCR~Replacement, data = catfish_bacteria, lwd=.8), col="#AADC32FF", lwd=3)+
-  abline(h=1.05, lwd=1, lty=2)
+  abline(h=1.05, lwd=1, lty=2, col="red")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish yeast
-plotSmeModel(fit_catfish_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=94, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_catfish_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=94, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish soy
-plotSmeModel(fit_catfish_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_catfish_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish_insects
-plotSmeModel(fit_catfish_insects, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_catfish_insects, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#AADC32FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -2347,14 +2344,14 @@ plot(1, type="n", xlab="", ylab="", xaxt="n", xlim=c(0, 100), ylim=c(0,100), yax
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes_bacteria
-plotSmeModel(fit_FW_bacteria, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#5DC863FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_FW_bacteria, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#5DC863FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes yeast
 plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes soy
-plotSmeModel(fit_FW_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#5DC863FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=57, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_FW_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#5DC863FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=57, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes_insects
 plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
@@ -2363,20 +2360,20 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #tilapias algae
-plotSmeModel(fit_tilapia_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=62, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_tilapia_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=62, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #tilapias_bacteria
-plotSmeModel(fit_tilapia_bacteria, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_tilapia_bacteria, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #tilapias yeast
-plotSmeModel(fit_tilapia_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=38, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_tilapia_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=38, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #tilapias soy
-plotSmeModel(fit_tilapia_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=71, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_tilapia_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=71, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #tilapias_insects
-plotSmeModel(fit_tilapia_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=95, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_tilapia_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#27AD81FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=95, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -2394,7 +2391,7 @@ plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yax
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #crustaceans soy
-plotSmeModel(fit_crustaceans_soy, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#21908CFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=69, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_crustaceans_soy, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#21908CFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=69, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #crustaceans_insects
 plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yaxt= "n")+
@@ -2405,7 +2402,7 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #diadromous fishes algae
-plotSmeModel(fit_diadromous_algae, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#2C728EFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=9, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_diadromous_algae, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#2C728EFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=9, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #diadromous fishes_bacteria
 plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
@@ -2416,17 +2413,17 @@ plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yax
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #diadromous fishes soy
-plotSmeModel(fit_diadromous_soy, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, lwd=2, col.meanCurve='#2C728EFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=70, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_diadromous_soy, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, lwd=2, col.meanCurve='#2C728EFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=70, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #diadromous fishes_insects
-plotSmeModel(fit_diadromous_insect, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, lwd=2, col.meanCurve='#2C728EFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=73, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_diadromous_insect, xlab="",ylab="",  xaxt="n", showIndividuals=T,  showConfidenceBands=T, lwd=2, col.meanCurve='#2C728EFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=73, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 
 #salmonids algae
-plotSmeModel(fit_salmon_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_salmon_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #salmonids_bacteria
@@ -2434,49 +2431,49 @@ plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), xaxt="n", yax
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #salmonids yeast
-plotSmeModel(fit_salmon_yeast, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=56, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_salmon_yeast, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=56, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #salmonids soy
-plotSmeModel(fit_salmon_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_salmon_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #salmonids_insects
-plotSmeModel(fit_salmon_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_salmon_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#3B528BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 #shrimps algae
-plotSmeModel(fit_shrimps_algae, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=90, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_shrimps_algae, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=90, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps_bacteria
-plotSmeModel(fit_shrimps_bacteria, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_shrimps_bacteria, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps yeast
-plotSmeModel(fit_shrimps_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=19, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_shrimps_yeast, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=19, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps soy
-plotSmeModel(fit_shrimps_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_shrimps_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps_insects
-plotSmeModel(fit_shrimps_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=19, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_shrimps_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#472D7BFF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 #marine fishes algae
-plotSmeModel(fit_marine_algae, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=47, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_marine_algae, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=47, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes_bacteria
-plotSmeModel(fit_marine_bacteria, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=49, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_marine_bacteria, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=49, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes yeast
-plotSmeModel(fit_marine_yeast, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=73, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_marine_yeast, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=73, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes soy
-plotSmeModel(fit_marine_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_marine_soy, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes_insects
-plotSmeModel(fit_marine_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=78, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_marine_insect, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#440154FF', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=78, lty=2, lwd=1, col='red'))))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -2881,6 +2878,7 @@ FO <-
 ```
 
 
+
 #SALMONIDS 
 
 ```{r}
@@ -3070,27 +3068,27 @@ op <- par(mfrow=c(3,2),
 
 
 #Salmonids algae n3
-plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids soy n3
-plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and algae
-plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and soy
-plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and algae
-plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and soy
-plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
@@ -4042,6 +4040,8 @@ plotSmeModel(fit_marine_fo_insect, xlab="",ylab="", showIndividuals=T, showConfi
 
 
 
+#FIGURE XX - Fish oil change with fishmeal replacement
+
 ```{r}
 
 pdf("Supplementary Figure 2 - fish oil change with FM replacement.pdf", 
@@ -4056,98 +4056,98 @@ op <- par(mfrow=c(9,5),
 plotSmeModel(fit_carp_fo_algae, xlab="",ylab="", xaxt="n", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black')),(abline(v=0.1, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carps bacteria
-plotSmeModel(fit_carp_fo_bacteria, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black')),(abline(h=0.1, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_carp_fo_bacteria, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black')),(abline(h=0.1, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carp_yeast
-plotSmeModel(fit_carp_fo_yeast, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+plotSmeModel(fit_carp_fo_yeast, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='red'))), abline(h=0, lty=2, lwd=1, col='black'))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carp_soy
-plotSmeModel(fit_carp_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+plotSmeModel(fit_carp_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='red'))), abline(h=0, lty=2, lwd=1, col='black'))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #carp_insects
-plotSmeModel(fit_carp_fo_insects, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+plotSmeModel(fit_carp_fo_insects, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#FDE725FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='red'))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 
 #catfish algae
-plotSmeModel(fit_catfish_fo_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=10, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_catfish_fo_algae, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=10, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish_bacteria
 plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish yeast
-plotSmeModel(fit_catfishes_fo_yeast, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+plotSmeModel(fit_catfishes_fo_yeast, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=66, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='red'))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish soy
-plotSmeModel(fit_catfishes_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+plotSmeModel(fit_catfishes_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='red'))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #catfish_insects
-plotSmeModel(fit_catfishes_fo_insects, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='black'))
+plotSmeModel(fit_catfishes_fo_insects, xlab="",ylab="", xaxt="n",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black'))), abline(h=0, lty=2, lwd=1, col='red'))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 
 #FW fishes algae
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="", xaxt="n",xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes_bacteria
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes yeast
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="", xaxt="n",xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes soy
-plotSmeModel(fit_fwfishes_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=57, lty=2, lwd=1, col='black')),(abline(h=.9, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_fwfishes_fo_soy, xlab="",ylab="", xaxt="n",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=57, lty=2, lwd=1, col='black')),(abline(h=.9, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #FW fishes_insects
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #tilapias algae
-plotSmeModel(fit_tilapia_fo_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=24, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_tilapia_fo_algae, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=24, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #tilapias_bacteria
-plotSmeModel(fit_tilapia_fo_bacteria, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=24, lty=2, lwd=1, col='black')),(abline(h=.46, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_tilapia_fo_bacteria, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=24, lty=2, lwd=1, col='black')),(abline(h=.46, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #tilapias yeast
-plotSmeModel(fit_tilapia_fo_yeast, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=38, lty=2, lwd=1, col='black')),(abline(h=-.215, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_tilapia_fo_yeast, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=38, lty=2, lwd=1, col='black')),(abline(h=-.215, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #tilapias soy
-plotSmeModel(fit_tilapia_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=24, lty=2, lwd=1, col='black')),(abline(h=.46, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_tilapia_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=24, lty=2, lwd=1, col='black')),(abline(h=.46, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #tilapias_insects
-plotSmeModel(fit_tilapia_fo_insect, xlab="",ylab="", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=95, lty=2, lwd=1, col='black')),(abline(h=.46, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_tilapia_fo_insect, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=F, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=95, lty=2, lwd=1, col='black')),(abline(h=.46, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 #crustaceans algae
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #crustaceans_bacteria
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #crustaceans yeast
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="", xaxt="n",xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #crustaceans soy
-plotSmeModel(fit_crustaceans_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#21908CFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=67, lty=2, lwd=1, col='black')),(abline(h=1.61, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_crustaceans_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#21908CFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=67, lty=2, lwd=1, col='black')),(abline(h=1.61, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #crustaceans_insects
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -4155,77 +4155,77 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #diadromous fishes algae
-plotSmeModel(fit_diad_fo_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#2C728EFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=9, lty=2, lwd=1, col='black')),(abline(h=0.25, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_diad_fo_algae, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#2C728EFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=9, lty=2, lwd=1, col='black')),(abline(h=0.25, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #diadromous fishes_bacteria
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #diadromous fishes yeast
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #diadromous fishes soy
-plotSmeModel(fit_diad_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#2C728EFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=70, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_diad_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#2C728EFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=70, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #diadromous fishes_insects
-plotSmeModel(fit_diad_fo_insect, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#2C728EFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=73, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_diad_fo_insect, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#2C728EFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=73, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 
 #salmonids algae
-plotSmeModel(fit_salmonids_fo_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=30, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_fo_algae, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=30, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #salmonids_bacteria
-plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
+plot(1, type="n", xlab="", ylab="",xaxt="n", xlim=c(0, 100), ylim=c(0,100),  xaxt="n",yaxt= "n")+
   abline(0,1, col="grey90")
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #salmonids yeast
-plotSmeModel(fit_salmonids_fo_yeast, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=56, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_fo_yeast, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=56, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #salmonids soy
-plotSmeModel(fit_salmonids_fo_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black')),(abline(h=.75, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black')),(abline(h=.75, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #salmonids_insects
-plotSmeModel(fit_salmonids_fo_insect, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_fo_insect, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 #shrimps algae
-
+plotSmeModel(fit_shrimps_fo_algae, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=90, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps_bacteria
-
+plotSmeModel(fit_shrimps_fo_bacteria, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=90, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps yeast
-
+plotSmeModel(fit_shrimps_fo_yeast, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=19, lty=2, lwd=1, col='black')),(abline(h=0.21, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps soy
-
+plotSmeModel(fit_shrimps_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black')),(abline(h=.9, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #shrimps_insects
-
+plotSmeModel(fit_shrimps_fo_insect, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=100, lty=2, lwd=1, col='black')),(abline(h=100, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 #marine fishes algae
-
+plotSmeModel(fit_marine_fo_algae, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=47, lty=2, lwd=1, col='black')),(abline(h=-1.1, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes_bacteria
-
+plotSmeModel(fit_marine_fo_bacteria, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=49, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes yeast
-
+plotSmeModel(fit_marine_fo_yeast, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=49, lty=2, lwd=1, col='black')),(abline(h=0, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes soy
-
+plotSmeModel(fit_marine_fo_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=50, lty=2, lwd=1, col='black')),(abline(h=1.4, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #marine fishes_insects
-
+plotSmeModel(fit_marine_fo_insect, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(v=78, lty=2, lwd=1, col='black')),(abline(h=-1.1, lty=2, lwd=1, col='red')) ))
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -4253,7 +4253,7 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 # axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 mtext("Fishmeal replacement (%)", side = 1, line=1, outer = T)
-mtext("Relative feed conversion ratio",side = 2, line=1, outer = T)
+mtext("Change in dietary fish oil (%)",side = 2, line=1, outer = T)
 mtext(c("Algae", "Bacteria", "Yeast", "Soy", "Insects"), side=3, line = 0, outer = T, at=c(.12, .32, .52, .72, .92), cex = 0.8, font=3)
 mtext(c("Carps", "Catfishes", "FW fishes", "Tilapias", "Crustaceans", "Diad.fishes", "Salmonids", "Shrimps", "Marine fishes"), side=4, line = 0, outer = T, at=rev(seq(from =.06, to=.95, length.out = 9)), cex = 0.75, font=3)
 
