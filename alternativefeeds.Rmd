@@ -7,6 +7,7 @@ output: word_document
 #LIBRARIES
 ```{r}
 #devtools::install_github("dill/beyonce")
+#devtools::install_github('LaCroixColoR','johannesbjork')
 
 library(gridExtra)
 library(data.table)
@@ -36,63 +37,13 @@ library(viridis)
 library(car)
 library(sme)
 library(beyonce)
-
-```
-
-#IMPORT AND TIDY AQUACULTURE DATA
-
-```{r}
-
-aqua.raw<-read.csv("aquaculture-prod-raw.csv", header=T)
-summary(aqua.raw)
-names(aqua.raw)[names(aqua.raw)=="Country..Country."]<-"Country"
-names(aqua.raw)[names(aqua.raw)=="Species..ASFIS.species."]<-"Species"
-names(aqua.raw)[names(aqua.raw)=="Aquaculture.area..FAO.major.fishing.area."]<-"Area"
-names(aqua.raw)[names(aqua.raw)=="Environment..Environment."]<-"Environment"
-
-aqua.raw2<-aqua.raw %>% 
-  gather(Year, Value, -c(Country, Species, Area, Environment, Unit))
-head(aqua.raw2)
-levels(aqua.raw2$Unit)
-
-aqua.raw2$Year<-gsub("X", "", aqua.raw2$Year)
-aqua.raw2$Year<-as.numeric(aqua.raw2$Year)
-
-#Sort the symbols in values out
-## "..." = data unavailable
-## " " = data not separately available
-## "-" = nil or zero
-## "0 0" = more than zero but less than half the unit used
-## F = FAO estimate from available sources of information
-aqua.raw2$Value[aqua.raw2$Value=="0 0"] <- 0.5
-aqua.raw2$Value[aqua.raw2$Value=="-"] <- 0
-
-#exclude unavailable data
-aqua.raw2 <- aqua.raw2[aqua.raw2$Value!="...",]
-aqua.raw2 <- aqua.raw2[aqua.raw2$Value!="",]
-
-#Use estimates as data
-aqua.raw2$Value <- gsub(' F', '', aqua.raw2$Value)
-head(aqua.raw2)
-aqua.raw2$Value <- as.numeric(aqua.raw2$Value)
-
-prod.aqua<-aqua.raw2
-prod.aqua
-
-#Exclude totals and weird country values
-levels(prod.aqua$Country)
-prod.aqua<- prod.aqua[prod.aqua$Country!="FAO. 2017. Fishery and Aquaculture Statistics. Global aquaculture production 1950-2015 (FishstatJ). In: FAO Fisheries and Aquaculture Department [online]. Rome. Updated 2017. www.fao.org/fishery/statistics/software/fishstatj/en",]
-prod.aqua<- prod.aqua[prod.aqua$Country!="Totals",]
-
-write.csv(prod.aqua, "Aquaculture production tidy.csv", row.names = F)
-
-rm(list = c("aqua.raw", "aqua.raw2"))
+library(LaCroixColoR)
 
 
 ```
 
 
-#ISOLATE FED SPECIES
+#AQUACULTURE PRODUCTION DATA AND FED SPECIES
 
 ```{r}
  
@@ -105,7 +56,12 @@ rm(list = c("aqua.raw", "aqua.raw2"))
 ## F = FAO estimate from available sources of information
 
 fed_spp <- fread("fed_spp.csv", header=TRUE) %>% 
-  rename(Species="Name_en")
+  rename(Species="Name_en") %>%
+  group_by(Species) %>%
+  mutate(id = row_number()) #data  from Halley Froehlich
+
+
+
 
 prod.aqua <-
   fread("aquaculture-prod-raw.csv", header=T) %>% 
@@ -121,31 +77,117 @@ prod.aqua <-
                            T ~ Value)) %>% 
   filter(!(Value=="..." | Value=="") | Country=="Totals") %>% 
   mutate(Value = gsub(" F", "", Value) %>% 
-           as.numeric) %>% 
-  write_csv("Aquaculture production tidy.csv") %>% 
-  inner_join(.,fed_spp, by="Species")
+           as.numeric) %>%
+  select(-Unit) %>% 
+  group_by(Country, Species, Area, Year, Environment) %>%
+  mutate(id= row_number()) %>% 
+  filter(Species %in% fed_spp$Species) %>% 
+  left_join(.,fed_spp, by=c("Species", "id"))%>% 
+  mutate(Taxa_adj = case_when(Taxa %in% c("trouts", "salmons", "smelts") ~ "Salmonids",
+                              Taxa %in% c("flatfishes","marine fishes","cods") ~ "Marine fishes",
+                              Taxa == "shimps" ~ "Shrimps",
+                              Taxa == "carps" ~ "Carps",
+                              Taxa == "fw fishes" ~ "FW fishes",
+                              Taxa == "fw crustaceans" ~ "FW crustaceans",
+                              Taxa == "marine crustacean" ~ "Marine crustaceans",
+                              Taxa == "diadromous fishes" ~ "Diadromous fishes",
+                              Taxa == "tilapias" ~ "Tilapias",
+                              Taxa == "eels" ~ "Eels",
+                              Taxa == "shads" ~ "FW fishes",
+                              Taxa == "tunas" ~ "Tunas",
+                              T ~ Taxa))
+  
+
+rev(lacroix_palette("PassionFruit", n=4, "continuous"))
+```
 
 
-prod.aqua %>% 
-  filter(Year<2014) %>% 
-  group_by(Taxa) %>% 
-  summarise(Total=sum(Value)) %>% 
-  ggplot(aes(Taxa, Total))+geom_bar(stat="identity")
 
+#Fig 1 - 2015  production 
+```{r}
 
-
-
-
-
-
-
+prod_2015 <- 
+  prod.aqua %>% 
+  filter(Year==2015) %>% 
+  group_by(Taxa_adj) %>% 
+  summarise(Value=sum(Value)) %>% 
+  ggplot(aes(x= reorder(Taxa_adj, Value), y=(Value)))+
+  geom_point(stat = "identity", colour = "#172869", size=1.9)+
+  geom_segment(aes(y = 0, 
+                   x = Taxa_adj, 
+                   yend = Value, 
+                   xend = Taxa_adj),
+               colour= "#172869",
+               size=.7)+
+  #geom_text(colour="white", size=2)+
+  scale_y_continuous(breaks = c(0,5e+6,1e+7,1.5e+7,2e+7), labels = c(0,5,10,15,20))+
+  coord_flip()+
+  theme_bw()+
+  theme(panel.grid.minor  = element_blank(),
+        #panel.grid.major.y = element_blank(),
+        text = element_text(size=7),
+        axis.title = element_blank()) +
+  ggsave("2015production.tiff", device="tiff", dpi=600, width=6, height=7, units = "cm")
 
 
 
 
 ```
-# 
-# 
+
+#Fig 1 - FAO 2030 
+
+```{r}
+#FAO projections based off development levels
+
+MEDCs <- c("Canada", "United States of America", "Austria", "Belgium", "Denmark", "Finland", "France", "Germany", "Greece", "Ireland", "Italy", "Luxembourg", "Netherlands", "Portugal",  "Spain", "Sweden", "United Kingdom", "Bulgaria", "Croatia", "Cyprus","Czechia", "Estonia", "Hungary", "Latvia", "Lithuania", "Malta", "Poland", "Romania", "Slovakia", "Slovenia", "Iceland","Norway", "Switzerland", "Australia", "Japan", "New Zealand")
+
+LDCs<- c("Angola", "Benin", "Burkina Faso" ,"Burundi","Central African Republic", "Chad", "Comoros", "Congo, Dem. Rep. of the",  "Djibouti", "Eritrea", "Ethiopia", "Gambia" , "Guinea", "Guinea-Bissau", "Lesotho", "Liberia", "Madagascar", "Malawi", "Mali", "Mauritania", "Mozambique", "Niger", "Rwanda", "Sao Tome and Principe", "Senegal", "Sierra Leone", "Somalia", "South Sudan", "Sudan", "Togo", "Uganda", "Tanzania, United Rep. of", "Zambia", "Cambodia", "Kiribati", "Lao People's Dem. Rep.", "Myanmar", "Solomon Islands", "Timor Leste", "Tuvalu", "Vanuatu", "Afghanistan", "Bangladesh", "Bhutan", "Nepal", "Yemen", "Haiti")
+
+
+#37% increase overall and in developing countries, 28% in medcs, and 46% in least developed nations (SOFIA 2018)
+
+prod.aqua.fao2030 <- 
+  prod.aqua %>% 
+  group_by(Country, Taxa_adj) %>%
+  summarise(Value=sum(Value))
+
+
+%>%
+  mutate(Value = case_when(Country %in% MEDCs ~ Value*1.281,
+                           Country %in% LDCs ~ Value*1.463,
+                           T ~Value*1.37)) %>% 
+  group_by(Taxa_adj) %>% 
+  summarise(Value=sum(Value)) 
+
+[c(1,7,5,8,3,2,4,10,9,11,6,12)]
+
+
+  ggplot(aes(x=Taxa_adj, y=(Value)))+
+  geom_point(stat = "identity", colour = "#359DA9", size=1.9)+
+  geom_segment(aes(y = 0, 
+                   x = Taxa_adj, 
+                   yend = Value, 
+                   xend = Taxa_adj),
+               colour= "#359DA9",
+               size=.7)+
+  #geom_text(colour="white", size=2)+
+  #scale_y_continuous(breaks = c(0,5e+6,1e+7,1.5e+7,2e+7), labels = c(0,5,10,15,20))+
+  coord_flip()+
+  theme_bw()+
+  theme(panel.grid.minor  = element_blank(),
+        #panel.grid.major.y = element_blank(),
+        
+        axis.title = element_blank()) +
+  ggsave("2030_fao_production.tiff", device="tiff", dpi=600, width=6, height=7, units = "cm")
+
+
+
+
+```
+
+
+#Old fed species list 
+```{r}
 # Fed_Spp <-c( #CARPS
 # "Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", 
 # 
