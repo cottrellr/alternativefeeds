@@ -89,7 +89,7 @@ prod.aqua <-
                               Taxa == "Carps" ~ "Carps",
                               Taxa == "FW fishes" ~ "FW fishes",
                               Taxa == "FW crustaceans" ~ "FW crustaceans",
-                              Taxa == "Marine crustacean" ~ "Marine crustaceans",
+                              Taxa == "Marine crustaceans" ~ "Marine crustaceans",
                               Taxa == "Diadromous fishes" ~ "Diadromous fishes",
                               Taxa == "Tilapias" ~ "Tilapias",
                               Taxa == "Eels" ~ "Eels",
@@ -99,11 +99,11 @@ prod.aqua <-
   
 
 rev(lacroix_palette("PassionFruit", n=4, "continuous"))
-sort(unique(prod.aqua$Country))
+sort(unique(prod.aqua$Taxa))
 ```
 
 
-#Fig 1 - all production scenarios 
+#Fig 1 - Production scenarios 
 ```{r}
 
 prod_2015 <- 
@@ -352,7 +352,7 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 
 
-#Fig 1b-d - Fishmeal consumption of each group under different scenarios current vs 2030
+# CONSUMPTION SIMULATIONS ACROSS ALL SCENARIOS
 ```{r}
 # Construct diet information table for FCRs and fishmeal inclusion and percentage fed
 
@@ -361,9 +361,7 @@ aqua_img <- rasterGrob(aqua_img, interpolate = T)
 
 
 feeds <- 
-  fread("diets.csv", header=T) %>% 
-  rename(Taxa = Group,
-         Taxa_adj = `Modeling group` )
+  fread("diets.csv", header=T)
 
 
 #Create data frame with projections in different columns
@@ -381,7 +379,8 @@ fed_aqua_proj <-
                            T ~ FAO_2030))
 
 
-feeds_as_list <- split(feeds, feeds$Taxa)
+feeds_as_list <- split(feeds, feeds$Group)
+
 
 
 
@@ -476,10 +475,9 @@ feeds_as_list <- split(feeds, feeds$Taxa)
 # df_new$faq_consumption <- df_new$faq_fm_biomass + df_new$faq_surplus
 # #df_new$faq_consumption[df_new$faq_surplus< 0] <- df_new$faq_fm_biomass[df_new$faq_surplus< 0]
 
-unique(fed_aqua_proj$Taxa)
-unique(feeds$Taxa)
 
-```
+
+
 
 #LAPPLY METHOD 
 
@@ -600,8 +598,123 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
 write_csv(a_test, "forage fish consumption.csv")
 
 
+```
 
 
+#Fig 1 - Consumption scenarios 
+
+```{r}
+
+
+ff_consumption <- 
+  fread("forage fish consumption.csv", header=T) 
+
+
+
+
+#####2015 Scenario####
+consumption_2015 <- 
+  bind_rows(
+    #total for 2015
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+      group_by(rep_id) %>% 
+      summarise(Consumption_taxa = sum(consumption_2015))%>% 
+      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ), 
+    #by taxa for 2015
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+      group_by(Taxa_adj, rep_id) %>% 
+      summarise(Consumption_taxa = sum(consumption_2015))%>% 
+      group_by(Taxa_adj) %>% 
+      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" )
+    )
+    
+    
+    
+    
+    
+#####FAO_2030 scenario#####
+
+consumption_FAO_2030 <- 
+  bind_rows(
+    #total for FAO_2030
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, fao_consumption) %>% 
+      group_by(rep_id) %>% 
+      summarise(Consumption_taxa = sum(fao_consumption))%>% 
+      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "FAO_2030" ), 
+    #by taxa for FAO_2030
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, fao_consumption) %>% 
+      group_by(Taxa_adj, rep_id) %>% 
+      summarise(Consumption_taxa = sum(fao_consumption))%>% 
+      group_by(Taxa_adj) %>% 
+      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "FAO_2030")
+  )
+    
+    
+    
+ #####WorldBank_RG_2030 Scenario#####
+
+
+consumption_WB_RG_2030 <- 
+  bind_rows(
+    #total for World bank rg 2030
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, WB_RG_consumption) %>% 
+      group_by(rep_id) %>% 
+      summarise(Consumption_taxa = sum(WB_RG_consumption))%>% 
+      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_RG_2030" ),
+    #by taxa for World bank rg 2030
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, WB_RG_consumption) %>% 
+      group_by(Taxa_adj, rep_id) %>% 
+      summarise(Consumption_taxa = sum(WB_RG_consumption))%>% 
+      group_by(Taxa_adj) %>% 
+      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_RG_2030")
+  )
+    
+    
+#####WorldBank_CD_2030 Scenario#####
+
+
+consumption_WB_CD_2030 <-
+  bind_rows(
+    #total for World bank cd 2030
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, WB_CD_consumption) %>% 
+      group_by(rep_id) %>% 
+      summarise(Consumption_taxa = sum(WB_CD_consumption))%>% 
+      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_CD_2030" ),
+    #by taxa for World bank rg 2030
+    ff_consumption %>%  
+      select(Country, Species, Taxa_adj, rep_id, Value, WB_CD_consumption) %>% 
+      group_by(Taxa_adj, rep_id) %>% 
+      summarise(Consumption_taxa = sum(WB_CD_consumption))%>% 
+      group_by(Taxa_adj) %>% 
+      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_CD_2030")
+    )
+
+
+
+
+
+ggplot(data=consumption_scenarios, aes(x=Taxa_adj, y=Mean, fill=Scenario))+geom_bar(stat = "identity")+
+  coord_flip()+
+  facet_grid(~Scenario)
+
+
+
+```
+
+
+
+
+
+
+
+```{r}
 #iINSET PIC FOR CONSUMPTION PLOT
 
 #feed supply data from FAOSTAT
