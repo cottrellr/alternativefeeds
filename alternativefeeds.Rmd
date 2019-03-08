@@ -106,7 +106,7 @@ sort(unique(prod.aqua$Taxa))
 #Fig 1 - Production scenarios 
 ```{r}
 
-prod_2015 <- 
+prod_2015 <-  
   prod.aqua %>% 
   filter(Year==2015) %>% 
   group_by(Taxa_adj) %>% 
@@ -613,103 +613,185 @@ ff_consumption <-
 
 
 #####2015 Scenario####
-consumption_2015 <- 
-  bind_rows(
-    #total for 2015
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
-      group_by(rep_id) %>% 
-      summarise(Consumption_taxa = sum(consumption_2015))%>% 
-      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ), 
-    #by taxa for 2015
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
-      group_by(Taxa_adj, rep_id) %>% 
-      summarise(Consumption_taxa = sum(consumption_2015))%>% 
-      group_by(Taxa_adj) %>% 
-      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" )
-    )
-    
-    
+
+(consumption_2015 <- 
+   #by taxa for 2015
+   ff_consumption %>%  
+   select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+   group_by(Taxa_adj, rep_id) %>% 
+   summarise(Consumption_taxa = sum(consumption_2015))%>% 
+   group_by(Taxa_adj) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
+   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total"))) %>% 
+   ggplot(aes(x=Taxa_adj, Mean))+
+   geom_bar(stat="identity", fill="#172869", width = 0.7)+
+   geom_errorbar(aes(ymin=Mean-sd, 
+                     ymax=Mean+sd), 
+                 width=0.2, size=.3)+
+   scale_y_continuous(breaks = c(0,.5e+7,1e+7, 1.5e+7, 2e+7), labels = c(0,5,10,15, 20), limits=c(0,2e+7))+
+   theme_pubr()+
+   coord_flip()+
+   theme(
+     text = element_text(size=7),
+     axis.title = element_blank()
+   ))
+
+
+#   )
+# bind_rows(
+   #   #total for 2015
+   #   ff_consumption %>%  
+   #     select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+   #     group_by(rep_id) %>% 
+   #     summarise(Consumption_taxa = sum(consumption_2015))%>% 
+   #     summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ),     
+   
     
     
     
 #####FAO_2030 scenario#####
 
-consumption_FAO_2030 <- 
-  bind_rows(
-    #total for FAO_2030
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, fao_consumption) %>% 
-      group_by(rep_id) %>% 
-      summarise(Consumption_taxa = sum(fao_consumption))%>% 
-      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "FAO_2030" ), 
-    #by taxa for FAO_2030
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, fao_consumption) %>% 
-      group_by(Taxa_adj, rep_id) %>% 
-      summarise(Consumption_taxa = sum(fao_consumption))%>% 
-      group_by(Taxa_adj) %>% 
-      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "FAO_2030")
-  )
+(consumption_FAO_2030 <- 
+   ff_consumption %>%  
+   select(Country, Species, Taxa_adj, rep_id, Value, fao_consumption) %>% 
+   group_by(Taxa_adj, rep_id) %>% 
+   summarise(Consumption_taxa = sum(fao_consumption))%>% 
+   group_by(Taxa_adj) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "FAO_2030") %>% 
+   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total"))) %>%
+   ggplot(aes(x=Taxa_adj, Mean))+
+   geom_bar(stat="identity", fill= "#359DA9", width=.7)+
+   geom_errorbar(aes(ymin=Mean-sd, 
+                     ymax=Mean+sd), 
+                 width=0.2, size=.3)+
+   scale_y_continuous(breaks = c(0,.5e+7,1e+7, 1.5e+7, 2e+7), labels = c(0,5,10,15, 20), limits=c(0,2e+7))+
+   theme_pubr()+
+   coord_flip()+
+   theme(
+     text = element_text(size=7),
+     axis.text.y = element_blank(),
+     axis.title = element_blank()
+   )
+)
+   # bind_rows(
+   #   #total for FAO_2030
+   #   ff_consumption %>%  
+   #     select(Country, Species, Taxa_adj, rep_id, Value, fao_consumption) %>% 
+   #     group_by(rep_id) %>% 
+   #     summarise(Consumption_taxa = sum(fao_consumption))%>% 
+   #     summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "FAO_2030" ), 
+   #by taxa for FAO_2030
+   
+#   )
     
     
-    
+
+
+
  #####WorldBank_RG_2030 Scenario#####
 
 
-consumption_WB_RG_2030 <- 
-  bind_rows(
-    #total for World bank rg 2030
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, WB_RG_consumption) %>% 
-      group_by(rep_id) %>% 
-      summarise(Consumption_taxa = sum(WB_RG_consumption))%>% 
-      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_RG_2030" ),
-    #by taxa for World bank rg 2030
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, WB_RG_consumption) %>% 
-      group_by(Taxa_adj, rep_id) %>% 
-      summarise(Consumption_taxa = sum(WB_RG_consumption))%>% 
-      group_by(Taxa_adj) %>% 
-      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_RG_2030")
-  )
+(consumption_WB_RG_2030 <- 
+   #by taxa for World bank rg 2030
+   ff_consumption %>%  
+   select(Country, Species, Taxa_adj, rep_id, Value, WB_RG_consumption) %>% 
+   group_by(Taxa_adj, rep_id) %>% 
+   summarise(Consumption_taxa = sum(WB_RG_consumption))%>% 
+   group_by(Taxa_adj) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_RG_2030")%>% 
+  mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total"))) %>% 
+  ggplot(aes(x=Taxa_adj, Mean))+
+  geom_bar(stat="identity", fill= "#C2B72B", width=.7)+
+  geom_errorbar(aes(ymin=Mean-sd, 
+                    ymax=Mean+sd), 
+                width=0.2, size=.3)+
+  scale_y_continuous(breaks = c(0,.5e+7,1e+7, 1.5e+7, 2e+7), labels = c(0,5,10,15, 20), limits=c(0,2e+7))+
+  theme_pubr()+
+  coord_flip()+
+  theme(
+    text = element_text(size=7),
+    axis.text.y = element_blank(),
+    axis.title = element_blank()
+  ))
+#    )
     
-    
+# bind_rows(
+  #   #total for World bank rg 2030
+  #   ff_consumption %>%  
+  #     select(Country, Species, Taxa_adj, rep_id, Value, WB_RG_consumption) %>% 
+  #     group_by(rep_id) %>% 
+  #     summarise(Consumption_taxa = sum(WB_RG_consumption))%>% 
+  #     summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_RG_2030" ),
+
+
+
+
+
 #####WorldBank_CD_2030 Scenario#####
 
 
-consumption_WB_CD_2030 <-
-  bind_rows(
-    #total for World bank cd 2030
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, WB_CD_consumption) %>% 
-      group_by(rep_id) %>% 
-      summarise(Consumption_taxa = sum(WB_CD_consumption))%>% 
-      summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_CD_2030" ),
-    #by taxa for World bank rg 2030
-    ff_consumption %>%  
-      select(Country, Species, Taxa_adj, rep_id, Value, WB_CD_consumption) %>% 
-      group_by(Taxa_adj, rep_id) %>% 
-      summarise(Consumption_taxa = sum(WB_CD_consumption))%>% 
-      group_by(Taxa_adj) %>% 
-      summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_CD_2030")
-    )
+(consumption_WB_CD_2030 <-
+   #by taxa for World bank rg 2030
+   ff_consumption %>%  
+   select(Country, Species, Taxa_adj, rep_id, Value, WB_CD_consumption) %>% 
+   group_by(Taxa_adj, rep_id) %>% 
+   summarise(Consumption_taxa = sum(WB_CD_consumption))%>% 
+   group_by(Taxa_adj) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_CD_2030")%>% 
+   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total"))) %>% 
+   ggplot(aes(x=Taxa_adj, Mean))+
+   geom_bar(stat="identity", fill= "#C70E7B",width=0.7)+
+   geom_errorbar(aes(ymin=Mean-sd, 
+                     ymax=Mean+sd), 
+                 width=0.2, size=.3)+
+   scale_y_continuous(breaks = c(0,.5e+7,1e+7, 1.5e+7, 2e+7), labels = c(0,5,10,15, 20), limits=c(0,2e+7))+
+   theme_pubr()+
+   coord_flip()+
+   theme(
+     text = element_text(size=7),
+     axis.text.y = element_blank(),
+     axis.title = element_blank()
+   ))
+#)
+ # bind_rows(
+  #   #total for World bank cd 2030
+  #   ff_consumption %>%  
+  #     select(Country, Species, Taxa_adj, rep_id, Value, WB_CD_consumption) %>% 
+  #     group_by(rep_id) %>% 
+  #     summarise(Consumption_taxa = sum(WB_CD_consumption))%>% 
+  #     summarise(Taxa_adj = "Total", Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "WorldBank_CD_2030" ),
 
 
 
 
+consumption_scenarios <- 
+  annotate_figure(
+    ggarrange(
+      consumption_2015, 
+      consumption_FAO_2030,
+      consumption_WB_RG_2030, 
+      consumption_WB_CD_2030,
+      labels = c("e", "f", "g", "h"), 
+      nrow=1, ncol=4, 
+      font.label = list(size=8), 
+      widths = c(1.5,1,1,1), 
+      label.x = c(.35,-.05,-.05,-.05)),
+    
+    bottom = text_grob("Forage fish consumption (million tonnes)", size=8, hjust=.5, vjust = 0.1)
+  )+
+  ggsave("Consumption_Scenarios.tiff", device="tiff", dpi=600, width = 18, height=7, units="cm")
 
-ggplot(data=consumption_scenarios, aes(x=Taxa_adj, y=Mean, fill=Scenario))+geom_bar(stat = "identity")+
-  coord_flip()+
-  facet_grid(~Scenario)
+```
+
+# Fig 1 Combining production and consumption
+```{r}
+ggarrange(production_scenarios, consumption_scenarios, nrow = 2, ncol=1, align = "hv")+
+  ggsave("Figure 1 - production and consumption.tiff", device="tiff", dpi=600, width = 18, height=14, units="cm")+
+  ggsave("Figure 1 - production and consumption.pdf", device="pdf", dpi=600, width = 18, height=14, units="cm")
 
 
 
 ```
-
-
-
 
 
 
