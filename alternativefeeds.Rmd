@@ -99,11 +99,11 @@ prod.aqua <-
   
 
 rev(lacroix_palette("PassionFruit", n=4, "continuous"))
-sort(unique(prod.aqua$Taxa))
+
 ```
 
 
-#Fig 1 - Production scenarios 
+#Fig S1 - Production scenarios 
 ```{r}
 
 prod_2015 <-  
@@ -177,7 +177,6 @@ prod.aqua.fao2030 <-
         text = element_text(size=7),
         plot.title = element_text(hjust=.5))+
   labs(title="FAO_2030")+
-  
   ggsave("2030_fao_production.tiff", device="tiff", dpi=600, width=6, height=7, units = "cm")
 
 
@@ -281,7 +280,6 @@ unique(prod.aqua$Taxa_adj)[c(4,9,1,3,7,2,6,8,10,5,11,12)]
 
 
 #Combine fig 1 plots for production
-
 
 
 production_scenarios <- 
@@ -501,7 +499,7 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
     h <- g/0.225       # forage fish biomass needed for fm demand
     i <- target_row[["Value"]]*b*d*e    #fo demand
     j <- h*0.05   # amount of fish oil coming from the fm biomass
-    k <- (i-j)/0.05 # difference in the amount of fish oil converted into forage fish biomass 
+    k <- (i-j)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
     l <- h+k  #total forage fish required (which includes when k is less than zero so consumption is not penalised for fish oil that may be provided elsewhere)
                    
     
@@ -601,7 +599,7 @@ write_csv(a_test, "forage fish consumption.csv")
 ```
 
 
-#Fig 1 - Consumption scenarios 
+#Fig S1 - Consumption scenarios 
 
 ```{r}
 
@@ -783,7 +781,7 @@ consumption_scenarios <-
 
 ```
 
-# Fig 1 Combining production and consumption
+# Fig S1 Combining production and consumption
 ```{r}
 ggarrange(production_scenarios, consumption_scenarios, nrow = 2, ncol=1, align = "hv")+
   ggsave("Figure 1 - production and consumption.tiff", device="tiff", dpi=600, width = 18, height=14, units="cm")+
@@ -794,53 +792,185 @@ ggarrange(production_scenarios, consumption_scenarios, nrow = 2, ncol=1, align =
 ```
 
 
+#Fig 1 - Against Historical supply of forage fish and use of fish in feed 
 
 
 ```{r}
-#iINSET PIC FOR CONSUMPTION PLOT
 
 #feed supply data from FAOSTAT
 feed_fish <- read_csv("forage_feed.csv")
 
-feed_fish <- feed_fish %>%
+feed_use <- feed_fish %>%
+  filter(Item=="Pelagic Fish") %>% 
   group_by(Year) %>%
-  summarise(Value = sum(Value)*1000)
-
-mean(feed_fish$Value[feed_fish$Year==2013])*0.75 #reasonably similar to our 2015 aquaculture usage
-
-ggplot(feed_fish, aes(x=Year, y=Value))+geom_line()
+  summarise(Value = sum(Value)*1000) %>% 
+  mutate(Element = "Feed use")
 
 
-#Capture production
-forage_fish <- read_csv("Marine fisheries Production 1950-2014.csv")
-
-unique(forage_fish$TaxonName)[grep("sardin", unique(forage_fish$TaxonName))]
-unique(forage_fish$CommonName)[grep("pilchard", unique(forage_fish$CommonName))]
-
-#From Froelich
+#forage fish species used in Froehlich et al
 
 feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus",   "Sardinella",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
 
 
-forage_fish <- forage_fish %>%
-  filter(forage_fish$TaxonName %in% feed_spp) %>%
-  group_by(Year) %>%
-  summarise(Value=sum(Value))
+#Sort the symbols in values out
+## "..." = data unavailable
+## " " = data not separately available
+## "-" = nil or zero
+## "0 0" = more than zero but less than half the unit used
+## F = FAO estimate from available sources of information
 
 
-ggplot(data = forage_fish, aes(x=Year, y=Value))+geom_line(colour="firebrick", linetype=1)+
+##IF USING FAO PRODUCTION DATA - Feed use of pelagic fish is greater than production!
+
+#Capture production
+forage_fish <-
+  fread("Marine fisheries Production 1950-2014.csv", header=T) %>% 
+  filter(TaxonName %in% feed_spp) %>% 
+  select(CountryName, Year, TaxonName, Value) %>% 
+  group_by(Year) %>% 
+  summarise(Value=sum(Value)) %>% 
+  mutate(Element="Forage fish supply")
+
+
+mean(forage_fish$Value[forage_fish$Year>1970])
+  
+
+  # 
+  # rename(Country=`Country (Country)`,
+  #        Species = `Species (ASFIS species)`,
+  #        Area = `Fishing area (FAO major fishing area)`,
+  #        Measure = `Measure (Measure)`) %>%
+  # gather(key="Year", value="Value", -c(Country, Species, Area, Measure)) %>%
+  # mutate(Year = gsub("X", "", Year) %>%
+  #          as.numeric) %>%
+  # mutate(Value = case_when(Value=="0 0" ~ "0.5",
+  #                          Value=="-" ~ "0",
+  #                          T ~ Value)) %>%
+  # filter(!(Value=="..." | Value=="") | Country=="Totals") %>%
+  # mutate(Value = gsub(" F", "", Value) %>%
+  #          as.numeric) %>%
+  # filter(Species %in% feed_spp) %>%
+  # group_by(Year) %>%
+  # summarise(Value=sum(Value)) %>%
+  # mutate(Element = "Forage fish supply")
+
+
+(supply_demand <- 
+  bind_rows(forage_fish, feed_use) %>% 
+  ggplot(aes(x=Year, y=Value, colour=Element, linetype=Element))+geom_line()+
+  scale_linetype_manual(values=c(2,1))+
+  scale_colour_manual(values=c("grey30", "black"))+
+  scale_y_continuous(limits=c(0,4e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+  theme_pubr()+
+  geom_vline(xintercept=2015, linetype=2, colour="grey80")+
+  theme(
+    legend.title = element_blank(),
+    legend.background=element_blank(),
+    legend.position = c(0.3,0.1),
+    legend.text = element_text(size=7),
+    plot.margin = unit(c(0.2,-.2, 0.2,0.2), "cm"),
+    axis.text.x = element_text(size=7),
+    axis.title.x = element_text(size=8),
+    axis.text.y = element_text(size=7),
+    axis.title.y = element_text(size=8)
+    )+
+labs(y=bquote(Biomass~(Tx10^6)))+
+ggsave("total forage fish landings plot.tiff", device="tiff", dpi=600, width = 8, height=9, units = "cm")
+  )
+
+
+
+
+
+(total_consumption <- 
+  bind_rows(
+  
+  ff_2015 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "FAO_2030"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "WBRG_2030"),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "WBCD_2030")
+)
+)
+
+consumption <- 
+  ggplot(data=total_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=1, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=1, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_bar(stat="identity", width=.5)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
+  theme_pubr()+
+  theme(axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_text(size=7),
+        axis.title.x = element_text(size=8),
+        panel.background =  element_blank(),
+        plot.margin = unit(c(0.2,.2, 0.2,-.87), "cm"))+
+  guides(fill=F)+
+  labs(x= paste(sprintf('\u2192'), "   Consumption scenarios"))
+  
+  
+
+ggarrange(supply_demand, consumption, widths = c(1,0.7), nrow=1, ncol=2)+
+  ggsave("Figure 1 new.tiff", device="tiff", dpi=600, width = 11, height=8, units = "cm")+
+  ggsave("Figure 1 new.pdf", device="pdf", dpi=600, width = 11, height=8, units = "cm")
+
+
+
+
+
+
+
+ggplot(data = forage_fish, aes(x=Year, y=Value))+
+  geom_line(colour="firebrick", linetype=1)+
   geom_line(data = feed_fish, aes(x=Year, y=Value), colour="black", linetype=1)+
   #annotate("segment", x=2000, xend = 2015, y=mean(forage_fish$Value[forage_fish$Year>1999]), yend = mean(forage_fish$Value[forage_fish$Year>1999]), colour="firebrick", linetype=2)+
   #annotate("segment", x=2000, xend = 2015, y=mean(feed_fish$Value[feed_fish$Year>2010])*0.75, yend = mean(feed_fish$Value[feed_fish$Year>2010])*0.75, colour="black", linetype=2)+
   # scale_x_continuous(limits=c(1960,2016), breaks = c(1985, 2015), labels = c(1985, 2015))+
   # scale_y_continuous(limits = c(0,4e+07), labels = c(0,40), breaks = c(0,  4e+07))+
   labs(x=bquote(Year), y=bquote(Biomass~(T~x10^6)))+
-  theme_bw()+
+  theme_pubr()+
   theme(panel.grid = element_blank(),
         axis.text = element_text(size=10),
         axis.title = element_text(size=10))+
   #annotate("text", x=1983, y=5e+06, label="c", size=11)+
   ggsave("total forage fish landings plot.tiff", device="tiff", dpi=600, width = 11, height=9, units = "cm")
+
+
+```
+
+
 
 tile<-ggplot(data = forage_fish, aes(x=Year, y=Value))+geom_line(colour="firebrick", linetype=1)+
   geom_line(data = feed_fish, aes(x=Year, y=Value), colour="black", linetype=1)+
@@ -980,6 +1110,13 @@ ggplot(faq_consumption, aes(x=reorder(Broad_group, -Consumption), y=Consumption)
   coord_flip()
 
 ```
+
+
+
+
+
+
+
 
 #not sure what this code is
 
