@@ -1169,7 +1169,7 @@ relative_FCR <- function(x){
 
 growth_data <- 
   fread("growth_data.csv", header=T) %>% 
-  select(-c(V24, V25, V26, Author, Journal, Supplement_type)) %>% 
+  select(-c(V26, V27, Author, Journal, Supplement_type)) %>% 
   filter(Year>2007 & Study_id!= 206.1) %>% 
   mutate(Amino_supp = case_when(Amino_supp=="" ~ "N",
                                 T ~ Amino_supp)) %>% 
@@ -1198,22 +1198,21 @@ growth_data <-
   mutate(Relative_FCR = purrr::map(data, relative_FCR)) %>% 
   unnest(data, Relative_FCR) 
 
-names(growth_data)
+
 
 
 
 #Exploration
 
 fishmeal <- growth_data %>% 
-  filter(FM_FO == "FM")
+  filter(FM_FO == "FM" | FM_FO=="Both")
 
 
 
 
 fish_oil <- growth_data %>% 
-  filter(FM_FO == "FO")
-complete <- growth_data %>% 
-  filter(FM_FO == "Both")
+  filter(FM_FO == "FO" | FM_FO=="Both")
+
   
 
 # ggplot(data = fishmeal, aes(x=Replacement, y=Relative_FCR))+
@@ -1332,15 +1331,20 @@ carp_algae <-
   mutate(Study_id = Study_id %>% 
            as.factor)
 
+
 #Analysis
-myknots <- seq(min(carp_algae$Replacement), max(carp_algae$Replacement), length.out = 10)[-c(1,10)]
-fit_carp_algae <- sme(object = carp_algae$Relative_FCR, tme = carp_algae$Replacement, ind = carp_algae$Study_id,criteria = "AICc", knots = myknots)
+myknots <- seq(min(carp_algae$FM_Replacement), max(carp_algae$FM_Replacement), length.out = 10)[-c(1,10)]
+fit_carp_algae <- sme(object = carp_algae$Relative_FCR, tme = carp_algae$FM_Replacement, ind = carp_algae$Study_id, criteria = "AICc")#, knots = myknots)
+
+
+
 
 plotSmeModel(fit_carp_algae, xlab="", ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", lwd=3, col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
 
 #Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
 fit_carp_algae$info
 plot(fit_carp_algae, type="diagnostic")
+
 
 
 
@@ -1356,8 +1360,8 @@ carp_bacteria <-
            as.factor)
 
 #Analysis
-myknots <- seq(min(carp_bacteria$Replacement), max(carp_bacteria$Replacement), length.out = 5)[-c(1,5)]
-fit_carp_bacteria <- sme(object = carp_bacteria$Relative_FCR, tme = carp_bacteria$Replacement, ind = carp_bacteria$Study_id, criteria = "AICc", deltaEM=.1, knots = myknots)
+myknots <- seq(min(carp_bacteria$FM_Replacement), max(carp_bacteria$FM_Replacement), length.out = 5)[-c(1,5)]
+fit_carp_bacteria <- sme(object = carp_bacteria$Relative_FCR, tme = carp_bacteria$FM_Replacement, ind = carp_bacteria$Study_id, criteria = "AICc", deltaEM=.1, knots = myknots)
 
 
 
@@ -1367,10 +1371,6 @@ plot(fit_carp_bacteria, "diagnostic")
 
 
 plotSmeModel(fit_carp_bacteria, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#0686B8", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
-
-
-
-
 
 
 #==========================================================
@@ -1386,9 +1386,11 @@ carp_yeast <-
   mutate(Study_id = Study_id %>% 
            as.factor)
 
+
+
 #Analysis
-myknots <- seq(min(carp_yeast$Replacement), max(carp_yeast$Replacement), length.out = 8)[-c(1,8)]
-fit_carp_yeast <- sme(object = carp_yeast$Relative_FCR, tme = carp_yeast$Replacement, ind = carp_yeast$Study_id,criteria = "AICc", knots = myknots)
+myknots <- seq(min(carp_yeast$FM_Replacement), max(carp_yeast$FM_Replacement), length.out = 8)[-c(1,8)]
+fit_carp_yeast <- sme(object = carp_yeast$Relative_FCR, tme = carp_yeast$FM_Replacement, ind = carp_yeast$Study_id,criteria = "AICc", knots = myknots)
 
 #Diagnostics 
 fit_carp_yeast$info
@@ -1396,9 +1398,6 @@ plot(fit_carp_yeast, type="diagnostic")
 
 
 plotSmeModel(fit_carp_yeast, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#9E0142', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='black')) ))
-
-
-
 
 
 
@@ -1415,8 +1414,8 @@ carp_soy <-
            as.factor)
 
 #Analysis
-myknots <- seq(min(carp_soy$Replacement), max(carp_soy$Replacement), length.out = 4)[-c(1,4)]
-fit_carp_soy <- sme(object = carp_soy$Relative_FCR, tme = carp_soy$Replacement, ind = carp_soy$Study_id,criteria = "AICc",  deltaEM=.1, knots = myknots)
+myknots <- seq(min(carp_soy$FM_Replacement), max(carp_soy$FM_Replacement), length.out = 4)[-c(1,4)]
+fit_carp_soy <- sme(object = carp_soy$Relative_FCR, tme = carp_soy$FM_Replacement, ind = carp_soy$Study_id,criteria = "AICc",  deltaEM=.1, knots = myknots)
 
 #Diagnostics 
 fit_carp_soy$info
@@ -1439,8 +1438,8 @@ carp_insects <-
            as.factor)
 
 #Analysis
-myknots <- seq(min(carp_insects$Replacement), max(carp_insects$Replacement), length.out = 7)[-c(1,7)]
-fit_carp_insects <- sme(object = carp_insects$Relative_FCR, tme = carp_insects$Replacement, ind = carp_insects$Study_id,criteria = "AICc", knots=myknots)
+myknots <- seq(min(carp_insects$FM_Replacement), max(carp_insects$FM_Replacement), length.out = 7)[-c(1,7)]
+fit_carp_insects <- sme(object = carp_insects$Relative_FCR, tme = carp_insects$FM_Replacement, ind = carp_insects$Study_id,criteria = "AICc", knots=myknots)
 
 #Diagnostics - no real patterns in residuals or in qq-plot except in the extremes - which is largely to be expected with diverging data sets. No difference between AIC and BICn lambda selection. Use data points as knots creates better fit 
 
@@ -1476,9 +1475,9 @@ catfish_algae <-
            as.factor)
 
 #Analysis
-myknots <- seq(min(catfish_algae$Replacement), max(catfish_algae$Replacement), length.out = 10)[-c(1,10)]
+myknots <- seq(min(catfish_algae$FM_Replacement), max(catfish_algae$FM_Replacement), length.out = 10)[-c(1,10)]
 
-fit_catfish_algae <- sme(object = catfish_algae$Relative_FCR, tme = catfish_algae$Replacement, ind = catfish_algae$Study_id,criteria = "AICc")
+fit_catfish_algae <- sme(object = catfish_algae$Relative_FCR, tme = catfish_algae$FM_Replacement, ind = catfish_algae$Study_id,criteria = "AICc")
 
 #Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
 fit_catfish_algae$info
@@ -1488,6 +1487,8 @@ plot(fit_catfish_algae, type="diagnostic")
 
 #PLOT
 plotSmeModel(fit_catfish_algae, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=10, lty=2, lwd=1, col='black'))))
+
+
 
 
 #====================================================
@@ -1503,9 +1504,9 @@ catfish_bacteria <-
            as.factor)
 
 #Analysis
-myknots <- seq(min(catfish_bacteria$Replacement), max(catfish_bacteria$Replacement), length.out = 4)[-c(1,4)]
+myknots <- seq(min(catfish_bacteria$FM_Replacement), max(catfish_bacteria$FM_Replacement), length.out = 4)[-c(1,4)]
 
-fit_catfish_bacteria <- sme(object = catfish_bacteria$Relative_FCR, tme = catfish_bacteria$Replacement, ind = catfish_bacteria$Study_id,criteria = "AICc", knots = myknots)
+fit_catfish_bacteria <- sme(object = catfish_bacteria$Relative_FCR, tme = catfish_bacteria$FM_Replacement, ind = catfish_bacteria$Study_id,criteria = "AICc", knots = myknots)
 
 #Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
 fit_catfish_bacteria$info
@@ -1517,10 +1518,13 @@ plot(fit_catfish_bacteria, type="diagnostic") ##NUP linear model for trends of t
 
 #PLOT
 
-plot(x=catfish_bacteria$Replacement, y=catfish_bacteria$Relative_FCR, xlab="",ylab="", col=alpha("grey50", 0.5), pch=16, xlim=c(0,100), ylim=c(min(catfish_bacteria$Relative_FCR),1.05))+
-  abline(lm(Relative_FCR~Replacement, data = catfish_bacteria), col="#D53E4F", lwd=3)+
-  abline(h=1.05, lwd=1, lty=2)
+# plot(x=catfish_bacteria$FM_Replacement, y=catfish_bacteria$Relative_FCR, xlab="",ylab="", col=alpha("grey50", 0.5), pch=16, xlim=c(0,100), ylim=c(min(catfish_bacteria$Relative_FCR),1.05))+
+#   abline(lm(Relative_FCR~FM_Replacement, data = catfish_bacteria), col="#D53E4F", lwd=3)+
+#   abline(h=1.05, lwd=1, lty=2)
 
+
+plot(1, type="n", xlab="", ylab="", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
+  abline(0,1)
 
 
 
@@ -1539,16 +1543,16 @@ catfish_yeast <-
 
 
 #Analysis
-myknots <- seq(min(catfish_yeast$Replacement), max(catfish_yeast$Replacement), length.out = 4)[-c(1,4)]
+myknots <- seq(min(catfish_yeast$FM_Replacement), max(catfish_yeast$FM_Replacement), length.out = 5)[-c(1,5)]
 
-fit_catfish_yeast <- sme(object = catfish_yeast$Relative_FCR, tme = catfish_yeast$Replacement, ind = catfish_yeast$Study_id,criteria = "AICc",  knots = myknots)
+fit_catfish_yeast <- sme(object = catfish_yeast$Relative_FCR, tme = catfish_yeast$FM_Replacement, ind = catfish_yeast$Study_id,criteria = "AICc",  knots = myknots)
 
 #Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
 fit_catfish_yeast$info
 plot(fit_catfish_yeast, type="diagnostic")
 
 
-plotSmeModel(fit_catfish_yeast, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#D53E4F', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=94, lty=2, lwd=1, col='grey20'))))
+plotSmeModel(fit_catfish_yeast, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#D53E4F', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='grey20'))))
 
 
 
@@ -1563,16 +1567,16 @@ catfish_soy <-
   filter(Fish_group=="Catfishes" & Feed_general=="Soy") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)%>% 
-  mutate(Relative_FCR = case_when(Replacement==0 ~ 1,
+  mutate(Relative_FCR = case_when(FM_Replacement==0 ~ 1,
                                   T ~ Relative_FCR))
 
 
 
 
 #Analysis
-myknots <- seq(min(catfish_soy$Replacement), max(catfish_soy$Replacement), length.out = 4)[-c(1,4)]
+myknots <- seq(min(catfish_soy$FM_Replacement), max(catfish_soy$FM_Replacement), length.out = 4)[-c(1,4)]
 
-fit_catfish_soy <- sme(object = catfish_soy$Relative_FCR, tme = catfish_soy$Replacement, ind = catfish_soy$Study_id,criteria = "AICc")
+fit_catfish_soy <- sme(object = catfish_soy$Relative_FCR, tme = catfish_soy$FM_Replacement, ind = catfish_soy$Study_id,criteria = "AICc")
 #,  knots = myknots)
 
 #Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
@@ -1582,7 +1586,7 @@ plot(fit_catfish_yeast, type="diagnostic")
 
 plotSmeModel(fit_catfish_soy, xlab="",ylab="", showIndividuals=T,  showConfidenceBands=T, col.meanCurve='#D53E4F', col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='grey20'))))
 
-
+```
 
 #==================================================
 
@@ -1596,9 +1600,9 @@ catfish_insects <-
 
 
 #Analysis
-myknots <- seq(min(catfish_insects$Replacement), max(catfish_insects$Replacement), length.out = 6)[-c(1,6)]
+myknots <- seq(min(catfish_insects$FM_Replacement), max(catfish_insects$FM_Replacement), length.out = 6)[-c(1,6)]
 
-fit_catfish_insects <- sme(object = catfish_insects$Relative_FCR, tme = catfish_insects$Replacement, ind = catfish_insects$Study_id,criteria = "AICc")#,  knots = myknots)
+fit_catfish_insects <- sme(object = catfish_insects$Relative_FCR, tme = catfish_insects$FM_Replacement, ind = catfish_insects$Study_id,criteria = "AICc")#,  knots = myknots)
 
 #Diagnostics - no real patterns in residuals and qq-plot satisfactory given the diverging data sets and expected outliers in the extremes
 fit_catfish_insects$info
