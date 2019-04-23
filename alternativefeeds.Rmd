@@ -5599,6 +5599,128 @@ write_csv(a_test, "forage fish consumption - soy replacement.csv")
 
 
 
+#Insects - proportions reflect 1- optimal replacement levels
+
+FM_replace <- c("Carps" = 0 , "Catfishes"= 0, "FW fishes"= 1, "Tilapias"=0.05, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+FO_replace <- c("Carps" = 0 , "Catfishes"=0, "FW fishes"=0, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=-0.01, "Eels"=0, "Diadromous fishes"=0, "FW crustaceans"=0, "Tunas" =0,  "Marine crustaceans"=0)
+
+
+a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
+  target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
+  temp_df <- bind_rows(lapply(1:500, function(rep_id){
+    #isolate each row 
+    a <- feeds_as_list[[target_row[["Taxa"]]]] 
+    
+    #assign consumption parameters
+    b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
+    c <- (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]]))*as.numeric(FM_replace[target_row[["Taxa_adj"]]])   # assign random fishmeal inclusion from range 
+    d <- max(0, runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])+as.numeric(FO_replace[target_row[["Taxa_adj"]]]))   #assign random fish oil inclusion from range
+    e <- runif(n = 1, min = a[["Fed_min"]], max = a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
+    f <- a[["Fed_max"]]    # assume highest proportion are fed for future scenarios
+    
+    #Consumption calculations
+    
+    #current consumption
+    g <- target_row[["Value"]]*b*c*e    #fm demand
+    h <- g/0.225       # forage fish biomass needed for fm demand
+    i <- target_row[["Value"]]*b*d*e    #fo demand
+    j <- h*0.05   # amount of fish oil coming from the fm biomass
+    k <- (i-j)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
+    l <- h+k  #total forage fish required (which includes when k is less than zero so consumption is not penalised for fish oil that may be provided elsewhere)
+                   
+    
+    #FAO_2030 projections
+    m <- target_row[["FAO_2030"]]*b*c*f    #fm demand
+    n <- m/0.225       # forage fish biomass needed for fm demand
+    o <- target_row[["FAO_2030"]]*b*d*f    #fo demand
+    p <- n*0.05   # amount of fish oil coming from the fm biomass
+    q <- (o-p)/0.05
+    r <- n+q #case_when(q>=0 ~ n+q, q<0 ~ n)
+    
+    # faster aquaculture growth
+    s <- target_row[["WorldBank_RG_2030"]]*b*c*f    #fm demand
+    t <- s/0.225       # forage fish biomass needed for fm demand
+    u <- target_row[["WorldBank_RG_2030"]]*b*d*f    #fo demand
+    v <- t*0.05   # amount of fish oil coming from the fm biomass
+    w <- (u-v)/0.05
+    x <- t+w  #case_when(w>=0 ~ t+w, w<0 ~ t)
+    
+    # chinese dietary shift
+    aa <- target_row[["WorldBank_CD_2030"]]*b*c*f    #fm demand
+    bb <- aa/0.225       # forage fish biomass needed for fm demand
+    cc <- target_row[["WorldBank_CD_2030"]]*b*d*f    #fo demand
+    dd <- bb*0.05   # amount of fish oil coming from the fm biomass
+    ee <- (cc-dd)/0.05
+    ff <- bb+ee #case_when(ee>=0 ~ bb+ee, ee<0 ~ bb)
+    
+    # #chinese + more efficient scenario (fcrs decrease by 0.2)
+    # gg <- target_row[["WorldBank_CD_2030"]]*(b-0.2)*c*f    #fm demand
+    # hh <- gg/0.225       # forage fish biomass needed for fm demand
+    # ii <- target_row[["WorldBank_CD_2030"]]*(b-0.2)*d*f    #fo demand
+    # jj <- hh*0.05   # amount of fish oil coming from the fm biomass
+    # kk <- (ii-jj)/0.05
+    # ll <- case_when(kk>=0 ~ hh+kk,
+    #                kk<0 ~ hh)
+    
+    #bind new objects to end of target row
+    rep_id_row_as_df <- data.frame(
+      c(target_row, 
+        rep_id=rep_id,
+        
+        #params
+        fcr=b, 
+        fm=c, 
+        fo=d,  
+        fed=e, 
+        fed_future = f, 
+        
+        #2015 consumption
+        fm_demand_2015 = g, 
+        fm_biomass_2015 = h,
+        fo_demand_2015 = i,
+        fo_from_fm_2015 = j, 
+        surplus_2015 = k,
+        consumption_2015 = l,
+        
+        #baseline consumption
+        fao_demand = m, 
+        fao_fm_biomass = n,
+        fao_fo_demand = o,
+        fao_from_fm = p, 
+        fao_surplus = q,
+        fao_consumption = r,
+        
+        #pesc consumption
+        WB_RG_demand = s, 
+        WB_RG_biomass = t,
+        WB_RG_demand = u,
+        WB_RG_from_fm = v, 
+        WB_RG_surplus = w,
+        WB_RG_consumption = x,
+        
+        #chinese consumption
+        WB_CD_demand = aa, 
+        WB_CD_fm_biomass = bb,
+        WB_CD_fo_demand = cc,
+        WB_CD_from_fm = dd, 
+        WB_CD_surplus = ee,
+        WB_CD_consumption = ff
+        
+        #chinese diets and more efficient
+        # effchn_demand = gg, 
+        # effchn_fm_biomass = hh,
+        # effchn_fo_demand = ii,
+        # effchn_from_fm = jj, 
+        # effchn_surplus = kk,
+        # effchn_consumption = ll
+        ))
+    return(rep_id_row_as_df)
+  })) #close lapply function, lapply call, and bind_rows
+  return(temp_df)
+}))#close lapply function, lapply call, and bind_rows
+
+write_csv(a_test, "forage fish consumption - insects replacement.csv")
+
 
 
 ```
