@@ -5092,11 +5092,12 @@ fed_aqua_proj <-
   mutate(WorldBank_CD_2030 = case_when(Taxa_adj %in% c("Shrimps", "Salmonids", "FW crustaceans","Marine crustaceans", "Tunas") ~ Value*3,
                            T ~ FAO_2030))
 
-
+```
 
 
 #Algae - proportions reflect 1- optimal replacement levels
 
+```{r}
 FM_replace <- c("Carps" = 0 , "Catfishes"= .9, "FW fishes"= 1, "Tilapias"=.4, "Shrimps"=.5, "Salmonids"=.7, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=.45, "Marine fishes"=0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 
@@ -5216,15 +5217,13 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
 }))#close lapply function, lapply call, and bind_rows
 
 write_csv(a_test, "forage fish consumption - algae replacement.csv")
-
-
-
-
-
+```
 
 
 #Bacteria - proportions reflect 1- optimal replacement levels for fishmeal. For fish oil and bacteria as no replacement studies are modelled we adjust the dietary fish oil inclusion by the percentage change oiutlined in Tabl-e S1
 
+
+```{r}
 FM_replace <- c("Carps" = 0 , "Catfishes"= 1, "FW fishes"= .9, "Tilapias"=0, "Shrimps"=.15, "Salmonids"=1, "Marine fishes"=.9, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 FO_replace <- c("Carps" = 0 , "Catfishes"=0, "FW fishes"=0, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=-0.02, "Eels"=0, "Diadromous fishes"=0, "FW crustaceans"=0, "Tunas" =0,  "Marine crustaceans"=0)
 
@@ -5344,10 +5343,12 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
 }))#close lapply function, lapply call, and bind_rows
 
 write_csv(a_test, "forage fish consumption - bacteria replacement.csv")
-
+```
 
 
 #Yeast - proportions reflect 1- optimal replacement levels for fishmeal. No change to dietary fish oil required so not adjusted within simulations
+
+```{r}
 
 FM_replace <- c("Carps" = 0.35 , "Catfishes"= 0, "FW fishes"= 1, "Tilapias"=0.6, "Shrimps"=.8, "Salmonids"=.45, "Marine fishes"=.25, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 #FO_replace <- c("Carps" = 0 , "Catfishes" = 0, "FW fishes"=0, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=0, "Eels"=0, "Diadromous fishes"=0, "FW crustaceans"=0, "Tunas" =0,  "Marine crustaceans"=0)
@@ -5469,14 +5470,12 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
 
 write_csv(a_test, "forage fish consumption - yeast replacement.csv")
 
-
-
-
-
+```
 
 #SOY - proportions reflect 1- optimal replacement levels for fishmeal. Fishmeal proportions reflect the threshold replacement based on no change (within 5%) to the n3:n6 ratio. Note freshwater fishes indicate an increase of 1% dietary inclusion of fo with fishmeal replacement. To keep this consistent with proportions we multiply the randomly selected proportion within the stipulated range for fw fishes by 1.42. This is based on adding 1% to to the lower bound of 2% (fo inclusion for fw fishes) is the same as increasing by 50%. By adding 1% to the upper bound for fw fishes of 3% is increasing by 33%. We take the mean of these two by increasing this value by 42%.
 
 
+```{r}
 FM_replace <- c("Carps" = 0.65 , "Catfishes"= 0.5, "FW fishes"= 0.45, "Tilapias"=0.3, "Shrimps"=0, "Salmonids"=.5, "Marine fishes"=.5, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 FO_replace <- c("Carps" = 1 , "Catfishes" = 1, "FW fishes"=1.42, "Tilapias"=1, "Shrimps"=0.7, "Salmonids"=0.9, "Marine fishes"=0, "Eels"=0, "Diadromous fishes"=0, "FW crustaceans"=0, "Tunas" =0,  "Marine crustaceans"=0)
 
@@ -5597,10 +5596,11 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
 
 write_csv(a_test, "forage fish consumption - soy replacement.csv")
 
+```
 
+#Insects - proportions reflect optimal replacement levels
 
-#Insects - proportions reflect 1- optimal replacement levels
-
+```{r}
 FM_replace <- c("Carps" = 0 , "Catfishes"= 0, "FW fishes"= 1, "Tilapias"=0.05, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 FO_replace <- c("Carps" = 0 , "Catfishes"=0, "FW fishes"=0, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=-0.01, "Eels"=0, "Diadromous fishes"=0, "FW crustaceans"=0, "Tunas" =0,  "Marine crustaceans"=0)
 
@@ -5725,6 +5725,260 @@ write_csv(a_test, "forage fish consumption - insects replacement.csv")
 
 ```
 
+
+#Figure 4
+
+```{r}
+
+#original consumption 
+
+ff_consumption <- 
+  fread("forage fish consumption.csv", header=T) 
+
+
+base_consumption_2015 <- 
+   #by taxa for 2015
+   ff_consumption %>%  
+   select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+   group_by(Taxa_adj, rep_id) %>% 
+   summarise(Consumption_taxa = sum(consumption_2015))%>% 
+   group_by(Taxa_adj) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
+   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total")))
+
+
+(algae_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+
+
+ff_algae <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) 
+
+algae_consumption_2015 <- 
+   #by taxa for 2015
+   ff_algae %>%  
+   select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+   group_by(Taxa_adj, rep_id) %>% 
+   summarise(Consumption_taxa = sum(consumption_2015))%>% 
+   group_by(Taxa_adj) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
+   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total")))
+
+
+
+
+
+
+(bacteria_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+(yeast_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+(soy_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+
+(insects_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+algae_consumption
+bacteria_consumption
+yeast_consumption
+soy_consumption
+insects_consumption
+
+```
 
 #OLD CODE
 
