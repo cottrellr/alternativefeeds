@@ -377,6 +377,12 @@ feeds <-
   fread("diets.csv", header=T)
 
 
+feeds_as_list <- split(feeds, feeds$Group)
+
+MEDCs <- c("Canada", "United States of America", "Austria", "Belgium", "Denmark", "Finland", "France", "Germany", "Greece", "Ireland", "Italy", "Luxembourg", "Netherlands", "Portugal",  "Spain", "Sweden", "United Kingdom", "Bulgaria", "Croatia", "Cyprus","Czechia", "Estonia", "Hungary", "Latvia", "Lithuania", "Malta", "Poland", "Romania", "Slovakia", "Slovenia", "Iceland","Norway", "Switzerland", "Australia", "Japan", "New Zealand")
+
+LDCs<- c("Angola", "Benin", "Burkina Faso" ,"Burundi","Central African Republic", "Chad", "Comoros", "Congo, Dem. Rep. of the",  "Djibouti", "Eritrea", "Ethiopia", "Gambia" , "Guinea", "Guinea-Bissau", "Lesotho", "Liberia", "Madagascar", "Malawi", "Mali", "Mauritania", "Mozambique", "Niger", "Rwanda", "Sao Tome and Principe", "Senegal", "Sierra Leone", "Somalia", "South Sudan", "Sudan", "Togo", "Uganda", "Tanzania, United Rep. of", "Zambia", "Cambodia", "Kiribati", "Lao People's Dem. Rep.", "Myanmar", "Solomon Islands", "Timor Leste", "Tuvalu", "Vanuatu", "Afghanistan", "Bangladesh", "Bhutan", "Nepal", "Yemen", "Haiti")
+
 #Create data frame with projections in different columns
 
 fed_aqua_proj <- 
@@ -392,7 +398,7 @@ fed_aqua_proj <-
                            T ~ FAO_2030))
 
 
-feeds_as_list <- split(feeds, feeds$Group)
+
 
 
 
@@ -848,7 +854,7 @@ forage_fish <-
   mutate(Element="Historical supply")
 
 
-mean(forage_fish$Value[forage_fish$Year>1970])
+mean(forage_fish$Value[forage_fish$Year>1980])*.8
   
 
   # 
@@ -992,7 +998,7 @@ ggarrange(supply_demand, consumption, widths = c(1,0.7), nrow=1, ncol=2)+
 
 
 
-grid.brackets(220, bottom_y,   80, bottom_y, lwd=2, col="red")
+#grid.brackets(220, bottom_y,   80, bottom_y, lwd=2, col="red")
 
 
 
@@ -6125,11 +6131,6 @@ consumption_plots <-
 #Species breakdown of consumption and savings 
 ```{r}
 
-
-
-
-
-
  baseline_2015 <- 
   fread("forage fish consumption.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
@@ -6146,15 +6147,40 @@ consumption_plots <-
   summarise(Taxa_rep = sum(consumption_2015)) %>% 
   group_by(Taxa_adj) %>% 
   summarise(Algal_Value=mean(Taxa_rep), algal_sd=sd(Taxa_rep)) %>% 
-  mutate(Element = "2015") 
+  mutate(Element = "2015") %>% 
+  mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
+  mutate(Savings_mean = Baseline_value-Algal_Value) %>% 
+  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Algal_Value+algal_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Algal_Value-algal_sd))
   
   
-  
-  %>% 
-  mutate(Baseline_value = baseline_2015$baseline_Value, BAseline_sd = baseline_2015$baseline_sd)
+  algae_2015 %>%
+  ggplot(aes(x = Taxa_adj, y = Savings_mean, fill=Element))+
+    geom_bar(stat="identity")+
+    geom_errorbar(aes(ymin=Savings_lower, ymax=Savings_upper), width=.2)+
+    theme_bw()+
+    coord_polar()
+    
+  algae_2015 %>% 
+    ggplot(aes(x = Taxa_adj, y = Savings_mean, group = 1)) +
+    geom_point()+
+    geom_errorbar(aes(ymin=Savings_lower, ymax=Savings_upper), width=.2)+
+    # geom_polygon(aes(y = Savings_upper), fill = "grey50", alpha = 0.5) +
+    # geom_polygon(aes(y = Savings_lower), fill = "white", alpha = 0.7) +
+    geom_polygon(fill = NA, colour = "purple") +
+    theme_bw() +
+    theme(panel.grid.minor =  element_blank(),
+          panel.border = element_blank(),
+          axis.ticks = element_blank(),
+          axis.title = element_blank(),
+          axis.text.y = element_blank()) +
+    coord_polar() +
+    labs(x = "", y = "")+
+    annotate("text", x=6, y=3e+06, label="3")+
+    annotate("text", x=6, y=2e+06, label="2")+
+    annotate("text", x=6, y=1e+06, label="1")
   
  
-
+?geom_ribbon
 ```
   
   
