@@ -515,7 +515,8 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
     i <- target_row[["Value"]]*b*d*e    #fo demand
     j <- h*0.05   # amount of fish oil coming from the fm biomass
     k <- (i-j)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
-    l <- h+k  #total forage fish required (which includes when k is less than zero so consumption is not penalised for fish oil that may be provided elsewhere)
+    l <-  case_when(i<j ~ h-j,
+                    T ~ h+k) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded)
                    
     
     #FAO_2030 projections
@@ -5978,7 +5979,405 @@ yeast_consumption
 soy_consumption
 insects_consumption
 
+
+(algae_consumption_plot <- 
+  ggplot(data=algae_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_bar(stat="identity", width=.5)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,40e+6), expand = c(0,0), labels=c(0,10,20,30,40))+
+  theme_pubr()+
+  theme(
+        #axis.line.y = element_blank(),
+        #axis.text.y = element_blank(),
+        #axis.title.y = element_blank(),
+        #axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        text = element_text(size=7),
+        legend.title = element_blank(),
+        legend.spacing.x = unit(0.2, "cm"),
+        legend.key.size = unit(0.3, "cm"),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        panel.background =  element_blank()
+        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        )+
+  #guides(fill=F)+
+  labs(x="", y=bquote(Forage~fish~biomass~(Tx10^6))))
+
+
+(bacteria_consumption_plot <- 
+  ggplot(data=bacteria_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_bar(stat="identity", width=.5)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
+  theme_pubr()+
+  theme(
+        #axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        #axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        panel.background =  element_blank()
+        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        )+
+  guides(fill=F)+
+  labs(x=""))
+
+(yeast_consumption_plot <- 
+  ggplot(data=yeast_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_bar(stat="identity", width=.5)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
+  theme_pubr()+
+  theme(
+        #axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        #axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        panel.background =  element_blank()
+        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        )+
+  guides(fill=F)+
+  labs(x="", y=""))
+  
+
+(soy_consumption_plot <- 
+  ggplot(data=soy_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_bar(stat="identity", width=.5)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
+  theme_pubr()+
+  theme(
+        #axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        #axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        panel.background =  element_blank()
+        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        )+
+  guides(fill=F)+
+  labs(x=""))
+
+(insects_consumption_plot <- 
+  ggplot(data=insects_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_bar(stat="identity", width=.5)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
+  theme_pubr()+
+  theme(
+        #axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        #axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        panel.background =  element_blank()
+        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        )+
+  guides(fill=F)+
+  labs(x=""))
+
+
+scenario_legend <- get_legend(algae_consumption_plot)
+
+consumption_plots <- 
+  ggarrange(
+    ggarrange(algae_consumption_plot, bacteria_consumption_plot, yeast_consumption_plot, soy_consumption_plot, insects_consumption_plot, 
+              nrow = 1, ncol = 5, 
+              labels = c("a", "b", "c", "d", "e"), 
+              font.label = list(size=10 ),
+              label.x = c(0, -0.05,-0.05,-0.05,-0.05),
+              widths = c(1.25,1,1,1,1), 
+              legend = "none"), 
+    scenario_legend, 
+    nrow = 2, ncol=1,
+    heights = c(1,0.1))+
+  ggsave("Figure 4(a) - consumption across feeds.tiff", dpi=600, device = "tiff", width=18, height=5, units="cm")+
+  ggsave("Figure 4(a) - consumption across feeds.pdf", dpi=600, device = "pdf", width=18, height=5, units="cm")
+
 ```
+
+
+#Species breakdown of consumption and savings 
+```{r}
+
+
+
+
+
+
+ baseline_2015 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(Taxa_adj, rep_id) %>% 
+  summarise(Taxa_rep = sum(consumption_2015)) %>% 
+  group_by(Taxa_adj) %>% 
+  summarise(baseline_Value=mean(Taxa_rep), baseline_sd=sd(Taxa_rep)) %>% 
+  mutate(Element = "2015")
+
+  algae_2015 <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(Taxa_adj, rep_id) %>% 
+  summarise(Taxa_rep = sum(consumption_2015)) %>% 
+  group_by(Taxa_adj) %>% 
+  summarise(Algal_Value=mean(Taxa_rep), algal_sd=sd(Taxa_rep)) %>% 
+  mutate(Element = "2015") 
+  
+  
+  
+  %>% 
+  mutate(Baseline_value = baseline_2015$baseline_Value, BAseline_sd = baseline_2015$baseline_sd)
+  
+ 
+
+```
+  
+  
+  
+  
+  
+ff_2030_fao <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+
+
+ff_algae <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) 
+
+algae_consumption_2015 <- 
+   #by taxa for 2015
+   ff_algae %>%  
+   select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+   group_by(Taxa_adj, rep_id) %>% 
+   summarise(Consumption_taxa = sum(consumption_2015))%>% 
+   group_by(Taxa_adj) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
+   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total")))
+
+
+
+
+
+
+(bacteria_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+(yeast_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+(soy_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+
+(insects_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+```
+
+
+
 
 #OLD CODE
 
