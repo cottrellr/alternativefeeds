@@ -6140,27 +6140,101 @@ consumption_plots <-
   summarise(baseline_Value=mean(Taxa_rep), baseline_sd=sd(Taxa_rep)) %>% 
   mutate(Element = "2015")
 
+
+algae_adj <- 
+  bind_rows(
+
   algae_2015 <- 
   fread("forage fish consumption - algae replacement.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
   group_by(Taxa_adj, rep_id) %>% 
   summarise(Taxa_rep = sum(consumption_2015)) %>% 
   group_by(Taxa_adj) %>% 
-  summarise(Algal_Value=mean(Taxa_rep), algal_sd=sd(Taxa_rep)) %>% 
+  summarise(Adj_Value=mean(Taxa_rep), Adj_sd=sd(Taxa_rep)) %>% 
   mutate(Element = "2015") %>% 
   mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
-  mutate(Savings_mean = Baseline_value-Algal_Value) %>% 
-  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Algal_Value+algal_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Algal_Value-algal_sd))
+  mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
+  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd)),
   
   
-  algae_2015 %>%
-  ggplot(aes(x = Taxa_adj, y = Savings_mean, fill=Element))+
-    geom_bar(stat="identity")+
-    geom_errorbar(aes(ymin=Savings_lower, ymax=Savings_upper), width=.2)+
-    theme_bw()+
-    coord_polar()
+algae_BAU <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(Taxa_adj, rep_id) %>% 
+  summarise(Taxa_rep = sum(fao_consumption)) %>% 
+  group_by(Taxa_adj) %>% 
+  summarise(Adj_Value=mean(Taxa_rep), Adj_sd=sd(Taxa_rep)) %>% 
+  mutate(Element = "2030 BAU") %>% 
+  mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
+  mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
+  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd)),
+  
+  
+algae_RG <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(Taxa_adj, rep_id) %>% 
+  summarise(Taxa_rep = sum(WB_RG_consumption)) %>% 
+  group_by(Taxa_adj) %>% 
+  summarise(Adj_Value=mean(Taxa_rep), Adj_sd=sd(Taxa_rep)) %>% 
+  mutate(Element = "2030 Rap.Gr") %>% 
+  mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
+  mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
+  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd)),
+  
+  
+algae_CS <- 
+  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(Taxa_adj, rep_id) %>% 
+  summarise(Taxa_rep = sum(WB_CD_consumption)) %>% 
+  group_by(Taxa_adj) %>% 
+  summarise(Adj_Value=mean(Taxa_rep), Adj_sd=sd(Taxa_rep)) %>% 
+  mutate(Element = "2030 Cons.Shft") %>% 
+  mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
+  mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
+  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd))
+  
+  )
+  
+  
+  
+  pd <- position_dodge(0.1)
+  
+tg <- ToothGrowth
+tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose"))
+
+
+
+
+
+  
+ggplot(tgc, aes(x=dose, y=len, colour=supp)) + 
+    geom_errorbar(aes(ymin=len-se, ymax=len+se), width=.1, position=position_dodge()) +
+    geom_line(position=pd) +
+    geom_point(position=pd)  
+
+ggplot(data= algae_adj, aes(x = Taxa_adj, y = Adj_Value, fill=Element))+
+    geom_bar(position = position_dodge(), stat="identity" )+
+    geom_errorbar(aes(ymin=Adj_Value-Adj_sd, ymax=Adj_Value+Adj_sd),position = position_dodge(.9),  width=.2)+coord_polar()
+  
+```
+
++
+    theme_bw() +
+    theme(panel.grid.minor =  element_blank(),
+          panel.border = element_blank(),
+          text = element_text(size=7),
+          axis.ticks = element_blank(),
+          axis.title = element_blank(),
+          axis.text.y = element_blank()) +
+    #coord_polar() +
+    labs(x = "", y = "")+
+    annotate("text", x=5, y=3e+06, label="3")+
+    annotate("text", x=5, y=2e+06, label="2")+
+    annotate("text", x=5, y=1e+06, label="1")
     
-  algae_2015 %>% 
+  algae_adj %>% 
     ggplot(aes(x = Taxa_adj, y = Savings_mean, group = 1)) +
     geom_point()+
     geom_errorbar(aes(ymin=Savings_lower, ymax=Savings_upper), width=.2)+
@@ -6170,14 +6244,15 @@ consumption_plots <-
     theme_bw() +
     theme(panel.grid.minor =  element_blank(),
           panel.border = element_blank(),
+          text = element_text(size=7),
           axis.ticks = element_blank(),
           axis.title = element_blank(),
           axis.text.y = element_blank()) +
-    coord_polar() +
+    #coord_polar() +
     labs(x = "", y = "")+
-    annotate("text", x=6, y=3e+06, label="3")+
-    annotate("text", x=6, y=2e+06, label="2")+
-    annotate("text", x=6, y=1e+06, label="1")
+    annotate("text", x=5, y=3e+06, label="3")+
+    annotate("text", x=5, y=2e+06, label="2")+
+    annotate("text", x=5, y=1e+06, label="1")
   
  
 ?geom_ribbon
