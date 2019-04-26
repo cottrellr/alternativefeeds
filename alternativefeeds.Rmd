@@ -6195,9 +6195,7 @@ algae_CS <-
   mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
   mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd))
   
-  )
-  
-  
+  ) 
   
   pd <- position_dodge(0.1)
   
@@ -6209,14 +6207,22 @@ tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose"))
 
 
   
-ggplot(tgc, aes(x=dose, y=len, colour=supp)) + 
-    geom_errorbar(aes(ymin=len-se, ymax=len+se), width=.1, position=position_dodge()) +
-    geom_line(position=pd) +
-    geom_point(position=pd)  
+
 
 ggplot(data= algae_adj, aes(x = Taxa_adj, y = Adj_Value, fill=Element))+
     geom_bar(position = position_dodge(), stat="identity" )+
-    geom_errorbar(aes(ymin=Adj_Value-Adj_sd, ymax=Adj_Value+Adj_sd),position = position_dodge(.9),  width=.2)+coord_polar()
+    geom_errorbar(aes(ymin=Adj_Value-Adj_sd, ymax=Adj_Value+Adj_sd),position = position_dodge(.9),  width=.2)+coord_polar()+
+  theme_bw()+
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank()
+  )+
+  guides(fill=F)+
+  annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"))+
+  ggsave("radartest.tiff", dpi=300, device="tiff")
   
 ```
 
