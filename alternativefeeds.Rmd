@@ -6233,8 +6233,7 @@ tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose"))
   
 
 
-ggplot()+
-  data= algae_adj, aes(x = Taxa_adj, y = Adj, fill=Element))+
+ggplot(data= algae_adj, aes(x = Taxa_adj, y = Adj, fill=Element))+
     geom_bar(position = position_dodge(), stat="identity" )+
     geom_errorbar(aes(ymin=Savings_mean-Savings_lower, ymax=Savings_mean+Savings_upper),position = position_dodge(.9),  width=.2)+coord_polar()+
   theme_bw()+
@@ -6272,16 +6271,17 @@ ggplot()+
     mutate(Taxa_adj = factor(Taxa_adj, levels = rev(c("Marine fishes","Salmonids",  "Shrimps", "Tilapias","FW fishes",  "Catfishes", "Carps")))) %>% 
     ggplot(aes(x = Taxa_adj, y=Adj_Value, fill=Element)) +
     geom_bar(stat = "identity", position = position_dodge())+
-    geom_errorbar(aes(ymin=Adj_Value-Adj_sd, ymax=Adj_Value+Adj_sd),position = position_dodge(.9),  width=.2)+
+    geom_errorbar(aes(ymin=Adj_Value-Adj_sd, ymax=Adj_Value+Adj_sd),position = position_dodge(),  width=.01)+
     scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
     theme_pubr()+
     theme(
       axis.text.x = element_text(angle=45, hjust=1, colour="#172869", size=5),
+      axis.text.y = element_blank(),
       axis.title = element_text(colour="#172869", size=7)
     )+
     guides(fill=F)+
     labs(x="Algae")+
-    ggsave("Savings - algae.tiff", device = "tiff", dpi=300, width=3.6, height=5, units="cm")
+    ggsave("Savings - algae.tiff", device = "tiff", dpi=600, width=9, height=5, units="cm")
     
     
     
