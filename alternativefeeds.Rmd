@@ -6266,12 +6266,12 @@ ggplot(data= algae_adj, aes(x = Taxa_adj, y = Adj, fill=Element))+
     annotate("text", x=5, y=2e+06, label="2")+
     annotate("text", x=5, y=1e+06, label="1")
     
-  algae_adj %>% 
+ %>% 
     filter(Taxa_adj %in% c("Marine fishes","Salmonids",  "Shrimps", "Tilapias","FW fishes",  "Catfishes", "Carps"))%>% 
     mutate(Taxa_adj = factor(Taxa_adj, levels = rev(c("Marine fishes","Salmonids",  "Shrimps", "Tilapias","FW fishes",  "Catfishes", "Carps")))) %>% 
     ggplot(aes(x = Taxa_adj, y=Adj_Value, fill=Element)) +
     geom_bar(stat = "identity", position = position_dodge())+
-    geom_errorbar(aes(ymin=Adj_Value-Adj_sd, ymax=Adj_Value+Adj_sd),position = position_dodge(),  width=.01)+
+    geom_errorbar(aes(ymin=Adj_Value-Adj_sd, ymax=Adj_Value+Adj_sd), position = position_dodge(.9), width=0.35, size=.4)+
     scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
     theme_pubr()+
     theme(
