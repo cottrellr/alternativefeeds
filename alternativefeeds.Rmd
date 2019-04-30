@@ -5781,7 +5781,7 @@ base_consumption_2015 <-
   bind_rows(
   
   algae_2015 <- 
-  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+  fread("forage fish consumption.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
   group_by(rep_id) %>% 
   summarise(Rep_Value = sum(consumption_2015)) %>% 
@@ -5820,19 +5820,19 @@ ff_2030_WB2 <-
 
 
 
-ff_algae <- 
-  fread("forage fish consumption - algae replacement.csv", header=T) 
-
-algae_consumption_2015 <- 
-   #by taxa for 2015
-   ff_algae %>%  
-   select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
-   group_by(Taxa_adj, rep_id) %>% 
-   summarise(Consumption_taxa = sum(consumption_2015))%>% 
-   group_by(Taxa_adj) %>% 
-   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
-   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total")))
-
+# ff_algae <- 
+#   fread("forage fish consumption - algae replacement.csv", header=T) 
+# 
+# algae_consumption_2015 <- 
+#    #by taxa for 2015
+#    ff_algae %>%  
+#    select(Country, Species, Taxa_adj, rep_id, Value, consumption_2015) %>% 
+#    group_by(Taxa_adj, rep_id) %>% 
+#    summarise(Consumption_taxa = sum(consumption_2015))%>% 
+#    group_by(Taxa_adj) %>% 
+#    summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
+#    mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total")))
+# 
 
 
 
@@ -5842,7 +5842,7 @@ algae_consumption_2015 <-
   bind_rows(
   
   algae_2015 <- 
-  fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+  fread("forage fish consumption.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
   group_by(rep_id) %>% 
   summarise(Rep_Value = sum(consumption_2015)) %>% 
@@ -5882,7 +5882,7 @@ ff_2030_WB2 <-
   bind_rows(
   
   algae_2015 <- 
-  fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+  fread("forage fish consumption.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
   group_by(rep_id) %>% 
   summarise(Rep_Value = sum(consumption_2015)) %>% 
@@ -5923,7 +5923,7 @@ ff_2030_WB2 <-
   bind_rows(
   
   algae_2015 <- 
-  fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+  fread("forage fish consumption.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
   group_by(rep_id) %>% 
   summarise(Rep_Value = sum(consumption_2015)) %>% 
@@ -5965,7 +5965,7 @@ ff_2030_WB2 <-
   bind_rows(
   
   algae_2015 <- 
-  fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+  fread("forage fish consumption.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
   group_by(rep_id) %>% 
   summarise(Rep_Value = sum(consumption_2015)) %>% 
@@ -6012,10 +6012,10 @@ insects_consumption
 
 (algae_consumption_plot <- 
   ggplot(data=algae_consumption, aes(x=Element, y=Value, fill=Element))+
-  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
-  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1, size=0.25)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2, size=0.25)+
   geom_bar(stat="identity", width=.5)+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2, size=0.25)+
   scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
   scale_y_continuous(limits=c(0,40e+6), expand = c(0,0), labels=c(0,10,20,30,40))+
   theme_pubr()+
@@ -6040,10 +6040,10 @@ insects_consumption
 
 (bacteria_consumption_plot <- 
   ggplot(data=bacteria_consumption, aes(x=Element, y=Value, fill=Element))+
-  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
-  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1, size=0.25)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2, size=0.25)+
   geom_bar(stat="identity", width=.5)+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2, size=0.25)+
   scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
   scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
   theme_pubr()+
@@ -6063,10 +6063,10 @@ insects_consumption
 
 (yeast_consumption_plot <- 
   ggplot(data=yeast_consumption, aes(x=Element, y=Value, fill=Element))+
-  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
-  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1, size=0.25)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2, size=0.25)+
   geom_bar(stat="identity", width=.5)+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2, size=0.25)+
   scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
   scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
   theme_pubr()+
@@ -6087,10 +6087,10 @@ insects_consumption
 
 (soy_consumption_plot <- 
   ggplot(data=soy_consumption, aes(x=Element, y=Value, fill=Element))+
-  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
-  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1, size=0.25)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2, size=0.25)+
   geom_bar(stat="identity", width=.5)+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2, size=0.25)+
   scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
   scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
   theme_pubr()+
@@ -6110,10 +6110,10 @@ insects_consumption
 
 (insects_consumption_plot <- 
   ggplot(data=insects_consumption, aes(x=Element, y=Value, fill=Element))+
-  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
-  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1, size=0.25)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2, size=0.25)+
   geom_bar(stat="identity", width=.5)+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2, size=0.25)+
   scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
   scale_y_continuous(limits=c(0,40e+6), expand = c(0,0))+
   theme_pubr()+
@@ -6168,66 +6168,611 @@ consumption_plots <-
  
  baseline_bau <- 
   fread("forage fish consumption.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, fao_consumption)
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(Taxa_adj, rep_id) %>%
+  summarise(Taxa_rep_value = sum(fao_consumption))
  
  baseline_rapgr <- 
   fread("forage fish consumption.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption)
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption)%>% 
+  group_by(Taxa_adj, rep_id) %>%
+  summarise(Taxa_rep_value = sum(WB_RG_consumption))
  
  baseline_cons <- 
   fread("forage fish consumption.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption)
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption)%>% 
+  group_by(Taxa_adj, rep_id) %>%
+  summarise(Taxa_rep_value = sum(WB_CD_consumption))
 
 
  #algae with current production
  
- (algae_2015 <- 
+ (algae_bau <- 
      fread("forage fish consumption - algae replacement.csv", header=T) %>% 
-     select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+     select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
      group_by(Taxa_adj, rep_id) %>%
-     summarise(Taxa_rep_value = sum(consumption_2015)) %>% 
+     summarise(Taxa_rep_value = sum(fao_consumption)) %>% 
      ungroup()%>% 
-     mutate(baseline=baseline_2015$Taxa_rep_value) %>% 
+     mutate(baseline=baseline_bau$Taxa_rep_value) %>% 
      mutate(Savings=baseline-Taxa_rep_value) %>%
      group_by(Taxa_adj) %>% 
      summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
      filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
      mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
      ggplot(aes(x=Taxa_adj, y=Mean_savings))+
-     geom_bar(stat="identity", colour="grey40", fill="dodgerblue")+
-     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2)+
+     geom_bar(stat="identity", colour="grey40", fill="#359DA9", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
      coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
      theme(
-       panel.grid.major.x =  element_line(color = "grey70", linetype=2),
-       panel.grid.major.y =  element_line(colour="grey70", linetype=2),
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
        panel.grid.minor = element_blank(),
        panel.background = element_blank(),
        panel.border = element_blank(),
        #axis.text.x = element_text(vjust = 1),
        axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
        axis.title = element_blank(),
        #axis.ticks = element_blank(),
-       text = element_text(size=5)
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
      )+
-     annotate("text", x=c(4,4,4), y=c(2e+06,4e+6,6e+6), label=c("2", "4", "6"))
- )
+    annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - algae_bau.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+ 
+(algae_rapgr <- 
+     fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_RG_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_rapgr$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C2B72B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+    scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - algae_rapgr.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
 
-    
+ 
+(algae_conshft <- 
+     fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_CD_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_cons$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C70E7B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+    scale_y_continuous(limits=c(0,9.5e+6))+
+    theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - algae_consshft.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+     
+ 
+ #BActeria 
+ 
+ 
+ 
+ 
+ 
+ (bacteria_bau <- 
+     fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(fao_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_bau$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#359DA9", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - bacteria_bau.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+ 
+(bacteria_rapgr <- 
+     fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_RG_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_rapgr$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C2B72B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - bacteria_rapgr.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
 
-    
-    
-    %>% 
-  group_by(Taxa_adj) %>% 
-  summarise(Adj_Value=mean(Taxa_rep), Adj_sd=sd(Taxa_rep)))
-  
-  
-  
-  
-  
-  mutate(Element = "2015") %>% 
-  mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
-  mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
-  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd))
+ 
+(bacteria_conshft <- 
+     fread("forage fish consumption - bacteria replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_CD_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_cons$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C70E7B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+    scale_y_continuous(limits=c(0,9.5e+6))+
+    theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - bacteria_consshft.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+ ###YEAST 
+ 
+ (yeast_bau <- 
+     fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(fao_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_bau$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#359DA9", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - yeast_bau.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+ 
+(yeast_rapgr <- 
+     fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_RG_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_rapgr$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C2B72B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - yeast_rapgr.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+
+ 
+(yeast_conshft <- 
+     fread("forage fish consumption - yeast replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_CD_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_cons$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C70E7B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+    scale_y_continuous(limits=c(0,9.5e+6))+
+    theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - yeast_consshft.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+ #SOY
+ 
+ 
+ (soy_bau <- 
+     fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(fao_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_bau$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#359DA9", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - soy_bau.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+ 
+(soy_rapgr <- 
+     fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_RG_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_rapgr$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C2B72B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - soy_rapgr.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+
+ 
+(soy_conshft <- 
+     fread("forage fish consumption - soy replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_CD_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_cons$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C70E7B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+    scale_y_continuous(limits=c(0,9.5e+6))+
+    theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - soy_consshft.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+#INSECTS
+ 
+ (insects_bau <- 
+     fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(fao_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_bau$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#359DA9", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - insects_bau.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ 
+ 
+(insects_rapgr <- 
+     fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_RG_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_rapgr$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C2B72B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+     scale_y_continuous(limits=c(0,9.5e+6))+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - insects_rapgr.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+
+ 
+(insects_conshft <- 
+     fread("forage fish consumption - insects replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(WB_CD_consumption)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_cons$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="#C70E7B", size=0.2)+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25)+
+     coord_polar()+
+    scale_y_continuous(limits=c(0,9.5e+6))+
+    theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.ticks.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=7),
+       axis.text.x = element_text(angle=c(335, 275, 45, 0, 310, 80, 30 ), vjust=0.5),
+       plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
+     )+
+     annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=2)+
+     ggsave("radar - insects_consshft.tiff", device="tiff", dpi=300, width=3.6, height=3.6, units="cm"))
+ 
+ 
+ ggarrange(algae_bau,  bacteria_bau, yeast_bau, soy_bau, insects_bau,
+           algae_rapgr, bacteria_rapgr, yeast_rapgr, soy_rapgr, insects_rapgr, 
+           algae_conshft, bacteria_conshft, yeast_conshft, soy_conshft, insects_conshft,
+           labels = c("e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s"),
+           nrow = 3, 
+           ncol=5, 
+           font.label = list(size=6)) +
+           #align = "hv",
+           #)+
+   ggsave("radar composite.tiff", device="tiff", dpi=600, width = 18, height = 11, units="cm")+
+   ggsave("radar composite.pdf", device="pdf", dpi=600, width = 18, height = 11, units =  "cm")
+ 
+
+
 ```
 algae_BAU <- 
   fread("forage fish consumption - algae replacement.csv", header=T) %>% 
