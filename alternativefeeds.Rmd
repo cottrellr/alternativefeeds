@@ -6155,32 +6155,80 @@ consumption_plots <-
 #Species breakdown of consumption and savings 
 ```{r}
 
- baseline_2015 <- 
+#Savings
+
+
+#baseline consumption on current feeds for the different scenarios
+(baseline_2015 <- 
   fread("forage fish consumption.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
-  group_by(Taxa_adj, rep_id) %>% 
-  summarise(Taxa_rep = sum(consumption_2015)) %>% 
+  group_by(Taxa_adj, rep_id) %>%
+  summarise(Taxa_rep_value = sum(consumption_2015)))
+  
+ 
+ baseline_bau <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption)
+ 
+ baseline_rapgr <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption)
+ 
+ baseline_cons <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption)
+
+
+ #algae with current production
+ 
+ (algae_2015 <- 
+     fread("forage fish consumption - algae replacement.csv", header=T) %>% 
+     select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+     group_by(Taxa_adj, rep_id) %>%
+     summarise(Taxa_rep_value = sum(consumption_2015)) %>% 
+     ungroup()%>% 
+     mutate(baseline=baseline_2015$Taxa_rep_value) %>% 
+     mutate(Savings=baseline-Taxa_rep_value) %>%
+     group_by(Taxa_adj) %>% 
+     summarise(Mean_savings = mean(Savings), SD_savings = sd(Savings)) %>% 
+     filter(Taxa_adj %in% c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes")) %>% 
+     mutate(Taxa_adj = factor(Taxa_adj, levels = c("Carps", "Catfishes", "FW fishes", "Tilapias", "Shrimps", "Salmonids", "Marine fishes"))) %>% 
+     ggplot(aes(x=Taxa_adj, y=Mean_savings))+
+     geom_bar(stat="identity", colour="grey40", fill="dodgerblue")+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2)+
+     coord_polar()+
+     theme(
+       panel.grid.major.x =  element_line(color = "grey70", linetype=2),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=2),
+       panel.grid.minor = element_blank(),
+       panel.background = element_blank(),
+       panel.border = element_blank(),
+       #axis.text.x = element_text(vjust = 1),
+       axis.text.y = element_blank(),
+       axis.title = element_blank(),
+       #axis.ticks = element_blank(),
+       text = element_text(size=5)
+     )+
+     annotate("text", x=c(4,4,4), y=c(2e+06,4e+6,6e+6), label=c("2", "4", "6"))
+ )
+
+    
+
+    
+    
+    %>% 
   group_by(Taxa_adj) %>% 
-  summarise(baseline_Value=mean(Taxa_rep), baseline_sd=sd(Taxa_rep)) %>% 
-  mutate(Element = "2015")
-
-
-algae_adj <- 
-  bind_rows(
-
-  algae_2015 <- 
-  fread("forage fish consumption - algae replacement.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
-  group_by(Taxa_adj, rep_id) %>% 
-  summarise(Taxa_rep = sum(consumption_2015)) %>% 
-  group_by(Taxa_adj) %>% 
-  summarise(Adj_Value=mean(Taxa_rep), Adj_sd=sd(Taxa_rep)) %>% 
+  summarise(Adj_Value=mean(Taxa_rep), Adj_sd=sd(Taxa_rep)))
+  
+  
+  
+  
+  %>% 
   mutate(Element = "2015") %>% 
   mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
   mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
-  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd)),
-  
-  
+  mutate(Savings_lower = (Baseline_value-Baseline_sd)-(Adj_Value+Adj_sd), Savings_upper = (Baseline_value+Baseline_sd)-(Adj_Value-Adj_sd))
+```
 algae_BAU <- 
   fread("forage fish consumption - algae replacement.csv", header=T) %>% 
   select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
