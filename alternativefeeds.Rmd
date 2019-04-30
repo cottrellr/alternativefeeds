@@ -6223,7 +6223,7 @@ consumption_plots <-
   
   
   
-  %>% 
+  
   mutate(Element = "2015") %>% 
   mutate(Baseline_value = baseline_2015$baseline_Value, Baseline_sd = baseline_2015$baseline_sd) %>% 
   mutate(Savings_mean = Baseline_value-Adj_Value) %>% 
