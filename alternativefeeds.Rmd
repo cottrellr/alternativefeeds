@@ -55,6 +55,20 @@ e$l <- l
   }, e)
 }
 
+
+
+#theme for ggplto
+
+
+theme_nothing <- 
+  theme(panel.grid = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank())
+
 ```
 
 
@@ -6032,12 +6046,13 @@ insects_consumption
         legend.key.size = unit(0.3, "cm"),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
+        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
         axis.line = element_line(size=0.25),
         panel.background =  element_blank()
         #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
         )+
   #guides(fill=F)+
-  labs(x="", y=bquote(Forage~fish~consumption~(Tx10^6))))
+  labs(x="", y=bquote(Forage~fish~consumption~(Tx10^6)), title= "Algae"))
 
 
 (bacteria_consumption_plot <- 
@@ -6059,11 +6074,12 @@ insects_consumption
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
         axis.line = element_line(size=0.25),
+        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
         panel.background =  element_blank()
         #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
         )+
   guides(fill=F)+
-  labs(x=""))
+  labs(x="", title="Bacteria"))
 
 (yeast_consumption_plot <- 
   ggplot(data=yeast_consumption, aes(x=Element, y=Value, fill=Element))+
@@ -6084,11 +6100,12 @@ insects_consumption
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
         axis.line = element_line(size=0.25),
+        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
         panel.background =  element_blank()
         #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
         )+
   guides(fill=F)+
-  labs(x="", y=""))
+  labs(x="", y="", title="Yeast"))
   
 
 (soy_consumption_plot <- 
@@ -6106,6 +6123,7 @@ insects_consumption
         axis.title.y = element_blank(),
         axis.ticks.x = element_blank(),
         axis.ticks = element_line(size=0.25),
+        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
         #axis.ticks.y = element_blank(),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
@@ -6114,7 +6132,7 @@ insects_consumption
         #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
         )+
   guides(fill=F)+
-  labs(x=""))
+  labs(x="", title="Soy"))
 
 (insects_consumption_plot <- 
   ggplot(data=insects_consumption, aes(x=Element, y=Value, fill=Element))+
@@ -6135,11 +6153,12 @@ insects_consumption
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
         axis.line = element_line(size=0.25),
+        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
         panel.background =  element_blank()
         #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
         )+
   guides(fill=F)+
-  labs(x=""))
+  labs(x="", title = "Insects"))
 
 
 scenario_legend <- get_legend(algae_consumption_plot)
@@ -6252,13 +6271,13 @@ consumption_plots <-
      mutate(Element = factor(Element, levels = c("2030 BAU", "2030 Rap.Gr", "2030 Cons.Shft"))) %>% 
      ggplot(aes(x=Taxa_adj, y=Mean_savings, fill=Element))+
      geom_bar(stat="identity", colour="grey40",  size=0.2, position=position_dodge())+ #fill="#359DA9",
-     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.25, position = position_dodge(0.9))+
+     geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.3, position = position_dodge(0.9))+
      coord_polar()+
      scale_fill_manual(values=c("#359DA9", "#C2B72B", "#C70E7B"))+
      scale_y_continuous(limits=c(0,9.5e+6))+
      theme(
-       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
-       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.4),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.4),
        panel.grid.minor = element_blank(),
        panel.background = element_blank(),
        panel.border = element_blank(),
@@ -6267,8 +6286,8 @@ consumption_plots <-
        axis.ticks.y = element_blank(),
        axis.title.x = element_blank(),
        #axis.ticks = element_blank(),
-       text = element_text(size=7),
-       axis.title.y = element_text(size=6),
+       text = element_text(size=9),
+       axis.title.y = element_text(size=7),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
        plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=0), "cm")
      )+
@@ -6331,14 +6350,14 @@ consumption_plots <-
      ) %>% 
      mutate(Element = factor(Element, levels = c("2030 BAU", "2030 Rap.Gr", "2030 Cons.Shft"))) %>% 
      ggplot(aes(x=Taxa_adj, y=Mean_savings, fill=Element))+
-     geom_bar(stat="identity", colour="grey40",  size=0.2, position=position_dodge())+ #fill="#359DA9",
+     geom_bar(stat="identity", colour="grey40",  size=0.3, position=position_dodge())+ #fill="#359DA9",
      geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.15, position = position_dodge(0.9))+
      coord_polar()+
      scale_fill_manual(values=c("#359DA9", "#C2B72B", "#C70E7B"))+
      scale_y_continuous(limits=c(0,9.5e+6))+
      theme(
-       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
-       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.4),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.4),
        panel.grid.minor = element_blank(),
        panel.background = element_blank(),
        panel.border = element_blank(),
@@ -6347,7 +6366,7 @@ consumption_plots <-
        axis.ticks.y = element_blank(),
        axis.title = element_blank(),
        #axis.ticks = element_blank(),
-       text = element_text(size=7),
+       text = element_text(size=9),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
        plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
      )+
@@ -6414,14 +6433,14 @@ consumption_plots <-
      ) %>% 
      mutate(Element = factor(Element, levels = c("2030 BAU", "2030 Rap.Gr", "2030 Cons.Shft"))) %>% 
      ggplot(aes(x=Taxa_adj, y=Mean_savings, fill=Element))+
-     geom_bar(stat="identity", colour="grey40",  size=0.2, position=position_dodge())+ #fill="#359DA9",
+     geom_bar(stat="identity", colour="grey40",  size=0.3, position=position_dodge())+ #fill="#359DA9",
      geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.15, position = position_dodge(0.9))+
      coord_polar()+
      scale_fill_manual(values=c("#359DA9", "#C2B72B", "#C70E7B"))+
      scale_y_continuous(limits=c(0,9.5e+6))+
      theme(
-       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
-       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.4),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.4),
        panel.grid.minor = element_blank(),
        panel.background = element_blank(),
        panel.border = element_blank(),
@@ -6430,7 +6449,7 @@ consumption_plots <-
        axis.ticks.y = element_blank(),
        axis.title = element_blank(),
        #axis.ticks = element_blank(),
-       text = element_text(size=7),
+       text = element_text(size=9),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
        plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
      )+
@@ -6496,14 +6515,14 @@ consumption_plots <-
      ) %>% 
      mutate(Element = factor(Element, levels = c("2030 BAU", "2030 Rap.Gr", "2030 Cons.Shft"))) %>% 
      ggplot(aes(x=Taxa_adj, y=Mean_savings, fill=Element))+
-     geom_bar(stat="identity", colour="grey40",  size=0.2, position=position_dodge())+ #fill="#359DA9",
+     geom_bar(stat="identity", colour="grey40",  size=0.3, position=position_dodge())+ #fill="#359DA9",
      geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.15, position = position_dodge(0.9))+
      coord_polar()+
      scale_fill_manual(values=c("#359DA9", "#C2B72B", "#C70E7B"))+
      scale_y_continuous(limits=c(0,9.5e+6))+
      theme(
-       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
-       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.4),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.4),
        panel.grid.minor = element_blank(),
        panel.background = element_blank(),
        panel.border = element_blank(),
@@ -6512,7 +6531,7 @@ consumption_plots <-
        axis.ticks.y = element_blank(),
        axis.title = element_blank(),
        #axis.ticks = element_blank(),
-       text = element_text(size=7),
+       text = element_text(size=9),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
        plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
      )+
@@ -6577,14 +6596,14 @@ consumption_plots <-
      ) %>% 
      mutate(Element = factor(Element, levels = c("2030 BAU", "2030 Rap.Gr", "2030 Cons.Shft"))) %>% 
      ggplot(aes(x=Taxa_adj, y=Mean_savings, fill=Element))+
-     geom_bar(stat="identity", colour="grey40",  size=0.2, position=position_dodge())+ #fill="#359DA9",
+     geom_bar(stat="identity", colour="grey40",  size=0.3, position=position_dodge())+ #fill="#359DA9",
      geom_errorbar(aes(ymin=Mean_savings-SD_savings, ymax=Mean_savings+SD_savings), width=0.2, size=0.15, position = position_dodge(0.9))+
      coord_polar()+
      scale_fill_manual(values=c("#359DA9", "#C2B72B", "#C70E7B"))+
      scale_y_continuous(limits=c(0,9.5e+6))+
      theme(
-       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.2),
-       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.2),
+       panel.grid.major.x =  element_line(color = "grey70", linetype=3, size=0.4),
+       panel.grid.major.y =  element_line(colour="grey70", linetype=3, size=0.4),
        panel.grid.minor = element_blank(),
        panel.background = element_blank(),
        panel.border = element_blank(),
@@ -6593,7 +6612,7 @@ consumption_plots <-
        axis.ticks.y = element_blank(),
        axis.title = element_blank(),
        #axis.ticks = element_blank(),
-       text = element_text(size=7),
+       text = element_text(size=9),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
        plot.margin = unit(c(t=0.1, r=-0.1, b=-0.5, l=-0.1), "cm")
      )+
@@ -6631,11 +6650,6 @@ use_savings_legend <-
 
 
 
-(Figure4 <- 
-  annotate_figure(use_savings_legend,
-                  top = text_grob(label = paste("            Algae                                    ", "Bacteria                                  ", "Yeast                                   ", "Soy                                  ", "Insects                     "), hjust = 0.44, size=7, face = "bold"))+
-  ggsave("Figure 4 - Global use and savings.tiff", device = "tiff", dpi=600, width = 18, height = 8, units = "cm")+
-  ggsave("Figure 4 - Global use and savings.pdf", device = "pdf", dpi=600, width = 18, height = 8, units = "cm"))
 
 ```
 algae_BAU <- 
