@@ -127,19 +127,19 @@ prod.aqua <-
                               T ~ Taxa)) 
   
 
-rev(lacroix_palette("PassionFruit", n=4, "continuous"))
+#rev(lacroix_palette("PassionFruit", n=4, "continuous"))
 
 ```
 
 
-#Fig S1 - Production scenarios 
+#Fig 1 - Production scenarios 
 ```{r}
 
 prod_2015 <-  
   prod.aqua %>% 
   filter(Year==2015) %>% 
   group_by(Taxa_adj) %>% 
-  summarise(Value=sum(Value)) %>% 
+  summarise(Value=sum(Value))%>% 
   ggplot(aes(x= reorder(Taxa_adj, Value), y=(Value)))+
   geom_point(stat = "identity", colour = "#172869", size=1.9)+
   geom_segment(aes(y = 0, 
@@ -149,12 +149,12 @@ prod_2015 <-
                colour= "#172869",
                size=.7)+
   #geom_text(colour="white", size=2)+
-  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7, 4e+7), labels = c(0,10,20,30,40), limits=c(0,4e+7))+
+  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7), labels = c(0,10,20,30), limits=c(0,3e+7))+
   coord_flip()+
   theme_pubr()+
   theme(panel.grid.minor  = element_blank(),
         #panel.grid.major.y = element_blank(),
-        text = element_text(size=7),
+        text = element_text(size=8),
         axis.title = element_blank(),
         plot.title = element_text(hjust=.5))+
   labs(title="2015")+
@@ -187,7 +187,7 @@ prod.aqua.fao2030 <-
   group_by(Taxa_adj) %>% 
   summarise(Value=sum(Value)) %>%
   arrange(Value) %>%
-  mutate(Taxa_adj = factor(Taxa_adj, levels = unique(Taxa_adj))) %>%#[c(4,9,1,3,7,2,6,8,10,5,11,12)])) %>% 
+  mutate(Taxa_adj = factor(Taxa_adj, levels = unique(Taxa_adj)))%>%#[c(4,9,1,3,7,2,6,8,10,5,11,12)])) %>% 
   ggplot( aes(x=Taxa_adj, y=(Value)))+
   geom_point(stat = "identity", colour = "#359DA9", size=1.9)+
   geom_segment(aes(y = 0, 
@@ -197,13 +197,13 @@ prod.aqua.fao2030 <-
                colour= "#359DA9",
                size=.7)+
   coord_flip()+
-  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7, 4e+7), labels = c(0,10,20,30,40), limits=c(0,4e+7))+
+  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7), labels = c(0,10,20,30), limits=c(0,3e+7))+
   theme_pubr()+
   theme(panel.grid.minor  = element_blank(),
         #panel.grid.major.y = element_blank(),
         axis.title = element_blank(),
         axis.text.y = element_blank(),
-        text = element_text(size=7),
+        text = element_text(size=8),
         plot.title = element_text(hjust=.5))+
   labs(title="2030 BAU")+
   ggsave("2030_fao_production.tiff", device="tiff", dpi=600, width=6, height=7, units = "cm")
@@ -232,13 +232,13 @@ prod.aqua.wb_rg_2030 <-
   filter(Year==2015) %>% 
   group_by(Country, Taxa_adj) %>%
   summarise(Value=sum(Value))%>%
-  mutate(Value = case_when(Country %in% MEDCs ~ Value*1.92,
-                           Country %in% LDCs ~ Value*2.19,
-                           T ~Value*2.06)) %>% 
+  mutate(Value = case_when(Country %in% MEDCs ~ Value*1.42,
+                           Country %in% LDCs ~ Value*1.69,
+                           T ~Value*1.56)) %>% 
   group_by(Taxa_adj) %>% 
   summarise(Value=sum(Value)) %>%
   arrange(Value) %>%
-  mutate(Taxa_adj = factor(Taxa_adj, levels = unique(Taxa_adj))) %>%#[c(4,9,1,3,7,2,6,8,10,5,11,12)])) %>% 
+  mutate(Taxa_adj = factor(Taxa_adj, levels = unique(Taxa_adj)))%>%#[c(4,9,1,3,7,2,6,8,10,5,11,12)])) %>% 
   ggplot( aes(x=Taxa_adj, y=(Value)))+
   geom_point(stat = "identity", colour = "#C2B72B", size=1.9)+
   geom_segment(aes(y = 0, 
@@ -248,13 +248,13 @@ prod.aqua.wb_rg_2030 <-
                colour= "#C2B72B",
                size=.7)+
   coord_flip()+
-  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7, 4e+7), labels = c(0,10,20,30,40), limits=c(0,4e+7))+
+  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7), labels = c(0,10,20,30), limits=c(0,3e+7))+
   theme_pubr()+
   theme(panel.grid.minor  = element_blank(),
         #panel.grid.major.y = element_blank(),
         axis.title = element_blank(),
         axis.text.y = element_blank(),
-        text = element_text(size=7),
+        text = element_text(size=8),
         plot.title = element_text(hjust=.5))+
   labs(title="2030 Rap.Gr")+
 
@@ -294,13 +294,13 @@ prod.aqua.wb_cd_2030 <-
                colour= "#C70E7B",
                size=.7)+
   coord_flip()+
-  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7, 4e+7), labels = c(0,10,20,30,40), limits=c(0,4e+7))+
+  scale_y_continuous(breaks = c(0,1e+7,2e+7,3e+7), labels = c(0,10,20,30), limits=c(0,3e+7))+
   theme_pubr()+
   theme(panel.grid.minor  = element_blank(),
         #panel.grid.major.y = element_blank(),
         axis.title = element_blank(),
         axis.text.y = element_blank(),
-        text = element_text(size=7),
+        text = element_text(size=8),
         plot.title = element_text(hjust=.5))+
   labs(title="2030 Cons.Shft")+
 
@@ -317,7 +317,7 @@ production_scenarios <-
               prod.aqua.fao2030, prod.aqua.wb_rg_2030,prod.aqua.wb_cd_2030, 
               labels = c("a", "b", "c", "d"), 
               nrow=1, ncol=4, 
-              font.label = list(size=8), 
+              font.label = list(size=10), 
               widths = c(1.5,1,1,1), 
               label.x = c(.35,-.05,-.05,-.05)),
     
@@ -405,9 +405,9 @@ fed_aqua_proj <-
   mutate(FAO_2030 = case_when(Country %in% MEDCs ~ Value*1.281,
                               Country %in% LDCs ~ Value*1.463,
                               T ~ Value*1.37)) %>% 
-  mutate(WorldBank_RG_2030 = case_when(Country %in% MEDCs ~ Value*1.92,
-                           Country %in% LDCs ~ Value*2.19,
-                           T ~Value*2.06)) %>% 
+  mutate(WorldBank_RG_2030 = case_when(Country %in% MEDCs ~ Value*1.42,
+                           Country %in% LDCs ~ Value*1.69,
+                           T ~Value*1.56)) %>% 
   mutate(WorldBank_CD_2030 = case_when(Taxa_adj %in% c("Shrimps", "Salmonids", "FW crustaceans","Marine crustaceans", "Tunas") ~ Value*3,
                            T ~ FAO_2030))
 
@@ -418,101 +418,8 @@ fed_aqua_proj <-
 
 
 
-#FOR LOOP METHOD
 
-# fed_aqua_proj$Repeat <- NA
-# fed_aqua_proj$fcr <- NA
-# fed_aqua_proj$fm <- NA
-# fed_aqua_proj$fo <-NA
-# fed_aqua_proj$fed <- NA
-# 
-# fed_aqua_proj$fm_demand <- NA
-# fed_aqua_proj$fm_biomass <- NA
-# fed_aqua_proj$fo_demand <- NA
-# fed_aqua_proj$fo_from_fm <- NA
-# fed_aqua_proj$surplus <- NA
-# fed_aqua_proj$consumption <- NA
-
-
-
-# fed_aqua_list <- fed_aqua_proj %>% 
-#   group_by(Country, Broad_group, Value, bau, chn, faq) %>%
-#   split(.,.$Country)
-# 
-# 
-# repeats <- 500
-# df_list <- vector("list", repeats*length(fed_aqua_list))
-# 
-# 
-# for (r in 1:repeats){
-#   countries <- vector("list", length(fed_aqua_list))
-#   for (i in 1:length(fed_aqua_list)){
-#     for (j in 1:nrow(feeds)){
-#       
-#       fed_aqua_list[[i]]$Repeat[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- r
-#       
-#       fed_aqua_list[[i]]$fcr[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- runif(1, feeds$FCR_min[j], feeds$FCR_max[j])
-#       
-#       fed_aqua_list[[i]]$fm[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- runif(1, feeds$FM_min[j], feeds$FM_max[j])
-#       
-#       fed_aqua_list[[i]]$fo[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- runif(1, feeds$FO_min[j], feeds$FO_max[j])
-#       
-#       fed_aqua_list[[i]]$fed[fed_aqua_list[[i]]$Broad_group==feeds$Broad_group[j]] <- runif(1, feeds$Fed_min[j], feeds$Fed_max[j])
-#       
-#       fed_aqua_list[[i]]$fm_demand <- fed_aqua_list[[i]]$fcr*fed_aqua_list[[i]]$fm*fed_aqua_list[[i]]$fed*fed_aqua_list[[i]]$Value
-#       
-#       fed_aqua_list[[i]]$fm_biomass <- fed_aqua_list[[i]]$fm_demand/0.225
-#       
-#       fed_aqua_list[[i]]$fo_demand <- fed_aqua_list[[i]]$fcr*fed_aqua_list[[i]]$fo*fed_aqua_list[[i]]$fed*fed_aqua_list[[i]]$Value
-#       
-#       fed_aqua_list[[i]]$fo_from_fm <- fed_aqua_list[[i]]$fm_biomass*0.05
-#         
-#       fed_aqua_list[[i]]$surplus <- (fed_aqua_list[[i]]$fo_demand - fed_aqua_list[[i]]$fo_from_fm)/0.05
-#       
-#       fed_aqua_list[[i]]$consumption <- fed_aqua_list[[i]]$fm_biomass+fed_aqua_list[[i]]$surplus
-#     }
-#     countries[[i]] <-fed_aqua_list[[i]]
-#   }
-#   df <- dplyr::bind_rows(countries)
-#   df_list[[r]] <- df
-# }
-
-# df_new <- dplyr::bind_rows(df_list)
-# #df_new$consumption[df_new$surplus< 0] <- df_new$fm_biomass[df_new$surplus< 0]
-# 
-# #Consumption for other scenarios
-# #bau
-# df_new$bau_fm_demand <- df_new$bau*df_new$fcr*df_new$fm
-# df_new$bau_fm_biomass <- df_new$bau_fm_demand/0.225
-# df_new$bau_fo_demand <- df_new$bau*df_new$fcr*df_new$fo
-# df_new$bau_from_fm <- df_new$bau_fm_biomass*0.05
-# df_new$bau_surplus <- (df_new$bau_fo_demand- df_new$bau_from_fm)/0.05
-# df_new$bau_consumption <- df_new$bau_fm_biomass + df_new$bau_surplus
-# #df_new$bau_consumption[df_new$bau_surplus< 0] <- df_new$bau_fm_biomass[df_new$bau_surplus< 0]
-# 
-# #chn
-# df_new$chn_fm_demand <- df_new$chn*df_new$fcr*df_new$fm
-# df_new$chn_fm_biomass <- df_new$chn_fm_demand/0.225
-# df_new$chn_fo_demand <- df_new$chn*df_new$fcr*df_new$fo
-# df_new$chn_from_fm <- df_new$chn_fm_biomass*0.05
-# df_new$chn_surplus <- (df_new$chn_fo_demand- df_new$chn_from_fm)/0.05
-# df_new$chn_consumption <- df_new$chn_fm_biomass + df_new$chn_surplus
-# #df_new$chn_consumption[df_new$chn_surplus< 0] <- df_new$chn_fm_biomass[df_new$chn_surplus< 0]
-# 
-# #faq
-# df_new$faq_fm_demand <- df_new$faq*df_new$fcr*df_new$fm
-# df_new$faq_fm_biomass <- df_new$faq_fm_demand/0.225
-# df_new$faq_fo_demand <- df_new$faq*df_new$fcr*df_new$fo
-# df_new$faq_from_fm <- df_new$faq_fm_biomass*0.05
-# df_new$faq_surplus <- (df_new$faq_fo_demand- df_new$faq_from_fm)/0.05
-# df_new$faq_consumption <- df_new$faq_fm_biomass + df_new$faq_surplus
-# #df_new$faq_consumption[df_new$faq_surplus< 0] <- df_new$faq_fm_biomass[df_new$faq_surplus< 0]
-
-
-
-
-
-#LAPPLY METHOD 
+#DEMAND SIMULATIONS 
 
 a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
   target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
@@ -552,7 +459,7 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
     s <- target_row[["WorldBank_RG_2030"]]*b*c*f    #fm demand
     t <- s/0.225       # forage fish biomass needed for fm demand
     u <- target_row[["WorldBank_RG_2030"]]*b*d*f    #fo demand
-    v <- t*0.05   # amount of fish oil coming from the fm biomass
+    v <- t*0.05   #amount of fish oil coming from the fm biomass
     w <- (u-v)/0.05
     x <- case_when(u<v ~ t-(v-u),
                     T ~ t+w)
@@ -658,8 +565,8 @@ ff_consumption <-
    group_by(Taxa_adj, rep_id) %>% 
    summarise(Consumption_taxa = sum(consumption_2015))%>% 
    group_by(Taxa_adj) %>% 
-   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
-   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total"))) %>% 
+   summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" )%>% 
+   mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps"))) %>% 
    ggplot(aes(x=Taxa_adj, Mean))+
    geom_bar(stat="identity", fill="#172869", width = 0.7)+
    geom_errorbar(aes(ymin=Mean-sd, 
@@ -808,15 +715,16 @@ consumption_scenarios <-
       consumption_FAO_2030,
       consumption_WB_RG_2030, 
       consumption_WB_CD_2030,
-      labels = c("e", "f", "g", "h"), 
+      labels = c("a", "b", "c", "d"), 
       nrow=1, ncol=4, 
       font.label = list(size=8), 
       widths = c(1.5,1,1,1), 
       label.x = c(.35,-.05,-.05,-.05)),
     
-    bottom = text_grob("Forage fish consumption (million tonnes)", size=8, hjust=.5, vjust = 0.1)
+    bottom = text_grob("Forage fish demand (million tonnes)", size=8, hjust=.5, vjust = 0.1)
   )+
   ggsave("Consumption_Scenarios.tiff", device="tiff", dpi=600, width = 18, height=7, units="cm")
+
 
 ```
 
@@ -871,7 +779,7 @@ forage_fish <-
   mutate(Element="Historical supply")
 
 
-mean(forage_fish$Value[forage_fish$Year>1980])*.8
+mean(forage_fish$Value[forage_fish$Year>1980])
   
 
   # 
@@ -907,7 +815,7 @@ mean(forage_fish$Value[forage_fish$Year>1980])*.8
     legend.background=element_blank(),
     legend.position = c(0.3,0.1),
     legend.text = element_text(size=8),
-    plot.margin = unit(c(0.5,-.2, 0.2,0.2), "cm"),
+    plot.margin = unit(c(0.5,-.2, 0.2,1.6), "cm"),
     axis.text.x = element_text(size=8),
     axis.title.x = element_text(size=9, hjust = 0.9, margin = margin(t =10, r = 0, b = 0, l = 0)),
     axis.text.y = element_text(size=8),
@@ -969,6 +877,8 @@ bracket <- bracketsGrob(0.15, 0.93,  0.85, 0.93 , h=0.04, col="grey40")
 consumption <- 
   ggplot(data=total_consumption, aes(x=Element, y=Value, fill=Element))+
   geom_segment(x=1, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=1, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979])*0.8, yend=mean(forage_fish$Value[forage_fish$Year>1979])*0.8, linetype=3)+
+
   geom_segment(x=1, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
   geom_bar(stat="identity", width=.5)+
   geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
@@ -986,7 +896,7 @@ consumption <-
   guides(fill=F)+
   labs(x="")+
   annotation_custom(bracket)+
-  annotate("text", x=2.5, y=41.5e+6, label="Aquaculture consumption", size=2.8)
+  annotate("text", x=2.5, y=41.5e+6, label="Demand from aquaculture", size=2.8)
 
 
 
@@ -1006,12 +916,20 @@ consumption <-
 # $y
 # [1] 315native  
 
-ggarrange(supply_demand, consumption, widths = c(1,0.7), nrow=1, ncol=2)+
+ggarrange(production_scenarios,
+  ggarrange(supply_demand, consumption, widths = c(1,0.7), 
+            nrow=1, 
+            ncol=2, 
+            labels=c("e", ""),
+            label.x = 0.15,
+            font.label = list(size=10))+
   annotate("text", x=.665,y=.725, label="Average supply 1980-2013", size=2.5)+
-  annotate("text", x=.58,y=.545, label="Average animal feed use\n1980-2013", size=2.5, col= "black", hjust=0)+
+  annotate("text", x=.58,y=.53, label="Average feed usage 1980-2013", size=2.5, col= "black", hjust=0),
+  nrow=2, ncol=1,
+  heights = c(0.65,1))+
 
-  ggsave("Figure 1 new.tiff", device="tiff", dpi=600, width = 18, height=12, units = "cm")+
-  ggsave("Figure 1 new.pdf", device="pdf", dpi=600, width = 18, height=12, units = "cm")
+  ggsave("Figure 1 new.tiff", device="tiff", dpi=600, width = 18, height=18, units = "cm")+
+  ggsave("Figure 1 new.pdf", device="pdf", dpi=600, width = 18, height=24, units = "cm")
 
 
 
@@ -1287,6 +1205,10 @@ fish_oil <- growth_data %>%
 # 
 # 
 # arrange(fishmeal, Feed_general, Fish_group)
+
+
+length((which((unique(growth_data$Study_id[growth_data$Feed_general=="Algae"]))%%1==0)==TRUE))
+length(unique(growth_data$Study_id))
 
 ```
 
