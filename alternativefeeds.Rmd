@@ -5873,10 +5873,10 @@ write_csv(a_test, "forage fish consumption - optimal replacement.csv")
 
 ```
 
-#Development-contrained optimal use
+#Development-constrained optimal use
+#same as optimal but only MEDCS and the top 10 producers of fed aquaculture (who are not LDCs i.e. Bangladesh was omitted) have access to novel feeds
 
 ```{r}
-#same as optimal but only MEDCS and the top producers of fed aquaculture (who are not LDCs i.e. Bangladesh was omitted) have access to novel feeds
 
 top_producers <- 
   fed_aqua_proj %>% 
@@ -6015,13 +6015,11 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
   return(temp_df)
 }))#close lapply function, lapply call, and bind_rows
 
-write_csv(a_test, "forage fish consumption - optimal replacement.csv")
+write_csv(a_test, "forage fish consumption - development optimal replacement.csv")
 
 
 
 
-
-fed_aqua_proj
 ```
 
 
@@ -6045,6 +6043,52 @@ base_consumption_2015 <-
    group_by(Taxa_adj) %>% 
    summarise(Mean = mean(Consumption_taxa), sd = sd(Consumption_taxa), Scenario = "2015" ) %>% 
    mutate(Taxa_adj = factor(Taxa_adj, levels = c("Tunas", "Eels","Marine crustaceans", "Diadromous fishes", "FW crustaceans", "Marine fishes","Salmonids", "FW fishes", "Catfishes", "Shrimps", "Tilapias",  "Carps" , "Total")))
+
+
+
+(development_consumption <- 
+  bind_rows(
+  
+  algae_2015 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+
+
 
 
 (optimal_consumption <- 
@@ -6315,12 +6359,6 @@ ff_2030_WB2 <-
     
 )
 
-ff_consumption
-algae_consumption
-bacteria_consumption
-yeast_consumption
-soy_consumption
-insects_consumption
 
 
 
@@ -6332,7 +6370,43 @@ insects_consumption
   geom_bar(stat="identity", width=.5)+
   geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2, size=0.25)+
   scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
-  scale_y_continuous(limits=c(0,40e+6), expand = c(0,0), labels=c(0,10,20,30,40))+
+  scale_y_continuous(limits=c(0,35e+6), expand = c(0,0), breaks=c(0,10e+6,20e+6,30e+6), labels=c(0,10,20,30))+
+  theme_pubr()+
+  theme(
+        #axis.line.y = element_blank(),
+        #axis.text.y = element_blank(),
+        axis.title.y = element_text(size=8),
+        #axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks = element_line(size=0.25),
+        text = element_text(size=8),
+        legend.title = element_blank(),
+        legend.spacing.x = unit(0.2, "cm"),
+        legend.key.size = unit(0.3, "cm"),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        plot.title = element_text(size=8, face = "bold.italic", hjust = 0),
+        axis.line = element_line(size=0.25),
+        panel.background =  element_blank(),
+        plot.margin = unit(c(t=0.1, r=0.5, b=0, l=0), "cm")
+        )+
+  guides(fill=F)+
+  labs(x="", y=bquote(Forage~fish~demand~(Tx10^6)), title= "Optimal global use")+
+  annotate("text", x =0.6, y=31e+6, label="Average supply 1980-2013", hjust=0, size=2.5)+
+  annotate("text", x =0.6, y=25e+6, label="Proposed EBFM supply", hjust=0,  size=2.5)+
+  annotate("text", x =0.6, y=22.5e+6, label="Average feed use 1980-2013", hjust=0, size=2.5)+
+    ggsave("Forage fish demand - optimal.tiff", device = "tiff", dpi=600, width = 9, height=7, units = "cm"))
+
+
+(development_consumption_plot <- 
+  ggplot(data=development_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1, size=0.25)+
+    geom_segment(x=0, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979])*.8, yend=mean(forage_fish$Value[forage_fish$Year>1979])*.8, linetype=3, size=0.25)+
+  geom_segment(x=0, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2, size=0.25)+
+  geom_bar(stat="identity", width=.5)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2, size=0.25)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,35e+6), expand = c(0,0), breaks=c(0,10e+6,20e+6,30e+6), labels=c(0,10,20,30))+
   theme_pubr()+
   theme(
         #axis.line.y = element_blank(),
@@ -6341,23 +6415,25 @@ insects_consumption
         #axis.ticks.y = element_blank(),
         axis.ticks.x = element_blank(),
         axis.ticks = element_line(size=0.25),
-        text = element_text(size=7),
+        text = element_text(size=8),
         legend.title = element_blank(),
         legend.spacing.x = unit(0.2, "cm"),
         legend.key.size = unit(0.3, "cm"),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
-        plot.title = element_text(size=7, face = "bold.italic", hjust = 0),
+        plot.title = element_text(size=8, face = "bold.italic", hjust = 0),
         axis.line = element_line(size=0.25),
-        panel.background =  element_blank()
-        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        panel.background =  element_blank(),
+        plot.margin = unit(c(t=0.1, r=0.5, b=0, l=0.5), "cm")
         )+
   guides(fill=F)+
-  labs(x="", y=bquote(Forage~fish~demand~(Tx10^6)), title= "Optimal global use")+
-  annotate("text", x =0.6, y=31e+6, label="Average supply 1980-2013", hjust=0, size=2)+
-  annotate("text", x =0.6, y=25e+6, label="Proposed EBFM supply", hjust=0,  size=2)+
-  annotate("text", x =0.6, y=22.5e+6, label="Average feed use 1980-2013", hjust=0, size=2)+
-    ggsave("Forage fish demand - optimal.tiff", device = "tiff", dpi=600, width = 9, height=7, units = "cm"))
+  labs(x="", y="", title= "Top producers and MEDC use only")+
+  # annotate("text", x =0.6, y=31e+6, label="Average supply 1980-2013", hjust=0, size=2)+
+  # annotate("text", x =0.6, y=25e+6, label="Proposed EBFM supply", hjust=0,  size=2)+
+  # annotate("text", x =0.6, y=22.5e+6, label="Average feed use 1980-2013", hjust=0, size=2)+
+    ggsave("Forage fish demand - development optimal.tiff", device = "tiff", dpi=600, width = 9, height=7, units = "cm"))
+
+
 
 
 
@@ -6375,26 +6451,23 @@ insects_consumption
   theme(
         #axis.line.y = element_blank(),
         #axis.text.y = element_blank(),
-        axis.title.y = element_text(size=6),
+        axis.title.y = element_text(size=8),
         #axis.ticks.y = element_blank(),
         axis.ticks.x = element_blank(),
         axis.ticks = element_line(size=0.25),
-        text = element_text(size=7),
+        text = element_text(size=8),
         legend.title = element_blank(),
         legend.spacing.x = unit(0.2, "cm"),
         legend.key.size = unit(0.3, "cm"),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
-        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
+        plot.title = element_text(size=8, face = "italic", hjust = 0.5),
         axis.line = element_line(size=0.25),
-        panel.background =  element_blank()
-        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        panel.background =  element_blank(),
+        plot.margin = unit(c(t=0.4,r=0.1, b=0.1,l=0), "cm")
         )+
   #guides(fill=F)+
-  labs(x="", y=bquote(Forage~fish~demand~(Tx10^6)), title= "Algae")+
-  annotate("text", x =0.5, y=31e+6, label="Average supply 1980-2013", hjust=0, size=1.35)+
-  annotate("text", x =0.5, y=25e+6, label="Proposed EBFM supply", hjust=0,  size=1.35)+
-  annotate("text", x =0.5, y=22.5e+6, label="Average feed use 1980-2013", hjust=0, size=1.35))
+  labs(x="", y=bquote(Forage~fish~demand~(Tx10^6)), title= "Algae"))
 
 
 
@@ -6418,9 +6491,9 @@ insects_consumption
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
         axis.line = element_line(size=0.25),
-        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
-        panel.background =  element_blank()
-        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        plot.title = element_text(size=8, face = "italic", hjust = 0.5),
+        panel.background =  element_blank(),
+        plot.margin = unit(c(t=0.4,r=0.1, b=0.1,l=0.1), "cm")
         )+
   guides(fill=F)+
   labs(x="", title="Bacteria"))
@@ -6445,9 +6518,9 @@ insects_consumption
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
         axis.line = element_line(size=0.25),
-        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
-        panel.background =  element_blank()
-        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        plot.title = element_text(size=8, face = "italic", hjust = 0.5),
+        panel.background =  element_blank(),
+        plot.margin = unit(c(t=0.4,r=0.1, b=0.1,l=0.1), "cm")
         )+
   guides(fill=F)+
   labs(x="", y="", title="Yeast"))
@@ -6469,13 +6542,13 @@ insects_consumption
         axis.title.y = element_blank(),
         axis.ticks.x = element_blank(),
         axis.ticks = element_line(size=0.25),
-        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
+        plot.title = element_text(size=8, face = "italic", hjust = 0.5),
         #axis.ticks.y = element_blank(),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
         axis.line = element_line(size=0.25),
-        panel.background =  element_blank()
-        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        panel.background =  element_blank(),
+        plot.margin = unit(c(t=0.4,r=0.1, b=0.1,l=0.1), "cm")
         )+
   guides(fill=F)+
   labs(x="", title="Soy"))
@@ -6500,9 +6573,9 @@ insects_consumption
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
         axis.line = element_line(size=0.25),
-        plot.title = element_text(size=7, face = "bold.italic", hjust = 0.5),
-        panel.background =  element_blank()
-        #plot.margin = unit(c(0.5,.2, 0.2,-1.58), "cm")
+        plot.title = element_text(size=8, face = "italic", hjust = 0.5),
+        panel.background =  element_blank(),
+        plot.margin = unit(c(t=0.4,r=0.1, b=0.1,l=0.1), "cm")
         )+
   guides(fill=F)+
   labs(x="", title = "Insects"))
@@ -6512,18 +6585,25 @@ scenario_legend <- get_legend(algae_consumption_plot)
 
 consumption_plots <- 
   ggarrange(
+    ggarrange(optimal_consumption_plot, development_consumption_plot, 
+              nrow = 1, 
+              ncol = 2, 
+              legend = "none", 
+              labels = c("a", "b"),
+              font.label = list(size=8),
+              label.x = c(0.04, 0.04)),
     ggarrange(algae_consumption_plot, bacteria_consumption_plot, yeast_consumption_plot, soy_consumption_plot, insects_consumption_plot, 
               nrow = 1, ncol = 5, 
-              labels = c("a", "b", "c", "d", "e"), 
-              font.label = list(size=10 ),
-              label.x = c(0, -0.05,-0.05,-0.05,-0.05),
+              labels = c("c", "d", "e", "f", "g"), 
+              font.label = list(size=8 ),
+              label.x = c(0.1, -0.05,-0.05,-0.05,-0.05),
+              label.y = 0.95,
               widths = c(1.25,1,1,1,1), 
-              legend = "none"), 
-    scenario_legend, 
+              legend = "none"),
     nrow = 2, ncol=1,
-    heights = c(1,0.1))+
-  ggsave("Figure 4(a) - consumption across feeds.tiff", dpi=600, device = "tiff", width=18, height=5, units="cm")+
-  ggsave("Figure 4(a) - consumption across feeds.pdf", dpi=600, device = "pdf", width=18, height=5, units="cm")
+    heights = c(1.35, 0.8))+
+  ggsave("Figure 4(a) - consumption across feeds.tiff", dpi=600, device = "tiff", width=18, height=10, units="cm")+
+  ggsave("Figure 4(a) - consumption across feeds.pdf", dpi=600, device = "pdf", width=18, height=10, units="cm")
 
 ```
 
@@ -6633,9 +6713,9 @@ consumption_plots <-
        axis.ticks.y = element_blank(),
        axis.title.x = element_blank(),
        #axis.ticks = element_blank(),
-       axis.title.y = element_text(size=7),
+       axis.title.y = element_text(size=8),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
-       text = element_text(size=6.5),
+       text = element_text(size=8),
        plot.margin = unit(c(t=0.2, r=-0, b=-0.5, l=0), "cm")
      )+
      labs(y=bquote(Forage~fish~savings~(Tx10^6)))+
@@ -6715,7 +6795,7 @@ consumption_plots <-
        #axis.ticks = element_blank(),
        text = element_text(size=7),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
-       plot.margin = unit(c(t=0.2, r=-0.1, b=-0.5, l=-0.1), "cm")
+       plot.margin = unit(c(t=0.2, r=-0, b=-0.5, l=-0.1), "cm")
      )+
      guides(fill=FALSE)+
      annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=1.5)+
@@ -6798,7 +6878,7 @@ consumption_plots <-
        #axis.ticks = element_blank(),
        text = element_text(size=7),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
-       plot.margin = unit(c(t=0.2, r=-0.1, b=-0.5, l=-0.1), "cm")
+       plot.margin = unit(c(t=0.2, r=-0, b=-0.5, l=-0.1), "cm")
      )+
      guides(fill=FALSE)+
      annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=1.5)+
@@ -6880,7 +6960,7 @@ consumption_plots <-
        #axis.ticks = element_blank(),
        text = element_text(size=7),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
-       plot.margin = unit(c(t=0.2, r=-0.1, b=-0.5, l=-0.1), "cm")
+       plot.margin = unit(c(t=0.2, r=-0, b=-0.5, l=-0.1), "cm")
      )+
      guides(fill=FALSE)+
      annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=1.5)+
@@ -6961,39 +7041,48 @@ consumption_plots <-
        #axis.ticks = element_blank(),
        text = element_text(size=7),
        axis.text.x = element_text(angle=c(335, 285, 50, 0, 310, 80, 30 ), vjust=0.5),
-       plot.margin = unit(c(t=0.2, r=-0.1, b=-0.5, l=-0.1), "cm")
+       plot.margin = unit(c(t=0.2, r=-0, b=-0.5, l=-0.1), "cm")
      )+
      guides(fill=FALSE)+
      annotate("text", x=c(4,4,4,4), y=c(2e+06,4e+6,6e+6, 8e+6), label=c("2", "4", "6", "8"), size=1.5)+
      ggsave("radar - insects_total.tiff", device="tiff", dpi=600, width=3.6, height=3.6, units="cm")+
       ggsave("radar - insects_total.pdf", device="pdf", dpi=600, width=3.6, height=3.6, units="cm"))
  
+scenario_legend <- get_legend(algae_consumption_plot)
  
- 
-#PUT RADARS AND BAR PLOTS TOGETHER
+  #PUT RADARS AND BAR PLOTS TOGETHER
 
- use_savings <- ggarrange(
-   algae_consumption_plot, bacteria_consumption_plot, yeast_consumption_plot, soy_consumption_plot, insects_consumption_plot,
-   algae_total, bacteria_total, yeast_total, soy_total, insects_total,
-   labels= letters[1:10],
-   widths = c(0.9,0.7,0.7,0.7,0.7,
-              1.2,1,1,1,1),
-   heights = c(0.8, 0.8, 0.8, 0.8, 0.8,
-               1, 1, 1, 1, 1),
-   nrow =2, 
+ demand_savings <- 
+   ggarrange(
+    ggarrange(optimal_consumption_plot, development_consumption_plot, #1st row
+              nrow = 1, 
+              ncol = 2, 
+              legend = "none", 
+              labels = c("a", "b"),
+              font.label = list(size=8),
+              label.x = c(0.04, 0.04)),
+    ggarrange(algae_consumption_plot, bacteria_consumption_plot, yeast_consumption_plot,  soy_consumption_plot, insects_consumption_plot, #2nd row
+              nrow = 1, ncol = 5, 
+              labels = c("c", "d", "e", "f", "g"), 
+              font.label = list(size=8 ),
+              label.x = c(0.1, -0.05,-0.05,-0.05,-0.05),
+              label.y = 0.95,
+              widths = c(1.25,1,1,1,1), 
+              legend = "none"),
+    ggarrange(algae_total, bacteria_total, yeast_total, soy_total, insects_total, #3rd row
+   labels= c("h", "i", "j", "k", "l"),
+   label.x = c(0.2, 0,0,0,0),
+   widths = c(1.25,1,1,1,1),
+   nrow =1, 
    ncol=5,
    legend = "none",
-   font.label = list(size=6))+
-  ggsave("radar composite.tiff", device="tiff", dpi=600, width = 18, height = 7, units="cm")+
-  ggsave("radar composite.pdf", device="pdf", dpi=600, width = 18, height = 7, units =  "cm")
-
-use_savings_legend <- 
-  ggarrange(use_savings, scenario_legend, 
-          nrow=2,
-          ncol=1,
-          heights = c(1,0.1))+
-  ggsave("Figure 4 - Global use and savings.tiff", device = "tiff", dpi=600, width = 18, height = 8, units = "cm")+
-  ggsave("Figure 4 - Global use and savings.pdf", device = "pdf", dpi=600, width = 18, height = 8, units = "cm")
+   font.label = list(size=8)),
+   scenario_legend, # 4th row
+   ncol=1,
+   nrow = 4,
+   heights = c(0.9,0.5,0.5,0.08)) +
+   ggsave("Figure 4 - Global use and savings.tiff", device = "tiff", dpi=600, width = 18, height = 16, units = "cm")+
+  ggsave("Figure 4 - Global use and savings.pdf", device = "pdf", dpi=600, width = 18, height = 16, units = "cm")
 
 
 
