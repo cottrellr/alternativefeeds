@@ -5873,24 +5873,30 @@ write_csv(a_test, "forage fish consumption - optimal replacement.csv")
 
 ```
 
-#Development-constrained optimal use
+#Species or development-constrained optimal use
 #same as optimal but only MEDCS and the top 10 producers of fed aquaculture (who are not LDCs i.e. Bangladesh was omitted) have access to novel feeds
 
 ```{r}
 
-top_producers <- 
-  fed_aqua_proj %>% 
-  group_by(Country) %>% 
-  summarise(Value=sum(Value)) %>% 
-  arrange(-Value) %>%
-  slice(1:10) %>% 
-  filter(!Country %in% LDCs)
+# top_producers <- 
+#   fed_aqua_proj %>% 
+#   group_by(Country) %>% 
+#   summarise(Value=sum(Value)) %>% 
+#   arrange(-Value) %>%
+#   slice(1:10) %>% 
+#   filter(!Country %in% LDCs)
 
-countries_afford <- c(MEDCs, top_producers$Country)
+#countries_afford <- c(MEDCs, top_producers$Country)
 
-FM_replace <- c("Carps" = 0 , "Catfishes"= 0, "FW fishes"= 0.45, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
-FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1.42, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0.45, "Marine fishes"= 0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+#if using countries use below
+# FM_replace <- c("Carps" = 0 , "Catfishes"= 0, "FW fishes"= 0.45, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+# FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1.42, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0.45, "Marine fishes"= 0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 
+#if using high value species
+high_val_spp <- c("Shrimps", "Salmonids")
+
+FM_replace <- c("Carps" = 1 , "Catfishes"= 1, "FW fishes"= 1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=1, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0.45, "Marine fishes"= 1, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 
 a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
   target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
@@ -5900,10 +5906,10 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
     
     #assign consumption parameters
     b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
-    c <- case_when(target_row[["Country"]] %in% countries_afford ~   (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]]))*as.numeric(FM_replace[target_row[["Taxa_adj"]]]),
+    c <- case_when(target_row[["Taxa_adj"]] %in% high_val_spp ~   (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]]))*as.numeric(FM_replace[target_row[["Taxa_adj"]]]),
                    TRUE ~ (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]])))   # assign random fishmeal inclusion from range and adjust for fish meal replacement if in countries_afford
     
-    d <- case_when(target_row[["Country"]] %in% countries_afford ~ runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]]) *as.numeric(FO_replace[target_row[["Taxa_adj"]]]),
+    d <- case_when(target_row[["Taxa_adj"]] %in% high_val_spp ~ runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]]) *as.numeric(FO_replace[target_row[["Taxa_adj"]]]),
                    TRUE ~ runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])) #assign random fish oil inclusion from range and adjust for fish oil replacement if in countries_afford
       
          
@@ -6427,7 +6433,7 @@ ff_2030_WB2 <-
         plot.margin = unit(c(t=0.1, r=0.5, b=0, l=0.5), "cm")
         )+
   guides(fill=F)+
-  labs(x="", y="", title= "Top producers and MEDC use only")+
+  labs(x="", y="", title= "Salmonids and shrimps only"))#+
   # annotate("text", x =0.6, y=31e+6, label="Average supply 1980-2013", hjust=0, size=2)+
   # annotate("text", x =0.6, y=25e+6, label="Proposed EBFM supply", hjust=0,  size=2)+
   # annotate("text", x =0.6, y=22.5e+6, label="Average feed use 1980-2013", hjust=0, size=2)+
@@ -6604,6 +6610,9 @@ consumption_plots <-
     heights = c(1.35, 0.8))+
   ggsave("Figure 4(a) - consumption across feeds.tiff", dpi=600, device = "tiff", width=18, height=10, units="cm")+
   ggsave("Figure 4(a) - consumption across feeds.pdf", dpi=600, device = "pdf", width=18, height=10, units="cm")
+
+
+development_consumption
 
 ```
 
