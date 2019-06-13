@@ -1215,6 +1215,15 @@ fish_oil <- growth_data %>%
 length((which((unique(growth_data$Study_id[growth_data$Feed_general=="Algae"]))%%1==0)==TRUE))
 length(unique(growth_data$Study_id))
 
+
+row_per_study <- growth_data$Life_stage[c(1,1+which(diff(growth_data$Study_id)!=0))]
+row_per_study <- row_per_study[row_per_study!="None"]
+
+unique(row_per_study)
+juveniles <- c("Juvenile", "Fry", "Fingerlings", "Larvae")
+length(row_per_study[row_per_study %in% juveniles])/length(row_per_study)#92% of studies that mentioned life stages used juveniles
+
+
 ```
 
 
@@ -3340,8 +3349,9 @@ fit_shrimps_soy_n3$info
 plot(fit_shrimps_soy_n3, "diagnostic")
 
 
-plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='black')) ))
-
+plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, yaxt="n", col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='black')) ))
+text(x=-5, y=2.8, labels = expression(bold("100%")), cex=1,pos = 4)
+axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
@@ -3413,47 +3423,47 @@ pdf("Fig 3  - n3n6 and fish oil replacement.pdf",
     width=3.5,
     height=3.7)
 op <- par(mfrow=c(3,2), 
-          mai=c(0.2,0.3,0.1,0.05), #spacing around each plot
+          mai=c(0.2,0.3,0.1,0.1), #spacing around each plot
           mgp=c(3,0.5,0), # middle value distance of labels to ticks
-          oma = c(2, 2, 1.5, 2)) #space for the overall x and y axis titles
+          oma = c(3, 4, 3, 1.5)) #space for the overall x and y axis titles
 
 
 
 
 #Shrimps and algae
-plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n", yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 text(x=-5, y=1.6, labels = "100%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and soy
-plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
 text(x=75, y=1.05, labels = "30%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids algae n3
-plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='red')) ))
 text(x=75, y=1.08, labels = "55%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids soy n3
-plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
 text(x=75, y=1.05, labels = "10%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and algae
-plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n", yaxt='n',showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 text(x=-5, y=2.1, labels = "100%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and soy
-plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt='n',showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 text(x=-5, y=6.2, labels = "100%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
-mtext("Relative n3:n6 content in animal tissue",side = 2, line=.8, outer = T, cex=1)
-mtext(c("Algae", "Soy"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
-mtext(c(  "Shrimps", "Salmonids","Marine fishes"), side=4, line = 0.3, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
+mtext("Relative n-3:n-6 fatty acid ratio",side = 2, line=2, outer = T, cex=1)
+mtext(c("Algae", "Soy"), side=2, line = 0.5, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
+mtext(c(  "Shrimps", "Salmonids","Marine fishes"), side=1, line = 0.3, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
 par(op)
 dev.off()
 
@@ -3467,45 +3477,46 @@ tiff("Fig 3  - n3n6 and fish oil replacement.tiff",
 op <- par(mfrow=c(3,2), 
           mai=c(0.2,0.3,0.1,0.05), #spacing around each plot
           mgp=c(3,0.5,0), # middle value distance of labels to ticks
-          oma = c(2, 2, 1.5, 2)) #space for the overall x and y axis titles
+          oma = c(3, 4, 3, 1.5)) #space for the overall x and y axis titles
+
 
 
 
 
 #Shrimps and algae
-plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n", yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 text(x=-5, y=1.6, labels = "100%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and soy
-plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
 text(x=75, y=1.05, labels = "30%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids algae n3
-plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='red')) ))
 text(x=75, y=1.08, labels = "55%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids soy n3
-plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt='n', showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
 text(x=75, y=1.05, labels = "10%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and algae
-plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n", yaxt='n',showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 text(x=-5, y=2.1, labels = "100%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and soy
-plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt='n',showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
 text(x=-5, y=6.2, labels = "100%", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
-mtext("Relative n3:n6 content in animal tissue",side = 2, line=.8, outer = T, cex=1)
+mtext("Relative n-3:n-6 fatty acid ratio",side = 2, line=2, outer = T, cex=1)
 mtext(c("Algae", "Soy"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
-mtext(c(  "Shrimps", "Salmonids","Marine fishes"), side=4, line = 0.3, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
+mtext(c(  "Shrimps", "Salmonids","Marine fishes"), side=2, line = 0.5, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
 par(op)
 dev.off()
 
@@ -6433,7 +6444,7 @@ ff_2030_WB2 <-
         plot.margin = unit(c(t=0.1, r=0.5, b=0, l=0.5), "cm")
         )+
   guides(fill=F)+
-  labs(x="", y="", title= "Salmonids and shrimps only"))#+
+  labs(x="", y="", title= "Salmonids and shrimps only")+
   # annotate("text", x =0.6, y=31e+6, label="Average supply 1980-2013", hjust=0, size=2)+
   # annotate("text", x =0.6, y=25e+6, label="Proposed EBFM supply", hjust=0,  size=2)+
   # annotate("text", x =0.6, y=22.5e+6, label="Average feed use 1980-2013", hjust=0, size=2)+
@@ -7081,7 +7092,7 @@ scenario_legend <- get_legend(algae_consumption_plot)
     ggarrange(algae_total, bacteria_total, yeast_total, soy_total, insects_total, #3rd row
    labels= c("h", "i", "j", "k", "l"),
    label.x = c(0.2, 0,0,0,0),
-   widths = c(1.25,1,1,1,1),
+   widths = c(1.22,1,1,1,1),
    nrow =1, 
    ncol=5,
    legend = "none",
