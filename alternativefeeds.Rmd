@@ -507,19 +507,19 @@ fix(plotSmeModel)
 
 #Colours to use for species grousp
 
-brewer.pal(10, "Spectral")
-
-#[1] "#9E0142" "#D53E4F" "#F46D43" "#FDAE61" "#FEE08B" "#E6F598"
-# [7] "#ABDDA4" "#66C2A5" "#3288BD" "#5E4FA2"
-
-
-viridisLite::viridis(n=10)
-[1] "#440154FF" "#482878FF" "#3E4A89FF" "#31688EFF" "#26828EFF" "#1F9E89FF"
- [7] "#35B779FF" "#6DCD59FF" "#B4DE2CFF" "#FDE725FF"
-
-viridisLite::viridis(n=9)
-[1] "#440154FF" "#472D7BFF" "#3B528BFF" "#2C728EFF" "#21908CFF" "#27AD81FF"
-[7] "#5DC863FF" "#AADC32FF" "#FDE725FF"
+# brewer.pal(10, "Spectral")
+# 
+# #[1] "#9E0142" "#D53E4F" "#F46D43" "#FDAE61" "#FEE08B" "#E6F598"
+# # [7] "#ABDDA4" "#66C2A5" "#3288BD" "#5E4FA2"
+# 
+# 
+# viridisLite::viridis(n=10)
+# [1] "#440154FF" "#482878FF" "#3E4A89FF" "#31688EFF" "#26828EFF" "#1F9E89FF"
+#  [7] "#35B779FF" "#6DCD59FF" "#B4DE2CFF" "#FDE725FF"
+# 
+# viridisLite::viridis(n=9)
+# [1] "#440154FF" "#472D7BFF" "#3B528BFF" "#2C728EFF" "#21908CFF" "#27AD81FF"
+# [7] "#5DC863FF" "#AADC32FF" "#FDE725FF"
 
 rev(lacroix_palette("PeachPear", n=5, "continuous"))
 
@@ -2123,6 +2123,26 @@ dev.off()
 
 ###FISH OIL SUBSTITUTION _ FCR response??
 
+#sort fish oil nutrition data first
+```{r}
+
+FO <- 
+  fish_oil %>% 
+  mutate(n3n6 = as.numeric(n3n6))%>% 
+  filter(!is.na(n3n6)) %>% 
+  group_by(Study_id) %>% 
+  nest() %>% 
+  mutate(Relative_nutrition = purrr::map(data, ~(.$n3n6/.$n3n6[1]))) %>% 
+  unnest(data, Relative_nutrition)
+
+
+
+
+```
+
+
+
+
 #catfishes 
 
 ```{r}
@@ -2189,7 +2209,7 @@ plotSmeModel(fit_fwfishes_soy, xlab="",ylab="", showIndividuals=F, showConfidenc
 
 ```{r}
 salmonids_algae <- 
-  fish_oil %>% 
+  FO %>% 
   filter(Fish_group=="Salmonids" & Feed_general=="Algae") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor) 
@@ -2197,7 +2217,7 @@ salmonids_algae <-
 
 myknots <- seq(min(salmonids_algae$FO_replacement), max(salmonids_algae$FO_replacement), length.out = 4)[-c(1,4)]
 
-fit_salmonids_algae <- sme(object = salmonids_algae$Relative_FCR, tme = salmonids_algae$FO_replacement, ind = salmonids_algae$Study_id, criteria = "AICc",knots = myknots)
+fit_salmonids_algae <- sme(object = salmonids_algae$Relative_FCR, tme = salmonids_algae$FO_replacement, ind = salmonids_algae$Study_id, criteria = "AICc")
 
 
 
@@ -2206,18 +2226,20 @@ fit_salmonids_algae$info
 plot(fit_salmonids_algae, "diagnostic")
 
 
-plotSmeModel(fit_salmonids_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#ABDDA4", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=15, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
+axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #Salmonids and soy
 
 
 salmonids_soy <- 
-  fish_oil %>% 
+  FO %>% 
   filter(Fish_group=="Salmonids" & Feed_general=="Soy") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor) %>% 
-  na.omit(Relative_FCR)
+  drop_na(Relative_FCR)
 
 
 myknots <- seq(min(salmonids_soy$FO_replacement), max(salmonids_soy$FO_replacement), length.out = 4)[-c(1,4)]
@@ -2230,30 +2252,32 @@ fit_salmonids_soy$info #won't converge - plotting model to describe trend
 plot(fit_salmonids_soy, "diagnostic")
 
 
-plotSmeModel(fit_salmonids_soy, xlab="",ylab="", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#ABDDA4", col=alpha("grey50", 0.5), pch=16, lwd=2, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
+axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
-#Won't converge two few data points  - leave out?
-
-salmonids_yeast <- 
-  fish_oil %>% 
-  filter(Fish_group=="Salmonids" & Feed_general=="Yeast") %>% 
-  mutate(Study_id = Study_id %>% 
-           as.factor) %>% 
-  na.omit(Relative_FCR)
-
-
-myknots <- seq(min(salmonids_yeast$FO_replacement), max(salmonids_yeast$FO_replacement), length.out = 4)[-c(1,4)]
-
-fit_salmonids_yeast <- sme(object = salmonids_yeast$Relative_FCR, tme = salmonids_yeast$FO_replacement, ind = salmonids_yeast$Study_id, criteria = "AICc",knots = myknots)
-
-
-#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
-fit_salmonids_yeast$info #won't converge - plotting model to describe trend
-plot(fit_salmonids_yeast, "diagnostic")
-
-
-plotSmeModel(fit_salmonids_yeast, xlab="",ylab="", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#ABDDA4", col=alpha("grey50", 0.5), pch=16, lwd=2, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black'))))
+# #Won't converge two few data points  - leave out?
+# 
+# salmonids_yeast <- 
+#   FO %>% 
+#   filter(Fish_group=="Salmonids" & Feed_general=="Yeast") %>% 
+#   mutate(Study_id = Study_id %>% 
+#            as.factor) %>% 
+#   drop_na(Relative_FCR)
+# 
+# 
+# myknots <- seq(min(salmonids_yeast$FO_replacement), max(salmonids_yeast$FO_replacement), length.out = 4)[-c(1,4)]
+# 
+# fit_salmonids_yeast <- sme(object = salmonids_yeast$Relative_FCR, tme = salmonids_yeast$FO_replacement, ind = salmonids_yeast$Study_id, criteria = "AICc",knots = myknots)
+# 
+# 
+# #Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+# fit_salmonids_yeast$info #won't converge - plotting model to describe trend
+# plot(fit_salmonids_yeast, "diagnostic")
+# 
+# 
+# plotSmeModel(fit_salmonids_yeast, xlab="",ylab="", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#ABDDA4", col=alpha("grey50", 0.5), pch=16, lwd=2, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black'))))
 
 
 
@@ -2266,40 +2290,43 @@ plotSmeModel(fit_salmonids_yeast, xlab="",ylab="", showIndividuals=F, showConfid
 ```{r}
 
 shrimpy_algae <- 
-  fish_oil %>% 
+  FO %>% 
   filter(Fish_group=="Shrimps" & Feed_general=="Algae") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor) %>% 
-  na.omit(Relative_FCR)
+  drop_na(Relative_FCR)
 
 
-myknots <- seq(min(shrimpy_algae$Replacement), max(shrimpy_algae$Replacement), length.out = 4)[-c(1,4)]
+myknots <- seq(min(shrimpy_algae$FO_replacement), max(shrimpy_algae$FO_replacement), length.out = 4)[-c(1,4)]
 
-fit_shrimpy_algae <- sme(object = shrimpy_algae$Relative_FCR, tme = shrimpy_algae$Replacement, ind = shrimpy_algae$Study_id, criteria = "AICc",knots = myknots)
+fit_shrimpy_algae <- sme(object = shrimpy_algae$Relative_FCR, tme = shrimpy_algae$FO_replacement, ind = shrimpy_algae$Study_id, criteria = "AICc", knots = myknots)
 
 
 
-#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
+#Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model (LOESS)
 fit_shrimpy_algae$info
 plot(fit_shrimpy_algae, "diagnostic")
 
+#fit_shrimpy_algae <- loess(shrimpy_algae$Relative_FCR~shrimpy_algae$FO_replacement)
 
-plotSmeModel(fit_shrimpy_algae, xlab="",ylab="", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#ABDDA4", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
 
+plotSmeModel(fit_shrimpy_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
+axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and soy
 
 shrimpy_soy <- 
-  fish_oil %>% 
+  FO %>% 
   filter(Fish_group=="Shrimps" & Feed_general=="Soy") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor) %>% 
-  na.omit(Relative_FCR)
+  drop_na(Relative_FCR)
 
 
-myknots <- seq(min(shrimpy_soy$Replacement), max(shrimpy_soy$Replacement), length.out = 4)[-c(1,4)]
+myknots <- seq(min(shrimpy_soy$FO_replacement), max(shrimpy_soy$FO_replacement), length.out = 4)[-c(1,4)]
 
-fit_shrimpy_soy <- sme(object = shrimpy_soy$Relative_FCR, tme = shrimpy_soy$Replacement, ind = shrimpy_soy$Study_id, criteria = "AICc",knots = myknots)
+fit_shrimpy_soy <- sme(object = shrimpy_soy$Relative_FCR, tme = shrimpy_soy$FO_replacement, ind = shrimpy_soy$Study_id, criteria = "AICc")
 
 
 
@@ -2308,9 +2335,9 @@ fit_shrimpy_soy$info
 plot(fit_shrimpy_soy, "diagnostic")
 
 
-plotSmeModel(fit_shrimpy_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#ABDDA4", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
-
-
+plotSmeModel(fit_shrimpy_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
+text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
+axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
@@ -2322,16 +2349,16 @@ plotSmeModel(fit_shrimpy_soy, xlab="",ylab="", showIndividuals=T, showConfidence
 
 ```{r}
 marinefishes_algae <- 
-  fish_oil %>% 
+  FO %>% 
   filter(Fish_group=="Marine fishes" & Feed_general=="Algae") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor) %>% 
-  na.omit(Relative_FCR)
+  drop_na(Relative_FCR)
 
 #Analysis
-myknots <- seq(min(marinefishes_algae$Replacement), max(marinefishes_algae$Replacement), length.out = 7)[-c(1,7)]
+myknots <- seq(min(marinefishes_algae$FO_replacement), max(marinefishes_algae$FO_replacement), length.out = 7)[-c(1,7)]
 
-fit_marinefishes_algae <- sme(object = marinefishes_algae$Relative_FCR, tme = marinefishes_algae$Replacement, ind = marinefishes_algae$Study_id, criteria = "AICc",knots = myknots)
+fit_marinefishes_algae <- sme(object = marinefishes_algae$Relative_FCR, tme = marinefishes_algae$FO_replacement, ind = marinefishes_algae$Study_id, criteria = "AICc")
 
 
 
@@ -2340,24 +2367,24 @@ fit_marinefishes_algae$info
 plot(fit_marinefishes_algae, "diagnostic")
 
 
-plotSmeModel(fit_marinefishes_algae, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3288BD", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
-
-
+plotSmeModel(fit_marinefishes_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=80, lty=2, lwd=1, col='red'))))
+text(x=10, y=1.35, labels = expression(bold("0%")), cex=1,pos = 4)
+axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #marine fishes and soy
 
 marinefishes_soy <- 
-  fish_oil %>% 
+  FO %>% 
   filter(Fish_group=="Marine fishes" & Feed_general=="Soy") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor) %>% 
-  na.omit(Relative_FCR)
+  drop_na(Relative_FCR)
 
 #Analysis
-myknots <- seq(min(marinefishes_soy$Replacement), max(marinefishes_soy$Replacement), length.out = 5)[-c(1,5)]
+myknots <- seq(min(marinefishes_soy$FO_replacement), max(marinefishes_soy$FO_replacement), length.out = 5)[-c(1,5)]
 
-fit_marinefishes_soy <- sme(object = marinefishes_soy$Relative_FCR, tme = marinefishes_soy$Replacement, ind = marinefishes_soy$Study_id, criteria = "AICc",knots = myknots)
+fit_marinefishes_soy <- sme(object = marinefishes_soy$Relative_FCR, tme = marinefishes_soy$FO_replacement, ind = marinefishes_soy$Study_id, criteria = "AICc")
 
 
 
@@ -2366,7 +2393,9 @@ fit_marinefishes_soy$info
 plot(fit_marinefishes_soy, "diagnostic")
 
 
-plotSmeModel(fit_marinefishes_soy, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3288BD", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_marinefishes_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+text(x=10, y=1.4, labels = expression(bold("0%")), cex=1,pos = 4)
+axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 ```
@@ -2377,84 +2406,52 @@ plotSmeModel(fit_marinefishes_soy, xlab="",ylab="", showIndividuals=T, showConfi
 pdf("Supplementary Figure 1 - FCR and fish oil replacement.pdf", 
     width=3.5,
     height=3.7)
-op <- par(mfrow=c(5,3), 
-          mai=c(0.2,0.2,0.05,0.05), #spacing around each plot
+op <- par(mfrow=c(3,2), 
+          mai=c(0.2,0.3,0.1,0.1), #spacing around each plot
           mgp=c(3,0.5,0), # middle value distance of labels to ticks
-          oma = c(2, 2, 1.5, 2)) #space for the overall x and y axis titles
-
-#Catfish and algae
-plotSmeModel(fit_catfishes_algae, xlab="",ylab="", xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#AADC32FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=50, lty=2, lwd=1, col='black'))))
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-# #catfish yeast
-plot(1, type="n", xlab="", ylab="", xaxt="n", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-#catfish soy 
-plot(1, type="n", xlab="", ylab="", xaxt="n", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
+          oma = c(3, 4, 1.5, 1.5)) #space for the overall x and y axis titles
 
 
-#Freshwater fishes and algae
-plot(1, type="n", xlab="", ylab="", xaxt="n", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-#Freshwater fishes and yeast
-plot(1, type="n", xlab="", ylab="", xaxt="n", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
-  abline(0,1, col="grey90")
+
+
+
+#Shrimps and algae 
+plotSmeModel(fit_shrimpy_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+#text(x=2, y=1.13, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
-#Freshwater fishes and soy
-plotSmeModel(fit_fwfishes_soy, xlab="",ylab="", xaxt="n", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#5DC863FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+#Shrimps and soy 
+plotSmeModel(fit_shrimpy_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
+#text(x=2, y=1.14, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #Salmonids and algae 
-plotSmeModel(fit_salmonids_algae, xlab="",ylab="", xaxt="n",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=15, lty=2, lwd=1, col='black')) ))
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-#Salmon and yeast
-plotSmeModel(fit_salmonids_yeast, xlab="",ylab="", xaxt="n", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#ABDDA4", col=alpha("grey50", 0.5), pch=16, lwd=2, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black'))))
+plotSmeModel(fit_salmonids_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+#text(x=2, y=1.14, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #Salmonids and soy 
-plotSmeModel(fit_salmonids_soy, xlab="",ylab="",xaxt="n", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#3B528BFF", col=alpha("grey50", 0.5), pch=16, lwd=2, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_salmonids_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+#text(x=2, y=1.14, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
-# 
-# 
-
-#Shrimps and algae 
-plotSmeModel(fit_shrimpy_algae, xlab="",ylab="",xaxt="n", showIndividuals=F, showConfidenceBands=F, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-#Shrimps and yeast 
-plot(1, type="n", xlab="", ylab="", xaxt="n", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-
-#Shrimps and soy 
-plotSmeModel(fit_shrimpy_soy, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #Marine fishes and algae
-plotSmeModel(fit_marinefishes_algae, xlab="",ylab="", xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3288BD", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_marinefishes_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=80, lty=2, lwd=1, col='red'))))
+#text(x=2, y=1.35, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-
-#Marine fishes and yeast
-plot(1, type="n", xlab="", ylab="", xaxt="n", xlim=c(0, 100), ylim=c(0,100), yaxt= "n")+
-  abline(0,1, col="grey90")
-axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
-
 
 #Marine fishes and soy
-plotSmeModel(fit_marinefishes_soy, xlab="",ylab="", xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#3288BD", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_marinefishes_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+#text(x=2, y=1.4, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
-
-mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=0.9)
-mtext("Relative feed conversion ratio",side = 2, line=.8, outer = T, cex=0.9)
-mtext(c("Algae", "Yeast", "Soy"), side=3, line = 0, outer = T, at=c(0.2,0.52,0.86), cex = 0.6, font=3)
-mtext(c( "Catfishes", "FW fishes", "Salmonids", "Shrimps", "Marine fishes"), side=4, line = 0.3, outer = T, at=rev(seq(from =.115, to=.92, length.out = 5)), cex = 0.6, font=3)
+mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
+mtext("Relative feed conversion ratio",side = 2, line=2, outer = T, cex=1)
+mtext(c("Algae", "Soy"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
+mtext(c("Shrimps", "Salmonids","Marine fishes"), side=2, line = 0.5, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
 par(op)
 dev.off()
 
@@ -5124,8 +5121,8 @@ write_csv(a_test, "forage fish consumption - optimal replacement.csv")
 
 ```
 
-#Species or development-constrained optimal use
-#same as optimal but only MEDCS and the top 10 producers of fed aquaculture (who are not LDCs i.e. Bangladesh was omitted) have access to novel feeds
+#Species optimal use
+#same as optimal but only Mapplied to salmon and shrimps
 
 ```{r}
 
@@ -5283,123 +5280,6 @@ write_csv(a_test, "forage fish consumption - development optimal replacement.csv
 
 ####SECTION 1 COMBINE CONSUMPTION SCENARIOS ACROSS DIETS
 
-
-
-#Historical supply
-
-```{r}
-
-ff_consumption <- 
-  fread("forage fish consumption.csv", header=T) 
-
-
-
-#feed supply data from FAOSTAT
-feed_fish <- read_csv("forage_feed.csv")
-
-feed_use <- feed_fish %>%
-  filter(Item=="Pelagic Fish") %>% 
-  group_by(Year) %>%
-  summarise(Value = sum(Value)*1000) %>% 
-  mutate(Element = "Total animal feed use")
-  
-
-
-#forage fish species used in Froehlich et al
-
-feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus",   "Sardinella",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
-
-
-#Sort the symbols in values out
-## "..." = data unavailable
-## " " = data not separately available
-## "-" = nil or zero
-## "0 0" = more than zero but less than half the unit used
-## F = FAO estimate from available sources of information
-
-
-##IF USING FAO PRODUCTION DATA - Feed use of pelagic fish is greater than production!
-
-#Capture production
-forage_fish <-
-  fread("Marine fisheries Production 1950-2014.csv", header=T) %>% 
-  filter(TaxonName %in% feed_spp) %>% 
-  select(CountryName, Year, TaxonName, Value) %>% 
-  group_by(Year) %>% 
-  summarise(Value=sum(Value)) %>% 
-  mutate(Element="Historical supply")
-
-#Management into legend
-management <- 
-  data_frame(Year= NA, Vaue = NA, Element="Proposed EBFM limit")
-
-
-#fishmeal use in aquaculture
-
-fishmeal_prop <- 
-  data_frame(Year=c(1960,1980,2010), Prop=c(0.04, 0.1,0.73))
-
-
-fishmeal_aqua <- 
-  data_frame(Year=seq(1961,2013)) %>% 
-  mutate(Prop = case_when(Year==1961 ~0.04,
-                          Year==1980~0.1,
-                          Year==2010~0.73))
-  
-  
-predictions <- predict(lm(Prop~Year, data=fishmeal_aqua), newdata = data_frame(Year=seq(1961,2013)))+0.08
-
-fishmeal_aqua <- 
-  fishmeal_aqua %>% 
-  select(Year) %>% 
-  mutate(Value=feed_use$Value*predictions) %>% 
-  mutate(Element="Aquaculture use")
-
-anchovy <- readPNG("anchovy.png")
-anchovy <- rasterGrob(anchovy)
-
-
-limit <- mean(forage_fish$Value[forage_fish$Year>1979])
-
-
-(supply_demand <- 
-    bind_rows(forage_fish, feed_use, fishmeal_aqua, management) %>% 
-    mutate(Element = factor(Element, levels=c("Historical supply", "Proposed EBFM limit","Total animal feed use", "Aquaculture use"))) %>%
-    ggplot(aes(x=Year, y=Value, colour=Element, linetype=Element))+geom_line()+
-    scale_linetype_manual(values=c(1,2,1,1))+
-    scale_colour_manual(values=c("black", "black", "grey50", "dodgerblue"))+
-    scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
-    scale_x_continuous(breaks = c(1970,1990, 2010, 2030), limits = c(1960,2036), expand = c(0,0))+
-                         theme_pubr()+
-                         geom_vline(xintercept=2015, linetype=2, colour="grey80", alpha=0)+
-                         theme(
-                           #text=element_text(size=10),
-                           legend.title = element_blank(),
-                           legend.background=element_blank(),
-                           legend.position = c(0.2,0.9),
-                           legend.text = element_text(size=7),
-                           legend.key.height = unit(0.3, "cm"),
-                           plot.margin = unit(c(0.5,-.2, 0.2,0.2), "cm"),
-                           axis.text.x = element_text(size=10),
-                           #axis.line.x = element_blank(),
-                           axis.title.x = element_text(size=10),
-                           axis.text.y = element_text(size=10),
-                           axis.title.y = element_text(size=10)
-                         )+
-                         annotate("segment", x=2013, xend=2035, y=limit, yend = limit)+
-                         annotate("segment", x=2013, xend=2035, y=limit*0.8, yend = limit*0.8, linetype=2)+
-                         annotate("segment", x=2013, xend=2013, y=-Inf, yend = Inf, colour="grey80", linetype=2)+
-    geom_segment(x=2013, xend=2030, y=15078983.9, yend = 15078983.9, colour="dodgerblue", linetype=3, alpha=0.3, arrow = arrow(length = unit(1.5, "mm"), type = "closed"))+
-                         #annotate("segment", x=1960, xend=2030.5, y=0, yend = 0, colour="black", linetype=1, size=0.95)+
-                         annotate("text", x=2014, y=32e+6, label="Average supply\n1980-2013", size=2.5, hjust=0)+
-    annotate("text", x=2031.5, y=15078983.9, label="?", size=3)+
-    annotation_custom(anchovy, xmin = 2018, xmax = 2032, ymin=34e+6, ymax=44e+6)+
-                         labs(y=bquote(Forage~fish~biomass~(Tx10^6)))+
-                         ggsave("total forage fish landings plot2.tiff", device="tiff", dpi=600, width = 8.9, height=8, units = "cm"))
-                       
-                       
-
-```
 
 ## All diets and growth scenarios
 
@@ -5644,11 +5524,16 @@ limit <- mean(forage_fish$Value[forage_fish$Year>1979])
       mutate(Diet = "Optimal \nSalmon & Shrimp")
     
   ) %>% 
-   mutate(Scenario = factor(Scenario, levels=c("2030\nBAU",  "2030\nRap.Gr.", "2030\nCon.Shft")))
+   mutate(Scenario = factor(Scenario, levels=c("2030\nBAU",  "2030\nRap.Gr.", "2030\nCon.Shft"))) %>% 
+   mutate(limitbreach = case_when(Value+sd>=limit ~"TRUE", 
+                                   TRUE ~ "FALSE")) %>% 
+   mutate(EBFM_breach = case_when(Value+sd>=limit*0.8 ~"TRUE", 
+                                   TRUE ~ "FALSE"))
 )
 
 
-demand_scenarios <- ggplot(data = all_diets_scenarios, aes(x=Scenario, y=reorder(Diet,Value)))+
+
+(demand_scenarios <- ggplot(data = all_diets_scenarios, aes(x=Scenario, y=reorder(Diet,Value)))+
   geom_tile(aes(fill=Value))+
   theme_pubclean()+
   scale_x_discrete(expand = c(0,0))+
@@ -5664,15 +5549,185 @@ demand_scenarios <- ggplot(data = all_diets_scenarios, aes(x=Scenario, y=reorder
     axis.text.x = element_text(size=7),
     plot.margin = unit(c(t=0., b=0, r=0, l=0), units="cm")
   )+
-  guides(fill=guide_colorbar(barwidth = 0.7, barheight = 5, units="cm"))+
+    annotate("segment", x=c(0.5, 0.5, 1.5, 1.5,1.5, 2.5, 2.5),xend = c(0.5,1.5, 1.5, 1.5, 2.5, 2.5, 3.5),  y=c(7.5, 7.5, 7.5, 6.5, 5.5, 5.5, 2.5), yend = c(8.5,7.5, 6.5, 5.5, 5.5, 2.5, 2.5), linetype=2)+
+    annotate("segment", x=c(2.5, 2.5), xend = c(2.5, 3.5), y=c(8.5, 3.5), yend=c(3.5, 3.5))+
+  guides(fill=guide_colorbar(barwidth = 0.7, barheight = 5, units="cm", ticks=FALSE))+
   labs(x="Growth scenario", fill="Forage fish demand\n(million tonnes)", y="")+
-  scale_fill_gradientn(colours = rev(lacroix_palette("PeachPear", n=5, type = "continuous")), breaks=c(15e+6, 20e+6, limit*0.8, limit, 35e+6), labels=c("15", "20", "EBFM supply", "Historical supply", "35"))+
+  scale_fill_gradientn(colours = rev(lacroix_palette("PeachPear", n=5, type = "continuous")), breaks=c(15e+6, 20e+6, limit*0.8, limit, 35e+6), labels=c("15", "20", "EBFM supply", "Historical supply", "35")))+
   ggsave("forage_fish_heatmap.tiff", dpi=600, device = "tiff", width = 8.9, height = 7, units = "cm")+
   ggsave("forage_fish_heatmap.pdf", dpi=600, device = "pdf", width = 8.9, height = 7, units = "cm")
 
 
+(Baseline <- fread("forage fish consumption.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(consumption_2015)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2015")
+)
+
+Baseline$Value
+
+ggplot(all_diets_scenarios %>% 
+         add_row(Value = Baseline$Value, sd=Baseline$sd, Scenario="2015", Diet="Current diets") %>% 
+         mutate(Scenario = factor(Scenario, levels=c("2015","2030\nBAU",  "2030\nRap.Gr.", "2030\nCon.Shft"))) %>% 
+         mutate(Diet = factor(Diet, levels=c("Current diets", "Yeast", "Insects", "Bacteria", "Soy", "Optimal \nSalmon & Shrimp", "Algae", "Optimal global"))),
+       aes(x=Diet, y=Value, fill=Scenario))+
+  geom_segment( x=0.5, xend = 8.5, y=c(limit), yend=c(limit), linetype=c(1))+
+  geom_segment( x=0.5, xend = 8.5, y=c(limit*.8), yend=c(limit*.8), linetype=c(2))+
+  geom_bar(stat="identity", position ="dodge")+
+geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.2,position =  position_dodge(0.9))+
+  scale_fill_manual(values=rev(lacroix_palette("PassionFruit", n=4, type = "continuous")))+
+  scale_y_continuous(labels = c(0,10,20,30,40))+
+  theme_pubr()+
+  theme(text = element_text(size=10))+
+  labs(y=bquote(Forage~fish~demand~(Tx10^6)), x="Diets")+
+  annotate("text", x=7.5, y=32e+6, label="Historical supply", size=3)+
+  annotate("text", x=7.5, y=25e+6, label="EBFM supply", size=3)+
+  ggsave("Figure S1 - Demand with uncertainty.tiff", device = "tiff", dpi=600, width = 18, height=10, units = "cm")
+  
 
 
+
+
+
+```
+
+#Historical supply
+
+```{r}
+
+ff_consumption <- 
+  fread("forage fish consumption.csv", header=T) 
+
+
+
+#feed supply data from FAOSTAT
+feed_fish <- read_csv("forage_feed.csv")
+
+feed_use <- feed_fish %>%
+  filter(Item=="Pelagic Fish") %>% 
+  group_by(Year) %>%
+  summarise(Value = sum(Value)*1000) %>% 
+  mutate(Element = "Total animal feed use")
+  
+
+
+#forage fish species used in Froehlich et al
+
+feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus",   "Sardinella",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
+
+
+#Sort the symbols in values out
+## "..." = data unavailable
+## " " = data not separately available
+## "-" = nil or zero
+## "0 0" = more than zero but less than half the unit used
+## F = FAO estimate from available sources of information
+
+
+##IF USING FAO PRODUCTION DATA - Feed use of pelagic fish is greater than production!
+
+#Capture production
+forage_fish <-
+  fread("Marine fisheries Production 1950-2014.csv", header=T) %>% 
+  filter(TaxonName %in% feed_spp) %>% 
+  select(CountryName, Year, TaxonName, Value) %>% 
+  group_by(Year) %>% 
+  summarise(Value=sum(Value)) %>% 
+  mutate(Element="Historical supply")
+
+#Management into legend
+management <- 
+  data_frame(Year= NA, Vaue = NA, Element="Proposed EBFM limit")
+
+
+#fishmeal use in aquaculture
+
+fishmeal_prop <- 
+  data_frame(Year=c(1960,1980,2010), Prop=c(0.04, 0.1,0.73))
+
+
+fishmeal_aqua <- 
+  data_frame(Year=seq(1961,2013)) %>% 
+  mutate(Prop = case_when(Year==1961 ~0.04,
+                          Year==1980~0.1,
+                          Year==2010~0.73))
+  
+  
+predictions <- predict(lm(Prop~Year, data=fishmeal_aqua), newdata = data_frame(Year=seq(1961,2013)))+0.08
+
+fishmeal_aqua <- 
+  fishmeal_aqua %>% 
+  select(Year) %>% 
+  mutate(Value=feed_use$Value*predictions) %>% 
+  mutate(Element="Aquaculture use")
+
+anchovy <- readPNG("anchovy.png")
+anchovy <- rasterGrob(anchovy)
+
+
+limit <- mean(forage_fish$Value[forage_fish$Year>1979])
+
+(future_scenarios <- ggplot(data = all_diets_scenarios, aes(x=Scenario, y=reorder(Diet,Value)))+
+  geom_tile(aes(fill=Value))+
+  theme_pubclean()+
+  scale_x_discrete(expand = c(0,0))+
+  scale_y_discrete(expand = c(0,0))+
+  theme(
+    #axis.title.y = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_text(size=7),
+    axis.title.y = element_blank(),
+    aspect.ratio = 50/25,
+    plot.margin = unit(c(t=0., b=0, r=0, l=0), units="cm")
+  )+
+  guides(fill=FALSE)+
+  labs(x="2030\nScenarios")+
+  scale_fill_gradientn(colours = rev(lacroix_palette("PeachPear", n=5, type = "continuous")), breaks=c(15e+6, 20e+6, limit*0.8, limit, 35e+6), labels=c("15", "20", "EBFM supply", "Historical supply", "35")))
+
+
+
+(supply_demand <- 
+    bind_rows(forage_fish, feed_use, fishmeal_aqua, management) %>% 
+    mutate(Element = factor(Element, levels=c("Historical supply", "Proposed EBFM limit","Total animal feed use", "Aquaculture use"))) %>%
+    ggplot(aes(x=Year, y=Value, colour=Element, linetype=Element))+geom_line()+
+    scale_linetype_manual(values=c(1,2,1,1))+
+    scale_colour_manual(values=c("black", "black", "grey50", "dodgerblue"))+
+    scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+    scale_x_continuous(breaks = c(1970,1990, 2010, 2030), limits = c(1960,2036), expand = c(0,0))+
+                         theme_pubr()+
+                         geom_vline(xintercept=2015, linetype=2, colour="grey80", alpha=0)+
+                         theme(
+                           #text=element_text(size=10),
+                           legend.title = element_blank(),
+                           legend.background=element_blank(),
+                           legend.position = c(0.2,0.9),
+                           legend.text = element_text(size=7),
+                           legend.key.height = unit(0.3, "cm"),
+                           plot.margin = unit(c(0.5,-.2, 0.2,0.2), "cm"),
+                           axis.text.x = element_text(size=10),
+                           #axis.line.x = element_blank(),
+                           axis.title.x = element_text(size=10),
+                           axis.text.y = element_text(size=10),
+                           axis.title.y = element_text(size=10)
+                         )+
+                         annotate("segment", x=2013, xend=2035, y=limit, yend = limit)+
+                         annotate("segment", x=2013, xend=2035, y=limit*0.8, yend = limit*0.8, linetype=2)+
+                         annotate("segment", x=2013, xend=2013, y=-Inf, yend = Inf, colour="grey80", linetype=2)+
+    geom_segment(x=2013, xend=2023, y=15078983.9, yend = 15078983.9, colour="lightskyblue", linetype=1, alpha=0.3, arrow = arrow(length = unit(2, "mm"), type = "closed"))+
+                         #annotate("segment", x=1960, xend=2030.5, y=0, yend = 0, colour="black", linetype=1, size=0.95)+
+                         annotate("text", x=2014, y=32.5e+6, label="Average supply\n1980-2013", size=2.5, hjust=0)+
+    #annotate("text", x=2031.5, y=15078983.9, label="?", size=3)+
+    annotation_custom(anchovy, xmin = 2020, xmax = 2034, ymin=34e+6, ymax=44e+6)+
+                         labs(y=bquote(Forage~fish~biomass~(million~tonnes)))+
+    annotation_custom(ggplotGrob(future_scenarios) , xmin = 2020, xmax=2034, ymin = 6e+6, ymax=20e+6)+
+                         ggsave("total forage fish landings plot2.tiff", device="tiff", dpi=600, width = 8.9, height=8, units = "cm"))
+                       
+
+
+#bracket <- 
 
 ggarrange(supply_demand, demand_scenarios,
           nrow = 1,
@@ -5680,15 +5735,15 @@ ggarrange(supply_demand, demand_scenarios,
           labels=c("a", "b"),
           font.label = list(size=9),
           align = "hv", 
-          widths = c(0.51,0.49))+
+          widths = c(0.51,0.49),
+          label.x = c(0.001, 0.05))+
+  #annotation_custom(bracketsGrob(0.56, 0.13 , 0.56, 0.92 , h=0.14, col="grey70"))+
+  annotation_custom(segmentsGrob(x0=c(0.853, 0.853), x1=c(0.871, 0.871), y0=c(0.504, 0.573), y1=c(0.504, 0.573), default.units = "npc", gp = gpar(lty=c(2,1))))+
   ggsave("Figure - supply and demand.tiff", dpi=600, device = "tiff", width = 18, height=7.5, units="cm")+
   ggsave("Figure - supply and demand.pdf", dpi=600, device = "pdf", width = 18, height=7.5, units="cm")
 
+
 ```
-
-
-
-
 
 
 
@@ -6823,6 +6878,265 @@ insects_total+
 
 
 
+#Old Fig 1 - Against Historical supply of forage fish and use of fish in feed 
+
+```{r}
+
+
+
+#feed supply data from FAOSTAT
+feed_fish <- read_csv("forage_feed.csv")
+
+feed_use <- feed_fish %>%
+  filter(Item=="Pelagic Fish") %>% 
+  group_by(Year) %>%
+  summarise(Value = sum(Value)*1000) %>% 
+  mutate(Element = "Total animal feed use")
+  
+
+
+#forage fish species used in Froehlich et al
+
+feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus",   "Sardinella",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
+
+
+#Sort the symbols in values out
+## "..." = data unavailable
+## " " = data not separately available
+## "-" = nil or zero
+## "0 0" = more than zero but less than half the unit used
+## F = FAO estimate from available sources of information
+
+
+##IF USING FAO PRODUCTION DATA - Feed use of pelagic fish is greater than production!
+
+#Capture production
+forage_fish <-
+  fread("Marine fisheries Production 1950-2014.csv", header=T) %>% 
+  filter(TaxonName %in% feed_spp) %>% 
+  select(CountryName, Year, TaxonName, Value) %>% 
+  group_by(Year) %>% 
+  summarise(Value=sum(Value)) %>% 
+  mutate(Element="Historical supply")
+
+#Management into legend
+management <- 
+  data_frame(Year= NA, Vaue = NA, Element="Proposed EBFM supply")
+
+
+#fishmeal use in aquaculture
+
+fishmeal_prop <- 
+  data_frame(Year=c(1960,1980,2010), Prop=c(0.04, 0.1,0.73))
+
+
+fishmeal_aqua <- 
+  data_frame(Year=seq(1961,2013)) %>% 
+  mutate(Prop = case_when(Year==1961 ~0.04,
+                          Year==1980~0.1,
+                          Year==2010~0.73))
+  
+  
+predictions <- predict(lm(Prop~Year, data=fishmeal_aqua), newdata = data_frame(Year=seq(1961,2013)))+0.08
+
+fishmeal_aqua <- 
+  fishmeal_aqua %>% 
+  select(Year) %>% 
+  mutate(Value=feed_use$Value*predictions) %>% 
+  mutate(Element="Aquaculture use")
+  
+
+
+
+
+
+
+
+
+mean(feed_fish$Value[feed_fish$Year>1979])
+  
+
+  # 
+  # rename(Country=`Country (Country)`,
+  #        Species = `Species (ASFIS species)`,
+  #        Area = `Fishing area (FAO major fishing area)`,
+  #        Measure = `Measure (Measure)`) %>%
+  # gather(key="Year", value="Value", -c(Country, Species, Area, Measure)) %>%
+  # mutate(Year = gsub("X", "", Year) %>%
+  #          as.numeric) %>%
+  # mutate(Value = case_when(Value=="0 0" ~ "0.5",
+  #                          Value=="-" ~ "0",
+  #                          T ~ Value)) %>%
+  # filter(!(Value=="..." | Value=="") | Country=="Totals") %>%
+  # mutate(Value = gsub(" F", "", Value) %>%
+  #          as.numeric) %>%
+  # filter(Species %in% feed_spp) %>%
+  # group_by(Year) %>%
+  # summarise(Value=sum(Value)) %>%
+  # mutate(Element = "Forage fish supply")
+
+
+(supply_demand <- 
+  bind_rows(forage_fish, feed_use, fishmeal_aqua, management) %>% 
+    mutate(Element = factor(Element, levels=c("Historical supply", "Proposed EBFM supply","Total animal feed use", "Aquaculture use"))) %>% 
+  ggplot(aes(x=Year, y=Value, colour=Element, linetype=Element))+geom_line()+
+  scale_linetype_manual(values=c(1,2,1,1))+
+  scale_colour_manual(values=c("black", "black", "grey50", "dodgerblue"))+
+  scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+  theme_pubr()+
+  geom_vline(xintercept=2015, linetype=2, colour="grey80", alpha=0)+
+  theme(
+    #text=element_text(5),
+    legend.title = element_blank(),
+    legend.background=element_blank(),
+    legend.position = c(0.25,0.85),
+    legend.text = element_text(size=6),
+    legend.key.size = unit(0.5, "cm"),
+    plot.margin = unit(c(0.5,-.2, 0.2,0.2), "cm"),
+    axis.text.x = element_text(size=8),
+    axis.title.x = element_text(size=9, hjust = 0.9, margin = margin(t =10, r = 0, b = 0, l = 0)),
+    axis.text.y = element_text(size=8),
+    axis.title.y = element_text(size=9)
+    )+
+labs(y=bquote(Forage~fish~biomass~(Tx10^6)))+
+ggsave("total forage fish landings plot2.tiff", device="tiff", dpi=600, width = 8, height=7, units = "cm")
+  )
+
+
+
+
+
+(total_consumption <- 
+  bind_rows(
+  
+  ff_2015 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(consumption_2015)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2015"),
+
+ff_2030_fao <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(fao_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nBAU"),
+
+ff_2030_WB1 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nRap.Gr."),
+  
+
+ff_2030_WB2 <- 
+  fread("forage fish consumption.csv", header=T) %>% 
+  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+  group_by(rep_id) %>% 
+  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+  mutate(Element = "2030\nCon.Shft")
+) %>% 
+    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
+    
+)
+
+
+# #brackets grob for barplot
+
+bracket <- bracketsGrob(0.15, 0.92,  0.85, 0.92 , h=0.04, col="grey40")
+
+consumption <- 
+  ggplot(data=total_consumption, aes(x=Element, y=Value, fill=Element))+
+  geom_segment(x=1, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
+  geom_segment(x=1, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979])*0.8, yend=mean(forage_fish$Value[forage_fish$Year>1979])*0.8, linetype=2)+
+
+  #geom_segment(x=1, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
+  geom_bar(stat="identity", width=.4)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
+  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
+  scale_y_continuous(limits=c(0,44e+6), expand = c(0,0))+
+  theme_pubr()+
+  theme(axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_text(size=8),
+        axis.title.x = element_text(size=9, hjust=.64, margin = margin(t = 1.4, r = 0, b = 0, l = 0)),
+        panel.background =  element_blank(),
+        plot.margin = unit(c(0.5,.2, 0.2,-1.45), "cm"))+
+  #guides(fill=F)+
+  labs(x="", fill="Growth scenario")+
+  annotation_custom(bracket)+
+  annotate("text", x=2.5, y=43.5e+6, label="Demand from aquaculture", size=2.8)
+
+
+
+# grid.locator(unit = "native")
+#   
+#  
+# $x
+# [1] 369native
+# 
+# $y
+# [1] 315native  
+#    
+#   
+# $x
+# [1] 147native
+# 
+# $y
+# [1] 315native  
+
+#ggarrange(production_scenarios,
+  ggarrange(supply_demand, consumption, widths = c(1,0.61), 
+            nrow=1, 
+            ncol=2, 
+            # labels=c("e", ""),
+            # label.x = 0.18,
+            font.label = list(size=10))+#,
+  # annotate("text", x=.665,y=.725, label="Average supply 1980-2013", size=2.5)+
+  # annotate("text", x=.58,y=.53, label="Average feed usage 1980-2013", size=2.5, col= "black", hjust=0),
+  # nrow=2, ncol=1,
+  # heights = c(0.65,1))+
+
+  ggsave("Figure 1 new2.tiff", device="tiff", dpi=600, width = 18, height=12, units = "cm")+
+  ggsave("Figure 1 new2.pdf", device="pdf", dpi=600, width = 18, height=12, units = "cm")
+
+
+
+#grid.brackets(220, bottom_y,   80, bottom_y, lwd=2, col="red")
+
+
+
+ggplot(data = forage_fish, aes(x=Year, y=Value))+
+  geom_line(colour="firebrick", linetype=1)+
+  geom_line(data = feed_fish, aes(x=Year, y=Value), colour="black", linetype=1)+
+  #annotate("segment", x=2000, xend = 2015, y=mean(forage_fish$Value[forage_fish$Year>1999]), yend = mean(forage_fish$Value[forage_fish$Year>1999]), colour="firebrick", linetype=2)+
+  #annotate("segment", x=2000, xend = 2015, y=mean(feed_fish$Value[feed_fish$Year>2010])*0.75, yend = mean(feed_fish$Value[feed_fish$Year>2010])*0.75, colour="black", linetype=2)+
+  # scale_x_continuous(limits=c(1960,2016), breaks = c(1985, 2015), labels = c(1985, 2015))+
+  # scale_y_continuous(limits = c(0,4e+07), labels = c(0,40), breaks = c(0,  4e+07))+
+  labs(x=bquote(Year), y=bquote(Biomass~(T~x10^6)))+
+  theme_pubr()+
+  theme(panel.grid = element_blank(),
+        axis.text = element_text(size=10),
+        axis.title = element_text(size=10))+
+  #annotate("text", x=1983, y=5e+06, label="c", size=11)+
+  ggsave("total forage fish landings plot.tiff", device="tiff", dpi=600, width = 11, height=9, units = "cm")
+
+
+```
+
+
+
+
+
+
 
 #Supplmentary  - Production scenarios 
 ```{r}
@@ -7053,7 +7367,7 @@ ff_consumption <-
    theme_pubr()+
    coord_flip()+
    theme(
-     text = element_text(size=7),
+     text = element_text(size=8),
      axis.title = element_blank()
    ))
 
@@ -7089,7 +7403,7 @@ ff_consumption <-
    theme_pubr()+
    coord_flip()+
    theme(
-     text = element_text(size=7),
+     text = element_text(size=8),
      axis.text.y = element_blank(),
      axis.title = element_blank()
    )
@@ -7130,7 +7444,7 @@ ff_consumption <-
   theme_pubr()+
   coord_flip()+
   theme(
-    text = element_text(size=7),
+    text = element_text(size=8),
     axis.text.y = element_blank(),
     axis.title = element_blank()
   ))
@@ -7169,7 +7483,7 @@ ff_consumption <-
    theme_pubr()+
    coord_flip()+
    theme(
-     text = element_text(size=7),
+     text = element_text(size=8),
      axis.text.y = element_blank(),
      axis.title = element_blank()
    ))
@@ -7207,275 +7521,13 @@ consumption_scenarios <-
 
 # Supplementary -  Combining production and consumption
 ```{r}
-ggarrange(production_scenarios, consumption_scenarios, nrow = 2, ncol=1, align = "hv")+
+ggarrange(production_scenarios, consumption_scenarios, nrow = 2, ncol=1, align = "v")+
   ggsave("Figure S1 - production and consumption.tiff", device="tiff", dpi=600, width = 18, height=14, units="cm")+
   ggsave("Figure S1 - production and consumption.pdf", device="pdf", dpi=600, width = 18, height=14, units="cm")
 
 
 
 ```
-
-
-#Fig 1 - Against Historical supply of forage fish and use of fish in feed 
-
-```{r}
-
-
-
-#feed supply data from FAOSTAT
-feed_fish <- read_csv("forage_feed.csv")
-
-feed_use <- feed_fish %>%
-  filter(Item=="Pelagic Fish") %>% 
-  group_by(Year) %>%
-  summarise(Value = sum(Value)*1000) %>% 
-  mutate(Element = "Total animal feed use")
-  
-
-
-#forage fish species used in Froehlich et al
-
-feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus",   "Sardinella",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
-
-
-#Sort the symbols in values out
-## "..." = data unavailable
-## " " = data not separately available
-## "-" = nil or zero
-## "0 0" = more than zero but less than half the unit used
-## F = FAO estimate from available sources of information
-
-
-##IF USING FAO PRODUCTION DATA - Feed use of pelagic fish is greater than production!
-
-#Capture production
-forage_fish <-
-  fread("Marine fisheries Production 1950-2014.csv", header=T) %>% 
-  filter(TaxonName %in% feed_spp) %>% 
-  select(CountryName, Year, TaxonName, Value) %>% 
-  group_by(Year) %>% 
-  summarise(Value=sum(Value)) %>% 
-  mutate(Element="Historical supply")
-
-#Management into legend
-management <- 
-  data_frame(Year= NA, Vaue = NA, Element="Proposed EBFM supply")
-
-
-#fishmeal use in aquaculture
-
-fishmeal_prop <- 
-  data_frame(Year=c(1960,1980,2010), Prop=c(0.04, 0.1,0.73))
-
-
-fishmeal_aqua <- 
-  data_frame(Year=seq(1961,2013)) %>% 
-  mutate(Prop = case_when(Year==1961 ~0.04,
-                          Year==1980~0.1,
-                          Year==2010~0.73))
-  
-  
-predictions <- predict(lm(Prop~Year, data=fishmeal_aqua), newdata = data_frame(Year=seq(1961,2013)))+0.08
-
-fishmeal_aqua <- 
-  fishmeal_aqua %>% 
-  select(Year) %>% 
-  mutate(Value=feed_use$Value*predictions) %>% 
-  mutate(Element="Aquaculture use")
-  
-
-
-
-
-
-
-
-
-mean(feed_fish$Value[feed_fish$Year>1979])
-  
-
-  # 
-  # rename(Country=`Country (Country)`,
-  #        Species = `Species (ASFIS species)`,
-  #        Area = `Fishing area (FAO major fishing area)`,
-  #        Measure = `Measure (Measure)`) %>%
-  # gather(key="Year", value="Value", -c(Country, Species, Area, Measure)) %>%
-  # mutate(Year = gsub("X", "", Year) %>%
-  #          as.numeric) %>%
-  # mutate(Value = case_when(Value=="0 0" ~ "0.5",
-  #                          Value=="-" ~ "0",
-  #                          T ~ Value)) %>%
-  # filter(!(Value=="..." | Value=="") | Country=="Totals") %>%
-  # mutate(Value = gsub(" F", "", Value) %>%
-  #          as.numeric) %>%
-  # filter(Species %in% feed_spp) %>%
-  # group_by(Year) %>%
-  # summarise(Value=sum(Value)) %>%
-  # mutate(Element = "Forage fish supply")
-
-
-(supply_demand <- 
-  bind_rows(forage_fish, feed_use, fishmeal_aqua, management) %>% 
-    mutate(Element = factor(Element, levels=c("Historical supply", "Proposed EBFM supply","Total animal feed use", "Aquaculture use"))) %>% 
-  ggplot(aes(x=Year, y=Value, colour=Element, linetype=Element))+geom_line()+
-  scale_linetype_manual(values=c(1,2,1,1))+
-  scale_colour_manual(values=c("black", "black", "grey50", "dodgerblue"))+
-  scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
-  theme_pubr()+
-  geom_vline(xintercept=2015, linetype=2, colour="grey80", alpha=0)+
-  theme(
-    #text=element_text(5),
-    legend.title = element_blank(),
-    legend.background=element_blank(),
-    legend.position = c(0.25,0.85),
-    legend.text = element_text(size=6),
-    legend.key.size = unit(0.5, "cm"),
-    plot.margin = unit(c(0.5,-.2, 0.2,0.2), "cm"),
-    axis.text.x = element_text(size=8),
-    axis.title.x = element_text(size=9, hjust = 0.9, margin = margin(t =10, r = 0, b = 0, l = 0)),
-    axis.text.y = element_text(size=8),
-    axis.title.y = element_text(size=9)
-    )+
-labs(y=bquote(Forage~fish~biomass~(Tx10^6)))+
-ggsave("total forage fish landings plot2.tiff", device="tiff", dpi=600, width = 8, height=7, units = "cm")
-  )
-
-
-
-
-
-(total_consumption <- 
-  bind_rows(
-  
-  ff_2015 <- 
-  fread("forage fish consumption.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, consumption_2015) %>% 
-  group_by(rep_id) %>% 
-  summarise(Rep_Value = sum(consumption_2015)) %>% 
-  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
-  mutate(Element = "2015"),
-
-ff_2030_fao <- 
-  fread("forage fish consumption.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
-  group_by(rep_id) %>% 
-  summarise(Rep_Value = sum(fao_consumption)) %>% 
-  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
-  mutate(Element = "2030\nBAU"),
-
-ff_2030_WB1 <- 
-  fread("forage fish consumption.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
-  group_by(rep_id) %>% 
-  summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
-  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
-  mutate(Element = "2030\nRap.Gr."),
-  
-
-ff_2030_WB2 <- 
-  fread("forage fish consumption.csv", header=T) %>% 
-  select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
-  group_by(rep_id) %>% 
-  summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
-  summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
-  mutate(Element = "2030\nCon.Shft")
-) %>% 
-    mutate(Element = factor(Element, levels= c("2015", "2030\nBAU", "2030\nRap.Gr.", "2030\nCon.Shft")))
-    
-)
-
-
-# #brackets grob for barplot
-
-bracket <- bracketsGrob(0.15, 0.92,  0.85, 0.92 , h=0.04, col="grey40")
-
-consumption <- 
-  ggplot(data=total_consumption, aes(x=Element, y=Value, fill=Element))+
-  geom_segment(x=1, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979]), yend=mean(forage_fish$Value[forage_fish$Year>1979]), linetype=1)+
-  geom_segment(x=1, xend=Inf, y=mean(forage_fish$Value[forage_fish$Year>1979])*0.8, yend=mean(forage_fish$Value[forage_fish$Year>1979])*0.8, linetype=2)+
-
-  #geom_segment(x=1, xend=Inf, y=mean(feed_use$Value[feed_use$Year>1979]), yend=mean(feed_use$Value[feed_use$Year>1979]), colour="grey30", linetype=2)+
-  geom_bar(stat="identity", width=.4)+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=.2)+
-  scale_fill_manual(values = rev(lacroix_palette("PassionFruit", n=4, "continuous")))+
-  scale_y_continuous(limits=c(0,44e+6), expand = c(0,0))+
-  theme_pubr()+
-  theme(axis.line.y = element_blank(),
-        axis.text.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.text.x = element_text(size=8),
-        axis.title.x = element_text(size=9, hjust=.64, margin = margin(t = 1.4, r = 0, b = 0, l = 0)),
-        panel.background =  element_blank(),
-        plot.margin = unit(c(0.5,.2, 0.2,-1.45), "cm"))+
-  guides(fill=F)+
-  labs(x="")+
-  annotation_custom(bracket)+
-  annotate("text", x=2.5, y=43.5e+6, label="Demand from aquaculture", size=2.8)
-
-
-
-# grid.locator(unit = "native")
-#   
-#  
-# $x
-# [1] 369native
-# 
-# $y
-# [1] 315native  
-#    
-#   
-# $x
-# [1] 147native
-# 
-# $y
-# [1] 315native  
-
-#ggarrange(production_scenarios,
-  ggarrange(supply_demand, consumption, widths = c(1,0.61), 
-            nrow=1, 
-            ncol=2, 
-            # labels=c("e", ""),
-            # label.x = 0.18,
-            font.label = list(size=10))+#,
-  # annotate("text", x=.665,y=.725, label="Average supply 1980-2013", size=2.5)+
-  # annotate("text", x=.58,y=.53, label="Average feed usage 1980-2013", size=2.5, col= "black", hjust=0),
-  # nrow=2, ncol=1,
-  # heights = c(0.65,1))+
-
-  ggsave("Figure 1 new2.tiff", device="tiff", dpi=600, width = 18, height=12, units = "cm")+
-  ggsave("Figure 1 new2.pdf", device="pdf", dpi=600, width = 18, height=12, units = "cm")
-
-
-
-#grid.brackets(220, bottom_y,   80, bottom_y, lwd=2, col="red")
-
-
-
-ggplot(data = forage_fish, aes(x=Year, y=Value))+
-  geom_line(colour="firebrick", linetype=1)+
-  geom_line(data = feed_fish, aes(x=Year, y=Value), colour="black", linetype=1)+
-  #annotate("segment", x=2000, xend = 2015, y=mean(forage_fish$Value[forage_fish$Year>1999]), yend = mean(forage_fish$Value[forage_fish$Year>1999]), colour="firebrick", linetype=2)+
-  #annotate("segment", x=2000, xend = 2015, y=mean(feed_fish$Value[feed_fish$Year>2010])*0.75, yend = mean(feed_fish$Value[feed_fish$Year>2010])*0.75, colour="black", linetype=2)+
-  # scale_x_continuous(limits=c(1960,2016), breaks = c(1985, 2015), labels = c(1985, 2015))+
-  # scale_y_continuous(limits = c(0,4e+07), labels = c(0,40), breaks = c(0,  4e+07))+
-  labs(x=bquote(Year), y=bquote(Biomass~(T~x10^6)))+
-  theme_pubr()+
-  theme(panel.grid = element_blank(),
-        axis.text = element_text(size=10),
-        axis.title = element_text(size=10))+
-  #annotate("text", x=1983, y=5e+06, label="c", size=11)+
-  ggsave("total forage fish landings plot.tiff", device="tiff", dpi=600, width = 11, height=9, units = "cm")
-
-
-```
-
-
-
-
-
-
-
 
 
 
