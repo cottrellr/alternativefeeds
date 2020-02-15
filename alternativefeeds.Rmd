@@ -656,6 +656,7 @@ unique(growth_data$Study_id)
 #Plotting settings
 
 ```{r}
+
 #Smoothing splines mixed effects models. SME package
 
 
@@ -1851,18 +1852,18 @@ op <- par(mfrow=c(7,5),
           oma = c(3, 4, 3, 1.5)) #space for the overall x and y axis titles
 #carp_microalgae
 plotSmeModel(fit_carp_algae, xlab=F, ylab=F, xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", lwd=3, col=alpha("grey50", 0.5), pch=16, yaxt="n", bty = "l",  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red'))))+
-text(x=-5, y=1.4, labels = expression(italic("100%  (10)")), cex=1,pos = 4)+
+text(x=-5, y=1.38, labels = expression(italic("100%  (10)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #carp_macroalgae
 plotSmeModel(fit_carp_macroalgae, xlab=F, ylab=F, xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#0C95BA", lwd=3, col=alpha("grey50", 0.5), pch=16, yaxt="n", bty = "l",  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=25, lty=2, lwd=1, col='red'))))+
-text(x=-2, y=2.4, labels = expression(italic("25%%  (1)")), cex=1,pos = 4)+
+text(x=-2, y=2.4, labels = expression(italic("25%  (1)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #carps scps
 plotSmeModel(fit_carp_scps, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#89CE9F", col=alpha("grey50", 0.5), pch=16, yaxt="n",bty = "l",  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='red')) ))+
-text(x=-5, y=1.11, labels = expression(italic("66%  (2)")), cex=1,pos = 4)+
+text(x=-5, y=1.11, labels = expression(italic("65%  (2)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -1888,7 +1889,7 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
   
 #catfish macroalgae
 plotSmeModel(fit_catfish_macroalgae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#0C95BA", col=alpha("grey50", 0.5), pch=16, yaxt="n", bty = "l",panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=5, lty=2, lwd=1, col='red'))))+
-text(x=45, y=1.6, labels = expression(italic("10%  (1)")), cex=1,pos = 4)+
+text(x=45, y=1.6, labels = expression(italic("5%  (1)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -2079,18 +2080,18 @@ op <- par(mfrow=c(7,5),
           oma = c(3, 4, 3, 1.5)) #space for the overall x and y axis titles
 #carp_microalgae
 plotSmeModel(fit_carp_algae, xlab=F, ylab=F, xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", lwd=3, col=alpha("grey50", 0.5), pch=16, yaxt="n", bty = "l",  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red'))))+
-text(x=-5, y=1.9, labels = expression(italic("100%  (10)")), cex=1,pos = 4)+
+text(x=-5, y=1.38, labels = expression(italic("100%  (10)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #carp_macroalgae
 plotSmeModel(fit_carp_macroalgae, xlab=F, ylab=F, xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#0C95BA", lwd=3, col=alpha("grey50", 0.5), pch=16, yaxt="n", bty = "l",  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=25, lty=2, lwd=1, col='red'))))+
-text(x=-2, y=2.4, labels = expression(italic("25%%  (1)")), cex=1,pos = 4)+
+text(x=-2, y=2.4, labels = expression(italic("25%  (1)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #carps scps
 plotSmeModel(fit_carp_scps, xlab="",ylab="",xaxt="n", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#89CE9F", col=alpha("grey50", 0.5), pch=16, yaxt="n",bty = "l",  panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=66, lty=2, lwd=1, col='red')) ))+
-text(x=-5, y=1.11, labels = expression(italic("66%  (2)")), cex=1,pos = 4)+
+text(x=-5, y=1.11, labels = expression(italic("65%  (2)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -2116,7 +2117,7 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
   
 #catfish macroalgae
 plotSmeModel(fit_catfish_macroalgae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#0C95BA", col=alpha("grey50", 0.5), pch=16, yaxt="n", bty = "l",panel.first = c((abline(h=1.05, lty=2, lwd=1, col='black')),(abline(v=5, lty=2, lwd=1, col='red'))))+
-text(x=45, y=1.6, labels = expression(italic("10%  (1)")), cex=1,pos = 4)+
+text(x=45, y=1.6, labels = expression(italic("5%  (1)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -2264,8 +2265,8 @@ text(x=-5, y=2.19, labels = expression(italic("80%  (20)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes macroalgae
-plotSmeModel(fit_marine_macroalgae, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#0C95BA", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=80, lty=2, lwd=1, col='red'))))+
-text(x=40, y=1.12, labels = expression(italic("80%  (2)")), cex=1,pos = 4)+
+plotSmeModel(fit_marine_macroalgae, xlab="",ylab="", xaxt="n", showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#0C95BA", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))+
+text(x=40, y=1.12, labels = expression(italic("30%  (2)")), cex=1,pos = 4)+
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
@@ -2290,7 +2291,6 @@ mtext("Fishmeal replacement (%)", side = 1, line=1, outer = T)
 mtext(c("Carps", "Catfishes", "FW fishes", "Tilapias",   "Shrimps", "Salmonids","Marine fishes"), side=2, outer = T, line = 0.5,  at=rev(seq(from =.08, to=.94, length.out = 7)), cex = 0.75, font=3)
 mtext("Relative feed conversion ratio",side = 2, line=2, outer = T)
 mtext(c("Microalgae", "Macroalgae", "Bacteria & yeasts", "Insects", "Soy"), side=3, line = 0, outer = T, at=c(.12, .32, .52, .72, .92), cex = 0.8, font=4)
-
 par(op)
 dev.off()
 
@@ -2315,7 +2315,7 @@ FO <-
   mutate(Relative_nutrition = purrr::map(data, ~(.$n3n6/.$n3n6[1]))) %>% 
   unnest(data, Relative_nutrition)
 
-
+growth_data
 
 
 ```
@@ -2647,23 +2647,20 @@ dev.off()
 FO <- 
   fish_oil %>% 
   mutate(n3n6 = as.numeric(n3n6))%>% 
-  filter(!is.na(n3n6)) %>% 
-  group_by(Study_id) %>% 
-  nest() %>% 
-  mutate(Relative_nutrition = purrr::map(data, ~(.$n3n6/.$n3n6[1]))) %>% 
-  unnest(data, Relative_nutrition)
+  filter(!is.na(n3n6))%>%
+  mutate(Relative_n3_index = as.numeric(Relative_n3_index))
 
 
 
 
 #Shrimps and algae
-length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Algae" & FO$Fish_group=="Shrimps"])) #3
+length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Broad_feed=="Microalgae" & FO$Fish_group=="Shrimps"])) #3
 
 
 
 #Shrimps and soy 
 
-length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Soy" & FO$Fish_group=="Shrimps"])) #5
+length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Broad_feed=="Soy-oil mix" & FO$Fish_group=="Shrimps"])) #4
 
 
 
@@ -2671,26 +2668,29 @@ length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Soy" &
 
 
 #Salmonids and algae
-length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Algae" & FO$Fish_group=="Salmonids"])) #3
+length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Broad_feed=="Microalgae" & FO$Fish_group=="Salmonids"])) #5
 
 
 #Salmonids and soy 
 
-length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Soy" & FO$Fish_group=="Salmonids"])) #7
+length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Broad_feed=="Soy-oil mix" & FO$Fish_group=="Salmonids"])) #6
 
 
 
 
 
 #Marine fishes and algae
-length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Algae" & FO$Fish_group=="Marine fishes"])) #20
+length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Broad_feed=="Microalgae" & FO$Fish_group=="Marine fishes"])) #21
+
+
 
 
 #Marine fishes and soy 
 
-length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Soy" & FO$Fish_group=="Marine fishes"])) #17
+length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Broad_feed=="Soy-oil mix" & FO$Fish_group=="Marine fishes"])) #17
 
-
+unique(FO$Broad_feed)
+FO[FO$Broad_feed=="Bacteria and yeasts",]
 
 
 ```
@@ -2704,17 +2704,15 @@ length(unique(FO$Study_id[(!is.na(FO$FO_replacement)) & FO$Feed_general=="Soy" &
 
 salmon_algae_n3 <- 
   FO %>% 
-  filter(Fish_group=="Salmonids" & Feed_general=="Algae") %>% 
+  filter(Fish_group=="Salmonids" & Broad_feed=="Microalgae") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)
 
-
 myknots <- c(13,70)
   
-#myknots <- seq(min(salmon_algae_n3$FO_replacement), max(salmon_algae_n3$FO_replacement), length.out = 4)[-c(1,4)]
+myknots <- seq(min(salmon_algae_n3$FO_replacement), max(salmon_algae_n3$FO_replacement), length.out = 5)[-c(1,5)]
 
-fit_salmonids_algae_n3 <- sme(object = salmon_algae_n3$Relative_nutrition, tme = salmon_algae_n3$FO_replacement, ind = salmon_algae_n3$Study_id, criteria = "AICc",knots = myknots)
-
+fit_salmonids_algae_n3 <- sme(object = salmon_algae_n3$Relative_n3_index, tme = salmon_algae_n3$FO_replacement, ind = salmon_algae_n3$Study_id, criteria = "AICc", knots = myknots)
 
 
 #Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
@@ -2730,14 +2728,15 @@ plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", showIndividuals=T, showCon
 
 salmon_soy_n3 <- 
   FO %>% 
-  filter(Fish_group=="Salmonids" & Feed_general=="Soy") %>% 
+  filter(Fish_group=="Salmonids" & Broad_feed=="Soy-oil mix") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor) 
 
 unique(salmon_soy_n3$Study_id)
-myknots <-  seq(min(salmon_soy_n3$FO_replacement), max(salmon_soy_n3$FO_replacement), length.out = 4)[-c(1,4)]
 
-fit_salmon_soy_n3 <- sme(object = salmon_soy_n3$Relative_nutrition, tme = salmon_soy_n3$FO_replacement, ind = salmon_soy_n3$Study_id, criteria = "AICc",knots = myknots)
+myknots <-  seq(min(salmon_soy_n3$FO_replacement), max(salmon_soy_n3$FO_replacement), length.out = 6)[-c(1,6)]
+
+fit_salmon_soy_n3 <- sme(object = salmon_soy_n3$Relative_n3_index, tme = salmon_soy_n3$FO_replacement, ind = salmon_soy_n3$Study_id, criteria = "AICc",knots = myknots)
 
 
 
@@ -2761,7 +2760,7 @@ plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="", showIndividuals=T, showConfiden
 #shrimps and algae
 shrimps_algae_n3 <- 
   FO %>% 
-  filter(Fish_group=="Shrimps" & Feed_general=="Algae") %>% 
+  filter(Fish_group=="Shrimps" & Broad_feed=="Microalgae") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)
 
@@ -2771,12 +2770,13 @@ myknots <- c(60, 90)
   
 myknots <- seq(min(shrimps_algae_n3$FO_replacement), max(shrimps_algae_n3$FO_replacement), length.out = 4)[-c(1,4)]
 
-fit_shrimps_algae_n3 <- sme(object = shrimps_algae_n3$Relative_nutrition, tme = shrimps_algae_n3$FO_replacement, ind = shrimps_algae_n3$Study_id, criteria = "AICc",knots = myknots)
+fit_shrimps_algae_n3 <- sme(object = shrimps_algae_n3$Relative_n3_index, tme = shrimps_algae_n3$FO_replacement, ind = shrimps_algae_n3$Study_id, criteria = "AICc",knots = myknots)
 
 
 
 #Diagnostics - numerical instability in model - likely insufficient data points for parameters estimated - go to simpler model
 fit_shrimps_algae_n3$info
+
 plot(fit_shrimps_algae_n3, "diagnostic")
 
 
@@ -2789,14 +2789,14 @@ plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="", showIndividuals=T, showConfi
 
 shrimps_soy_n3 <- 
   FO %>% 
-  filter(Fish_group=="Shrimps" & Feed_general=="Soy") %>% 
+  filter(Fish_group=="Shrimps" & Broad_feed=="Soy-oil mix") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)
 
 
-myknots <- seq(min(shrimps_soy_n3$FO_replacement), max(shrimps_soy_n3$FO_replacement), length.out = 4)[-c(1,4)]
+myknots <- seq(min(shrimps_soy_n3$FO_replacement), max(shrimps_soy_n3$FO_replacement), length.out = 7)[-c(1,7)]
 
-fit_shrimps_soy_n3 <- sme(object = shrimps_soy_n3$Relative_nutrition, tme = shrimps_soy_n3$FO_replacement, ind = shrimps_soy_n3$Study_id, criteria = "AICc",knots = myknots)
+fit_shrimps_soy_n3 <- sme(object = shrimps_soy_n3$Relative_n3_index, tme = shrimps_soy_n3$FO_replacement, ind = shrimps_soy_n3$Study_id, criteria = "AICc",knots = myknots)
 
 
 
@@ -2805,7 +2805,7 @@ fit_shrimps_soy_n3$info
 plot(fit_shrimps_soy_n3, "diagnostic")
 
 
-plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, yaxt="n", col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, yaxt="n", col.meanCurve="#472D7BFF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=25, lty=2, lwd=1, col='black')) ))
 text(x=-5, y=2.8, labels = expression(bold("100%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -2824,14 +2824,14 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 marine_algae_n3 <- 
   FO %>% 
-  filter(Fish_group=="Marine fishes" & Feed_general=="Algae") %>% 
+  filter(Fish_group=="Marine fishes" & Broad_feed=="Microalgae") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)
 
-
+#myknots <- c(10,20,30,40,50,60, 80)
 myknots <- seq(min(marine_algae_n3$FO_replacement), max(marine_algae_n3$FO_replacement), length.out = 7)[-c(1,7)]
 
-fit_marine_algae_n3 <- sme(object = marine_algae_n3$Relative_nutrition, tme = marine_algae_n3$FO_replacement, ind = marine_algae_n3$Study_id, criteria = "AICc")#,knots = myknots)
+fit_marine_algae_n3 <- sme(object = marine_algae_n3$Relative_n3_index, tme = marine_algae_n3$FO_replacement, ind = marine_algae_n3$Study_id, criteria = "AICc",knots = myknots)
 
 
 
@@ -2847,14 +2847,14 @@ plotSmeModel(fit_marine_algae_n3, xlab="",ylab="", showIndividuals=T, showConfid
 
 marine_soy_n3 <- 
   FO %>% 
-  filter(Fish_group=="Marine fishes" & Feed_general=="Soy") %>% 
+  filter(Fish_group=="Marine fishes" & Broad_feed=="Soy-oil mix") %>% 
   mutate(Study_id = Study_id %>% 
            as.factor)
 
 
 myknots <- seq(min(marine_soy_n3$FO_replacement), max(marine_soy_n3$FO_replacement), length.out = 7)[-c(1,7)]
 
-fit_marine_soy_n3 <- sme(object = marine_soy_n3$Relative_nutrition, tme = marine_soy_n3$FO_replacement, ind = marine_soy_n3$Study_id, criteria = "AICc")#,knots = myknots)
+fit_marine_soy_n3 <- sme(object = marine_soy_n3$Relative_n3_index, tme = marine_soy_n3$FO_replacement, ind = marine_soy_n3$Study_id, criteria = "AICc")#,knots = myknots)
 
 
 
@@ -2863,7 +2863,7 @@ fit_marine_soy_n3$info
 plot(fit_marine_soy_n3, "diagnostic")
 
 
-plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='black')) ))
+plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#440154FF", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=26, lty=2, lwd=1, col='black')) ))
 
 
 
@@ -2875,7 +2875,7 @@ plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", showIndividuals=T, showConfiden
 
 ```{r}
 
-pdf("Fig 3  - n3n6 and fish oil replacement.pdf", 
+pdf("Fig 3  - omega 3 and fish oil replacement.pdf", 
     width=3.5,
     height=3.7)
 # op <- par(mfrow=c(3,2), 
@@ -2893,32 +2893,32 @@ op <- par(mfrow=c(3,2),
 
 #Shrimps and algae
 plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
-text(x=-5, y=1.6, labels = "100%  (3)", cex=1,pos = 4)
+text(x=-5, y=1.13, labels = "100%  (3)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and soy
-plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
-text(x=50, y=1.05, labels = "30%  (5)", cex=1,pos = 4)
+plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
+text(x=50, y=1.05, labels = "30%  (4)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids algae n3
-plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='red')) ))
-text(x=50, y=1.08, labels = "55%  (3)", cex=1,pos = 4)
+plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+text(x=-5, y=1.55, labels = "100%  (5)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids soy n3
-plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
-text(x=50, y=1.05, labels = "10%  (7)", cex=1,pos = 4)
+plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
+text(x=50, y=1.05, labels = "10%  (6)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and algae
 plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
-text(x=-5, y=2.1, labels = "100%  (20)", cex=1,pos = 4)
+text(x=-5, y=4.1, labels = "100%  (21)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and soy
-plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
-text(x=-5, y=6.2, labels = "100%  (17)", cex=1,pos = 4)
+plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=25,lty=2, lwd=1, col='red')) ))
+text(x=-5, y=.3, labels = "25%  (17)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 # mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
@@ -2929,8 +2929,8 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
-mtext("Relative n-3:n-6 fatty acid ratio",side = 2, line=2, outer = T, cex=1)
-mtext(c("Algae", "Soy"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
+mtext("Relative omega-3 index",side = 2, line=2, outer = T, cex=1)
+mtext(c("Microalgae", "Soy-oil blends"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
 mtext(c(  "Shrimps", "Salmonids","Marine fishes"), side=2, line = 0.5, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
 
 par(op)
@@ -2939,7 +2939,7 @@ dev.off()
 
 
 
-tiff("Fig 3  - n3n6 and fish oil replacement.tiff", 
+tiff("Fig 3  - omega-3 and fish oil replacement.tiff", 
     width=3.5,
     height=3.7,
     units='in',
@@ -2953,39 +2953,45 @@ op <- par(mfrow=c(3,2),
 
 
 
+
+
 #Shrimps and algae
 plotSmeModel(fit_shrimps_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
-text(x=-5, y=1.6, labels = "100%  (3)", cex=1,pos = 4)
+text(x=-5, y=1.13, labels = "100%  (3)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and soy
-plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
-text(x=50, y=1.05, labels = "30%  (5)", cex=1,pos = 4)
+plotSmeModel(fit_shrimps_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=32, lty=2, lwd=1, col='red')) ))
+text(x=50, y=1.05, labels = "30%  (4)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids algae n3
-plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=55, lty=2, lwd=1, col='red')) ))
-text(x=50, y=1.08, labels = "55%  (3)", cex=1,pos = 4)
+plotSmeModel(fit_salmonids_algae_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
+text(x=-5, y=1.55, labels = "100%  (5)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Salmonids soy n3
-plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
-text(x=50, y=1.05, labels = "10%  (7)", cex=1,pos = 4)
+plotSmeModel(fit_salmon_soy_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l", showIndividuals=T, showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=8, lty=2, lwd=1, col='red')) ))
+text(x=50, y=1.05, labels = "10%  (6)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and algae
 plotSmeModel(fit_marine_algae_n3, xlab="",ylab="",xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
-text(x=-5, y=2.1, labels = "100%  (20)", cex=1,pos = 4)
+text(x=-5, y=4.1, labels = "100%  (21)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #marine fishes and soy
-plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=100, lty=2, lwd=1, col='red')) ))
-text(x=-5, y=6.2, labels = "100%  (17)", cex=1,pos = 4)
+plotSmeModel(fit_marine_soy_n3, xlab="",ylab="", xaxt="n",yaxt="n", bty = "l",showIndividuals=T, showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16, panel.first = c((abline(h=0.95, lty=2, lwd=1, col='black')),(abline(v=25,lty=2, lwd=1, col='red')) ))
+text(x=-5, y=.3, labels = "25%  (17)", cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
+
+
 mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
-mtext("Relative n-3:n-6 fatty acid ratio",side = 2, line=2, outer = T, cex=1)
-mtext(c("Algae", "Soy"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
+mtext("Relative omega-3 index",side = 2, line=2, outer = T, cex=1)
+mtext(c("Microalgae", "Soy-oil blends"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
+mtext(c(  "Shrimps", "Salmonids","Marine fishes"), side=2, line = 0.5, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
+
 mtext(c(  "Shrimps", "Salmonids","Marine fishes"), side=2, line = 0.5, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
 par(op)
 dev.off()
@@ -4568,6 +4574,7 @@ forage_fish <-
 #Algae - proportions reflect 1- optimal replacement levels
 
 ```{r}
+
 FM_replace <- c("Carps" = 0 , "Catfishes"= .9, "FW fishes"= 1, "Tilapias"=.4, "Shrimps"=.5, "Salmonids"=.7, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=.45, "Marine fishes"=0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 
