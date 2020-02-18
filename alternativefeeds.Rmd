@@ -6,6 +6,7 @@ output: word_document
 ---
 #LIBRARIES
 ```{r}
+
 #devtools::install_github("dill/beyonce")
 #devtools::install_github('LaCroixColoR','johannesbjork')
 
@@ -14,7 +15,7 @@ library(gridExtra)
 library(data.table)
 library(purrr)
 library(mgcv)
-#library(visreg)
+library(visreg)
 library(dplyr)
 library(tidyr)
 library(readr)
@@ -346,10 +347,210 @@ write_csv(a_test, "forage fish consumption.csv")
 
 ```
 
+#Figure 1
+```{r}
+
+
+
+ff_consumption <- 
+  fread("forage fish consumption.csv", header=T) 
+
+
+
+#feed supply data from FAOSTAT
+feed_fish <- read_csv("forage_feed.csv")
+
+feed_use <- feed_fish %>%
+  filter(Item=="Pelagic Fish") %>% 
+  group_by(Year) %>%
+  summarise(Value = sum(Value)*1000) %>% 
+  mutate(Element = "Total animal feed use")
+  
+
+
+#forage fish species used in Froehlich et al
+
+feed_spp <- c("Engraulis ringens",  "Clupea harengus", "Engraulis japonicus", "Decapterus", "Decapterus macrosoma" ,"Decapterus maruadsi" , "Decapterus russelli",  "Sardina pilchardus", "Mallotus villosus",   "Sardinella",  "Mallotus villosus", "Brevoortia patronus", "Engraulis encrasicolus", "Cololabis saira", "Clupea pallasii pallasii", "Trachurus murphyi", "Larimichthys polyactis", "Clupeidae", "Sprattus sprattus", "Sardinops sagax", "Trachurus", "Trachurus trecae" , "Trachurus capensis","Trachurus lathami", "Trachurus declivis", "Trachurus trachurus", "Trachurus murphyi" , "Trachurus mediterraneus", "Trachurus symmetricus","Trachurus japonicus", "Trachurus picturatus") 
+
+
+#Sort the symbols in values out
+## "..." = data unavailable
+## " " = data not separately available
+## "-" = nil or zero
+## "0 0" = more than zero but less than half the unit used
+## F = FAO estimate from available sources of information
+
+
+##IF USING FAO PRODUCTION DATA - Feed use of pelagic fish is greater than production!
+
+#Capture production
+forage_fish <-
+  fread("Marine fisheries Production 1950-2014.csv", header=T) %>% 
+  filter(TaxonName %in% feed_spp) %>% 
+  select(CountryName, Year, TaxonName, Value) %>% 
+  group_by(Year) %>% 
+  summarise(Value=sum(Value)) %>% 
+  mutate(Element="Historical supply")
+
+#Management into legend
+management <- 
+  data_frame(Year= NA, Vaue = NA, Element="Proposed EBFM limit")
+
+
+#fishmeal use in aquaculture
+
+fishmeal_prop <- 
+  data_frame(Year=c(1960,1980,2010), Prop=c(0.04, 0.1,0.73))
+
+
+fishmeal_aqua <- 
+  data_frame(Year=seq(1961,2013)) %>% 
+  mutate(Prop = case_when(Year==1961 ~0.04,
+                          Year==1980~0.1,
+                          Year==2010~0.73))
+  
+  
+predictions <- predict(lm(Prop~Year, data=fishmeal_aqua), newdata = data_frame(Year=seq(1961,2013)))+0.05
+
+fishmeal_aqua <- 
+  fishmeal_aqua %>% 
+  select(Year) %>% 
+  mutate(Value=feed_use$Value*predictions) %>% 
+  mutate(Element="Aquaculture use")
+
+anchovy <- readPNG("anchovy.png")
+anchovy <- rasterGrob(anchovy)
+
+
+limit <- mean(forage_fish$Value[forage_fish$Year>1979])
+feed_limit <- mean(feed_use$Value[feed_use$Year>1979])
+
+
+
+(supply_demand <- 
+    bind_rows(forage_fish, feed_use, fishmeal_aqua) %>% 
+    mutate(Element = factor(Element, levels=c("Historical supply", "Proposed EBFM limit","Total animal feed use", "Aquaculture use"))) %>%
+    ggplot(aes(x=Year, y=Value, colour=Element, linetype=Element))+geom_line()+
+    scale_linetype_manual(values=c(1,1,1))+
+    scale_colour_manual(values=c("black", "grey50", "dodgerblue"))+
+    scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+    scale_x_continuous(breaks = c(1970,1990, 2010, 2030), limits = c(1960,2037), expand = c(0,0))+
+    theme_pubr()+
+    geom_vline(xintercept=2015, linetype=2, colour="grey80", alpha=0)+
+    theme(
+      #text=element_text(size=10),
+      legend.title = element_blank(),
+      legend.background=element_blank(),
+      legend.position = c(0.22,0.96),
+      legend.text = element_text(size=7),
+      legend.key.height = unit(0.3, "cm"),
+      plot.margin = unit(c(0.5,-.2, 0.2,0.2), "cm"),
+      axis.text.x = element_text(size=10),
+      #axis.line.x = element_blank(),
+      axis.title.x = element_text(size=10),
+      axis.text.y = element_text(size=10),
+      axis.title.y = element_text(size=10)
+    )+
+    annotate("segment", x=2013, xend=2035, y=limit, yend = limit)+
+    annotate("segment", x=2013, xend=2035, y=feed_limit, yend = feed_limit, colour="grey50")+
+    annotate("segment", x=2013, xend=2035, y=limit*0.8, yend = limit*0.8, linetype=2)+
+    annotate("segment", x=2013, xend=2013, y=-Inf, yend = Inf, colour="grey80", linetype=2)+
+    #geom_segment(x=2013, xend=2031, y=14514473.94, yend = 14514473.94, colour="lightskyblue", linetype=1, alpha=0.3))+
+    #annotate("segment", x=1960, xend=2030.5, y=0, yend = 0, colour="black", linetype=1, size=0.95)+
+    annotate("text", x=2014, y=32.5e+6, label="Average supply\n1980-2013", size=2.5, hjust=0)+
+    annotate("text", x=2014, y=26.5e+6, label="Proposed\nEBFM limit", size=2.5, hjust=0)+
+    annotate("text", x=2014, y= 18.9e+6, label="Average feed use \n1980-2013", size=2.5, hjust=0)+
+    #annotate("text", x=2031.5, y=15078983.9, label="?", size=3)+
+    annotation_custom(anchovy, xmin = 2015, xmax = 2029, ymin=34e+6, ymax=44e+6)+
+    labs(y=bquote(Forage~fish~demand~(Tx10^6)))+
+    #annotation_custom(ggplotGrob(future_scenarios) , xmin = 2020, xmax=2034, ymin = 6e+6, ymax=20e+6)+
+    ggsave("total forage fish landings plot2.tiff", device="tiff", dpi=600, width = 8.9, height=8, units = "cm"))
+  
+
+
+
+#Predicted 2030 demand
+
+current_diets <- 
+      bind_rows(
+        
+        # fread("forage fish consumption.csv", header=T) %>% 
+        #   select(Country, Species, Taxa_adj, rep_id,consumption_2015 ) %>% 
+        #   group_by(rep_id) %>% 
+        #   summarise(Rep_Value = sum(consumption_2015)) %>% 
+        #   summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+        #   mutate(Scenario = "2015") %>% 
+        #   mutate(Diet="2015"),
+        
+        fread("forage fish consumption.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "BAU") %>% 
+          mutate(Diet = "2030") ,
+        
+        fread("forage fish consumption.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Rap.Gr.") %>% 
+          mutate(Diet = "2030") ,
+        
+        
+        fread("forage fish consumption.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Con.Shft") %>% 
+          mutate(Diet = "2030") 
+      ) %>%
+  mutate(Scenario = factor(Scenario, levels = c("BAU", "Rap.Gr.", "Con.Shft")))
+
+
+    
+current_diets    
+
+demand <- ggplot(data=current_diets, aes(x=Scenario, y=Value, fill=Scenario))+
+  geom_bar(stat="identity", position = "dodge", width=0.6)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.1, position = position_dodge(0.9))+
+  scale_fill_manual(values=rev(lacroix_palette("PassionFruit", n=3, type = "continuous")))+
+  #scale_x_discrete(labels = "2030")+
+  scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+  theme_pubr()+
+  theme(text = element_text(size=10),
+        legend.position = "right")+
+  labs(y=bquote(Forage~fish~demand~(Tx10^6)), x="Aquaculture 2030 scenarios")+
+  # annotate("text", x=.5, y=32e+6, label="Historical supply", size=3)+
+  # annotate("text", x=7.5, y=25e+6, label="EBFM supply", size=3)
+  geom_segment( x=0.5, xend = 8.5, y=c(limit), yend=c(limit), linetype=c(1))+
+  geom_segment( x=0.5, xend = 8.5, y=c(limit*.8), yend=c(limit*.8), linetype=c(2))+
+  geom_segment( x=0.5, xend = 8.5, y=c(feed_limit), yend=c(feed_limit), linetype=c(1), colour="grey50")+
+  guides(fill=FALSE)
+
+
+
+ggarrange(supply_demand, demand,
+          nrow = 1, ncol=2, 
+          labels = c("a", "b"), 
+          font.label = list(size=10),
+          widths = c(1,0.65),
+          align = "hv"
+          )+
+  ggsave("Fig 1 - Resubmission.tiff", device="tiff", dpi=600, width = 18, height = 8, units="cm")+
+   ggsave("Fig 1 - Resubmission.pdf", device="pdf", dpi=600, width = 18, height = 8, units="cm")
+
+```
+
+
+
 
 ##### SECTION 2 - METANALYSIS DATA TO INFORM NOVEL FEEDS SCENARIOS
 
 ```{r}
+
 #Tidy - unique/levels etc
 
 relative_FCR <- function(x){
@@ -463,8 +664,8 @@ fish_oil <- growth_data %>%
 # 
 # arrange(fishmeal, Feed_general, Fish_group)
 
-
-length((which((unique(growth_data$Study_id[growth_data$Feed_general=="Yeast"]))%%1==0)==TRUE))/length(which((unique(growth_data$Study_id)%%1==0)==TRUE))
+#calculations
+length((which((unique(growth_data$Study_id[growth_data$Broad_feed== "Insect"]))%%1==0)==TRUE))/length(which((unique(growth_data$Study_id)%%1==0)==TRUE))
 
 length((which((unique(growth_data$Study_id[growth_data$Fish_group=="Marine fishes"]))%%1==0)==TRUE))/ length(which((unique(growth_data$Study_id)%%1==0)==TRUE))
 
@@ -478,6 +679,52 @@ row_per_study <- row_per_study[row_per_study!="None"]
 unique(row_per_study)
 juveniles <- c("Juvenile", "Fry", "Fingerlings", "Larvae")
 length(row_per_study[row_per_study %in% juveniles])/length(row_per_study)#92% of studies that mentioned life stages used juveniles
+
+
+#median replacement across taxa and feeds
+
+#microalgae
+median(c(100, 75, 10, 100, 100, 30, 80))#fm 80
+
+
+#macroalgae
+median(c(25, 5, 40, 50, 15, 30))#fm #27.5
+
+#bacteria and yeasts
+median(c(65, 100, 100, 20, 100, 45))#fm #82.5
+
+#insects
+median(c(100, 80, 100, 100, 95, 100))#fm #100
+
+#soy
+median(c(15,50,55,70, 100, 50,50))#fm #50
+
+#carps
+median(c(100, 25, 65, 100, 15))
+
+#catfishes 
+median(c(75,5, 100, 100, 50))
+
+#fw fishes
+median(c(10,55))
+
+#tilapias
+median(c(100,40, 95,100, 70))
+
+#shrimps
+median(c(100,50,20, 100, 100))
+median(c(100,30))
+
+#salmonids
+median(c(30,15,100,100, 50))
+median(c(100,10))
+
+#marine fishes
+median(c(80,30, 45, 80, 50))
+median(c(100,25))
+
+
+
 
 
 #number of replicates in each experiemtal treatment 
@@ -5231,8 +5478,8 @@ write_csv(a_test, "forage fish consumption - insects replacement.csv")
 
 ```{r}
 FM_replace <- c("Carps" = 0 , "Catfishes"= 0, "FW fishes"= 0.45, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
-FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1.42, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0.45, "Marine fishes"= 0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
-
+FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1.42, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0, "Marine fishes"= 0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+'
 
 a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
   target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
@@ -5355,7 +5602,32 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
 write_csv(a_test, "forage fish consumption - optimal replacement.csv")
 
 
-
+optimal <- 
+      bind_rows(
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nBAU"),
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nRap.Gr."),
+        
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nCon.Shft")
+      ) %>% 
+      mutate(Diet = "Optimal global")
 
 ```
 
@@ -5364,25 +5636,13 @@ write_csv(a_test, "forage fish consumption - optimal replacement.csv")
 
 ```{r}
 
-# top_producers <- 
-#   fed_aqua_proj %>% 
-#   group_by(Country) %>% 
-#   summarise(Value=sum(Value)) %>% 
-#   arrange(-Value) %>%
-#   slice(1:10) %>% 
-#   filter(!Country %in% LDCs)
-
-#countries_afford <- c(MEDCs, top_producers$Country)
-
-#if using countries use below
-# FM_replace <- c("Carps" = 0 , "Catfishes"= 0, "FW fishes"= 0.45, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
-# FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1.42, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0.45, "Marine fishes"= 0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 
 #if using high value species
 high_val_spp <- c("Shrimps", "Salmonids")
 
-FM_replace <- c("Carps" = 1 , "Catfishes"= 1, "FW fishes"= 1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=1, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
-FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0.45, "Marine fishes"= 1, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+
+FM_replace <- c("Carps" = 1, "Catfishes"= 1, "FW fishes"= 1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=1, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1.42, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0, "Marine fishes"= 1, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
 
 a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
   target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
@@ -5392,13 +5652,8 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
     
     #assign consumption parameters
     b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
-    c <- case_when(target_row[["Taxa_adj"]] %in% high_val_spp ~   (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]]))*as.numeric(FM_replace[target_row[["Taxa_adj"]]]),
-                   TRUE ~ (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]])))   # assign random fishmeal inclusion from range and adjust for fish meal replacement if in countries_afford
-    
-    d <- case_when(target_row[["Taxa_adj"]] %in% high_val_spp ~ runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]]) *as.numeric(FO_replace[target_row[["Taxa_adj"]]]),
-                   TRUE ~ runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])) #assign random fish oil inclusion from range and adjust for fish oil replacement if in countries_afford
-      
-         
+    c <- (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]]))*as.numeric(FM_replace[target_row[["Taxa_adj"]]])   # assign random fishmeal inclusion from range and adjust for fish meal replacement
+    d <- runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]]) *as.numeric(FO_replace[target_row[["Taxa_adj"]]])   #assign random fish oil inclusion from range and adjust for fish oil replacement
     e <- runif(n = 1, min = a[["Fed_min"]], max = a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
     f <- a[["Fed_max"]]    # assume highest proportion are fed for future scenarios
     
@@ -5507,6 +5762,7 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_
   return(temp_df)
 }))#close lapply function, lapply call, and bind_rows
 
+
 write_csv(a_test, "forage fish consumption - development optimal replacement.csv")
 
 
@@ -5514,7 +5770,649 @@ write_csv(a_test, "forage fish consumption - development optimal replacement.csv
 
 ```
 
+#Fishmeal replacement only
+```{r}
 
+FM_replace <- c("Carps" = 0 , "Catfishes"= 0, "FW fishes"= 0.45, "Tilapias"=0, "Shrimps"=0, "Salmonids"=0, "Marine fishes"=.2, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+
+
+a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
+  target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
+  temp_df <- bind_rows(lapply(1:500, function(rep_id){
+    #isolate each row 
+    a <- feeds_as_list[[target_row[["Taxa"]]]] 
+    
+    #assign consumption parameters
+    b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
+    c <- (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]]))*as.numeric(FM_replace[target_row[["Taxa_adj"]]])   # assign random fishmeal inclusion from range and adjust for fish meal replacement
+    d <- runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])   #assign random fish oil inclusion from range and adjust for fish oil replacement
+    e <- runif(n = 1, min = a[["Fed_min"]], max = a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
+    f <- a[["Fed_max"]]    # assume highest proportion are fed for future scenarios
+    
+    #Consumption calculations
+    
+    #current consumption
+    g <- target_row[["Value"]]*b*c*e    #fm demand
+    h <- g/0.225       # forage fish biomass needed for fm demand
+    i <- target_row[["Value"]]*b*d*e    #fo demand
+    j <- h*0.05   # amount of fish oil coming from the fm biomass
+    k <- (i-j)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
+    l <-  case_when(i<j ~ h-(j-i),
+                    T ~ h+k) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded). If they are greater then exact forage fish equivalents of the extra fish needed are added to that needed to fulfill FM demand.
+                   
+    
+    #FAO_2030 projections
+    m <- target_row[["FAO_2030"]]*b*c*f    #fm demand
+    n <- m/0.225       # forage fish biomass needed for fm demand
+    o <- target_row[["FAO_2030"]]*b*d*f    #fo demand
+    p <- n*0.05   # amount of fish oil coming from the fm biomass
+    q <- (o-p)/0.05
+    r <- case_when(o<p ~ n-(p-o),
+                    T ~ n+q)
+    
+    # faster aquaculture growth
+    s <- target_row[["WorldBank_RG_2030"]]*b*c*f    #fm demand
+    t <- s/0.225       # forage fish biomass needed for fm demand
+    u <- target_row[["WorldBank_RG_2030"]]*b*d*f    #fo demand
+    v <- t*0.05   # amount of fish oil coming from the fm biomass
+    w <- (u-v)/0.05
+    x <- case_when(u<v ~ t-(v-u),
+                    T ~ t+w)
+    
+    # chinese dietary shift
+    aa <- target_row[["WorldBank_CD_2030"]]*b*c*f    #fm demand
+    bb <- aa/0.225       # forage fish biomass needed for fm demand
+    cc <- target_row[["WorldBank_CD_2030"]]*b*d*f    #fo demand
+    dd <- bb*0.05   # amount of fish oil coming from the fm biomass
+    ee <- (cc-dd)/0.05
+    ff <- case_when(cc<dd ~ bb-(dd-cc),
+                    T ~ bb+ee)
+    
+    # #chinese + more efficient scenario (fcrs decrease by 0.2)
+    # gg <- target_row[["WorldBank_CD_2030"]]*(b-0.2)*c*f    #fm demand
+    # hh <- gg/0.225       # forage fish biomass needed for fm demand
+    # ii <- target_row[["WorldBank_CD_2030"]]*(b-0.2)*d*f    #fo demand
+    # jj <- hh*0.05   # amount of fish oil coming from the fm biomass
+    # kk <- (ii-jj)/0.05
+    # ll <- case_when(kk>=0 ~ hh+kk,
+    #                kk<0 ~ hh)
+    
+    #bind new objects to end of target row
+    rep_id_row_as_df <- data.frame(
+      c(target_row, 
+        rep_id=rep_id,
+        
+        #params
+        fcr=b, 
+        fm=c, 
+        fo=d,  
+        fed=e, 
+        fed_future = f, 
+        
+        #2015 consumption
+        fm_demand_2015 = g, 
+        fm_biomass_2015 = h,
+        fo_demand_2015 = i,
+        fo_from_fm_2015 = j, 
+        surplus_2015 = k,
+        consumption_2015 = l,
+        
+        #baseline consumption
+        fao_demand = m, 
+        fao_fm_biomass = n,
+        fao_fo_demand = o,
+        fao_from_fm = p, 
+        fao_surplus = q,
+        fao_consumption = r,
+        
+        #pesc consumption
+        WB_RG_demand = s, 
+        WB_RG_biomass = t,
+        WB_RG_demand = u,
+        WB_RG_from_fm = v, 
+        WB_RG_surplus = w,
+        WB_RG_consumption = x,
+        
+        #chinese consumption
+        WB_CD_demand = aa, 
+        WB_CD_fm_biomass = bb,
+        WB_CD_fo_demand = cc,
+        WB_CD_from_fm = dd, 
+        WB_CD_surplus = ee,
+        WB_CD_consumption = ff
+        
+        #chinese diets and more efficient
+        # effchn_demand = gg, 
+        # effchn_fm_biomass = hh,
+        # effchn_fo_demand = ii,
+        # effchn_from_fm = jj, 
+        # effchn_surplus = kk,
+        # effchn_consumption = ll
+        ))
+    return(rep_id_row_as_df)
+  })) #close lapply function, lapply call, and bind_rows
+  return(temp_df)
+}))#close lapply function, lapply call, and bind_rows
+
+
+write_csv(a_test, "forage fish consumption - fishmeal only replacement.csv")
+
+
+
+```
+
+#Fish oil replacement only 
+
+```{r}
+FO_replace <- c("Carps" = 1 , "Catfishes"=1, "FW fishes"=1, "Tilapias"=1, "Shrimps"=0, "Salmonids"=0, "Marine fishes"= 0, "Eels"=1, "Diadromous fishes"=1, "FW crustaceans"=1, "Tunas" =1,  "Marine crustaceans"=1)
+
+
+
+a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
+  target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
+  temp_df <- bind_rows(lapply(1:500, function(rep_id){
+    #isolate each row 
+    a <- feeds_as_list[[target_row[["Taxa"]]]] 
+    
+    #assign consumption parameters
+    b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
+    c <- (runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]]))   # assign random fishmeal inclusion from range and adjust for fish meal replacement
+    d <- runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]]) *as.numeric(FO_replace[target_row[["Taxa_adj"]]])   #assign random fish oil inclusion from range and adjust for fish oil replacement
+    e <- runif(n = 1, min = a[["Fed_min"]], max = a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
+    f <- a[["Fed_max"]]    # assume highest proportion are fed for future scenarios
+    
+    #Consumption calculations
+    
+    #current consumption
+    g <- target_row[["Value"]]*b*c*e    #fm demand
+    h <- g/0.225       # forage fish biomass needed for fm demand
+    i <- target_row[["Value"]]*b*d*e    #fo demand
+    j <- h*0.05   # amount of fish oil coming from the fm biomass
+    k <- (i-j)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
+    l <-  case_when(i<j ~ h-(j-i),
+                    T ~ h+k) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded). If they are greater then exact forage fish equivalents of the extra fish needed are added to that needed to fulfill FM demand.
+                   
+    
+    #FAO_2030 projections
+    m <- target_row[["FAO_2030"]]*b*c*f    #fm demand
+    n <- m/0.225       # forage fish biomass needed for fm demand
+    o <- target_row[["FAO_2030"]]*b*d*f    #fo demand
+    p <- n*0.05   # amount of fish oil coming from the fm biomass
+    q <- (o-p)/0.05
+    r <- case_when(o<p ~ n-(p-o),
+                    T ~ n+q)
+    
+    # faster aquaculture growth
+    s <- target_row[["WorldBank_RG_2030"]]*b*c*f    #fm demand
+    t <- s/0.225       # forage fish biomass needed for fm demand
+    u <- target_row[["WorldBank_RG_2030"]]*b*d*f    #fo demand
+    v <- t*0.05   # amount of fish oil coming from the fm biomass
+    w <- (u-v)/0.05
+    x <- case_when(u<v ~ t-(v-u),
+                    T ~ t+w)
+    
+    # chinese dietary shift
+    aa <- target_row[["WorldBank_CD_2030"]]*b*c*f    #fm demand
+    bb <- aa/0.225       # forage fish biomass needed for fm demand
+    cc <- target_row[["WorldBank_CD_2030"]]*b*d*f    #fo demand
+    dd <- bb*0.05   # amount of fish oil coming from the fm biomass
+    ee <- (cc-dd)/0.05
+    ff <- case_when(cc<dd ~ bb-(dd-cc),
+                    T ~ bb+ee)
+    
+    # #chinese + more efficient scenario (fcrs decrease by 0.2)
+    # gg <- target_row[["WorldBank_CD_2030"]]*(b-0.2)*c*f    #fm demand
+    # hh <- gg/0.225       # forage fish biomass needed for fm demand
+    # ii <- target_row[["WorldBank_CD_2030"]]*(b-0.2)*d*f    #fo demand
+    # jj <- hh*0.05   # amount of fish oil coming from the fm biomass
+    # kk <- (ii-jj)/0.05
+    # ll <- case_when(kk>=0 ~ hh+kk,
+    #                kk<0 ~ hh)
+    
+    #bind new objects to end of target row
+    rep_id_row_as_df <- data.frame(
+      c(target_row, 
+        rep_id=rep_id,
+        
+        #params
+        fcr=b, 
+        fm=c, 
+        fo=d,  
+        fed=e, 
+        fed_future = f, 
+        
+        #2015 consumption
+        fm_demand_2015 = g, 
+        fm_biomass_2015 = h,
+        fo_demand_2015 = i,
+        fo_from_fm_2015 = j, 
+        surplus_2015 = k,
+        consumption_2015 = l,
+        
+        #baseline consumption
+        fao_demand = m, 
+        fao_fm_biomass = n,
+        fao_fo_demand = o,
+        fao_from_fm = p, 
+        fao_surplus = q,
+        fao_consumption = r,
+        
+        #pesc consumption
+        WB_RG_demand = s, 
+        WB_RG_biomass = t,
+        WB_RG_demand = u,
+        WB_RG_from_fm = v, 
+        WB_RG_surplus = w,
+        WB_RG_consumption = x,
+        
+        #chinese consumption
+        WB_CD_demand = aa, 
+        WB_CD_fm_biomass = bb,
+        WB_CD_fo_demand = cc,
+        WB_CD_from_fm = dd, 
+        WB_CD_surplus = ee,
+        WB_CD_consumption = ff
+        
+        #chinese diets and more efficient
+        # effchn_demand = gg, 
+        # effchn_fm_biomass = hh,
+        # effchn_fo_demand = ii,
+        # effchn_from_fm = jj, 
+        # effchn_surplus = kk,
+        # effchn_consumption = ll
+        ))
+    return(rep_id_row_as_df)
+  })) #close lapply function, lapply call, and bind_rows
+  return(temp_df)
+}))#close lapply function, lapply call, and bind_rows
+
+
+write_csv(a_test, "forage fish consumption - fish oil only replacement.csv")
+
+```
+
+#Figure 4
+
+```{r}
+
+optimal_global_use <- 
+      bind_rows(
+        
+        # fread("forage fish consumption.csv", header=T) %>% 
+        #   select(Country, Species, Taxa_adj, rep_id,consumption_2015 ) %>% 
+        #   group_by(rep_id) %>% 
+        #   summarise(Rep_Value = sum(consumption_2015)) %>% 
+        #   summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+        #   mutate(Scenario = "2015") %>% 
+        #   mutate(Diet="2015"),
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "BAU") %>% 
+          mutate(Diet = "2030") ,
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Rap.Gr.") %>% 
+          mutate(Diet = "2030") ,
+        
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Con.Shft") %>% 
+          mutate(Diet = "2030") 
+      ) %>%
+  mutate(Scenario = factor(Scenario, levels = c("BAU", "Rap.Gr.", "Con.Shft")))
+
+
+
+
+
+salmon_shrimp <- 
+      bind_rows(
+        
+        # fread("forage fish consumption.csv", header=T) %>% 
+        #   select(Country, Species, Taxa_adj, rep_id,consumption_2015 ) %>% 
+        #   group_by(rep_id) %>% 
+        #   summarise(Rep_Value = sum(consumption_2015)) %>% 
+        #   summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+        #   mutate(Scenario = "2015") %>% 
+        #   mutate(Diet="2015"),
+        
+        fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "BAU") %>% 
+          mutate(Diet = "2030") ,
+        
+        fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Rap.Gr.") %>% 
+          mutate(Diet = "2030") ,
+        
+        
+        fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Con.Shft") %>% 
+          mutate(Diet = "2030") 
+      ) %>%
+  mutate(Scenario = factor(Scenario, levels = c("BAU", "Rap.Gr.", "Con.Shft")))
+
+
+
+fishmeal_only <- 
+      bind_rows(
+        
+        # fread("forage fish consumption.csv", header=T) %>% 
+        #   select(Country, Species, Taxa_adj, rep_id,consumption_2015 ) %>% 
+        #   group_by(rep_id) %>% 
+        #   summarise(Rep_Value = sum(consumption_2015)) %>% 
+        #   summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+        #   mutate(Scenario = "2015") %>% 
+        #   mutate(Diet="2015"),
+        
+        fread("forage fish consumption - fishmeal only replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "BAU") %>% 
+          mutate(Diet = "2030") ,
+        
+        fread("forage fish consumption - fishmeal only replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Rap.Gr.") %>% 
+          mutate(Diet = "2030") ,
+        
+        
+        fread("forage fish consumption - fishmeal only replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Con.Shft") %>% 
+          mutate(Diet = "2030") 
+      ) %>%
+  mutate(Scenario = factor(Scenario, levels = c("BAU", "Rap.Gr.", "Con.Shft")))
+
+
+
+
+
+fish_oil_only <- 
+      bind_rows(
+        
+        # fread("forage fish consumption.csv", header=T) %>% 
+        #   select(Country, Species, Taxa_adj, rep_id,consumption_2015 ) %>% 
+        #   group_by(rep_id) %>% 
+        #   summarise(Rep_Value = sum(consumption_2015)) %>% 
+        #   summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+        #   mutate(Scenario = "2015") %>% 
+        #   mutate(Diet="2015"),
+        
+        fread("forage fish consumption - fish oil only replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "BAU") %>% 
+          mutate(Diet = "2030") ,
+        
+        fread("forage fish consumption - fish oil only replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Rap.Gr.") %>% 
+          mutate(Diet = "2030") ,
+        
+        
+        fread("forage fish consumption - fish oil only replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "Con.Shft") %>% 
+          mutate(Diet = "2030") 
+      ) %>%
+  mutate(Scenario = factor(Scenario, levels = c("BAU", "Rap.Gr.", "Con.Shft")))
+
+
+==============================================================
+
+#Capture production
+forage_fish <-
+  fread("Marine fisheries Production 1950-2014.csv", header=T) %>% 
+  filter(TaxonName %in% feed_spp) %>% 
+  select(CountryName, Year, TaxonName, Value) %>% 
+  group_by(Year) %>% 
+  summarise(Value=sum(Value)) %>% 
+  mutate(Element="Historical supply")
+
+#Management into legend
+management <- 
+  data_frame(Year= NA, Vaue = NA, Element="Proposed EBFM limit")
+
+
+#fishmeal use in aquaculture
+
+fishmeal_prop <- 
+  data_frame(Year=c(1960,1980,2010), Prop=c(0.04, 0.1,0.73))
+
+
+fishmeal_aqua <- 
+  data_frame(Year=seq(1961,2013)) %>% 
+  mutate(Prop = case_when(Year==1961 ~0.04,
+                          Year==1980~0.1,
+                          Year==2010~0.73))
+  
+  
+predictions <- predict(lm(Prop~Year, data=fishmeal_aqua), newdata = data_frame(Year=seq(1961,2013)))+0.05
+
+fishmeal_aqua <- 
+  fishmeal_aqua %>% 
+  select(Year) %>% 
+  mutate(Value=feed_use$Value*predictions) %>% 
+  mutate(Element="Aquaculture use")
+
+anchovy <- readPNG("anchovy.png")
+anchovy <- rasterGrob(anchovy)
+
+
+limit <- mean(forage_fish$Value[forage_fish$Year>1979])
+feed_limit <- mean(feed_use$Value[feed_use$Year>1979])
+
+#========================================================================
+
+optimal_use <- ggplot(data=optimal_global_use, aes(x=Scenario, y=Value, fill=Scenario))+
+  geom_bar(stat="identity", position = "dodge", width=0.6)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.1, position = position_dodge(0.9))+
+  scale_fill_manual(values=rev(lacroix_palette("PassionFruit", n=3, type = "continuous")))+
+  #scale_x_discrete(labels = "2030")+
+  scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+  theme_pubr()+
+  theme(text = element_text(size=10),
+        legend.position = "right",
+        axis.text.x = element_text(angle=45, hjust=1),
+        axis.title.x = element_blank())+
+  labs(y=bquote(Forage~fish~demand~(Tx10^6)), x="Diets")+
+  # annotate("text", x=.5, y=32e+6, label="Historical supply", size=3)+
+  # annotate("text", x=7.5, y=25e+6, label="EBFM supply", size=3)
+  geom_segment( x=0.5, xend = 8.5, y=c(limit), yend=c(limit), linetype=c(1))+
+  geom_segment( x=0.5, xend = 8.5, y=c(limit*.8), yend=c(limit*.8), linetype=c(2))+
+  geom_segment( x=0.5, xend = 8.5, y=c(feed_limit), yend=c(feed_limit), linetype=c(1), colour="grey50")+
+  annotate("text", x=0.5, y=31.5e+6, label="Average supply 1980-2013", size=2.5, hjust=0)+
+    annotate("text", x=0.5, y=25.5e+6, label="Proposed EBFM supply", size=2.5, hjust=0)+
+    annotate("text", x=0.5, y= 19.9e+6, label="Average feed use 1980-2013", size=2.5, hjust=0)+
+  annotate("text", x=0.65, y=40.2e+6, label=expression(bold("Optimal global use")), size=2.5, hjust=0)
+  
+
+
+
+
+salmon_shrimp_only <- ggplot(data=salmon_shrimp, aes(x=Scenario, y=Value, fill=Scenario))+
+  geom_bar(stat="identity", position = "dodge", width=0.6)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.1, position = position_dodge(0.9))+
+  scale_fill_manual(values=rev(lacroix_palette("PassionFruit", n=3, type = "continuous")))+
+  #scale_x_discrete(labels = "2030")+
+  scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+  theme_pubr()+
+  theme(text = element_text(size=10),
+        axis.text.x = element_text(angle=45, hjust=1),
+        legend.position = "right",
+        axis.title=  element_blank())+
+  labs(y=bquote(Forage~fish~demand~(Tx10^6)), x="Diets")+
+  # annotate("text", x=.5, y=32e+6, label="Historical supply", size=3)+
+  # annotate("text", x=7.5, y=25e+6, label="EBFM supply", size=3)
+  geom_segment( x=0.5, xend = 8.5, y=c(limit), yend=c(limit), linetype=c(1))+
+  geom_segment( x=0.5, xend = 8.5, y=c(limit*.8), yend=c(limit*.8), linetype=c(2))+
+  geom_segment( x=0.5, xend = 8.5, y=c(feed_limit), yend=c(feed_limit), linetype=c(1), colour="grey50")+
+  annotate("text", x=0.65, y=38e+6, label=expression(bold("Salmonids & shrimps\nonly")), size=2.5, hjust=0)
+
+
+fish_meal_only <- ggplot(data=fishmeal_only, aes(x=Scenario, y=Value, fill=Scenario))+
+  geom_bar(stat="identity", position = "dodge", width=0.6)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.1, position = position_dodge(0.9))+
+  scale_fill_manual(values=rev(lacroix_palette("PassionFruit", n=3, type = "continuous")))+
+  #scale_x_discrete(labels = "2030")+
+  scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+  theme_pubr()+
+  theme(text = element_text(size=10),
+        legend.position = "right",
+        axis.text.x = element_text(angle=45, hjust=1),
+        axis.title = element_blank())+
+  labs(y=bquote(Forage~fish~demand~(Tx10^6)), x="Diets")+
+  # annotate("text", x=.5, y=32e+6, label="Historical supply", size=3)+
+  # annotate("text", x=7.5, y=25e+6, label="EBFM supply", size=3)
+  geom_segment( x=0.5, xend = 8.5, y=c(limit), yend=c(limit), linetype=c(1))+
+  geom_segment( x=0.5, xend = 8.5, y=c(limit*.8), yend=c(limit*.8), linetype=c(2))+
+  geom_segment( x=0.5, xend = 8.5, y=c(feed_limit), yend=c(feed_limit), linetype=c(1), colour="grey50")+
+  annotate("text", x=0.65, y=38e+6, label=expression(bold("Fishmeal\nreplacement only")), size=2.5, hjust=0)
+
+
+
+fishoil_only <- ggplot(data=fish_oil_only, aes(x=Scenario, y=Value, fill=Scenario))+
+  geom_bar(stat="identity", position = "dodge", width=0.6)+
+  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.1, position = position_dodge(0.9))+
+  scale_fill_manual(values=rev(lacroix_palette("PassionFruit", n=3, type = "continuous")))+
+  #scale_x_discrete(labels = "2030")+
+  scale_y_continuous(limits=c(0,4.2e+7), labels=c(0,10,20,30,40), expand=c(0,0))+
+  theme_pubr()+
+  theme(text = element_text(size=10),
+        legend.position = "right",
+        axis.text.x = element_text(angle=45, hjust=1),
+        axis.title = element_blank())+
+  labs(y=bquote(Forage~fish~demand~(Tx10^6)), x="Diets")+
+  # annotate("text", x=.5, y=32e+6, label="Historical supply", size=3)+
+  # annotate("text", x=7.5, y=25e+6, label="EBFM supply", size=3)
+  geom_segment( x=0.5, xend = 8.5, y=c(limit), yend=c(limit), linetype=c(1))+
+  geom_segment( x=0.5, xend = 8.5, y=c(limit*.8), yend=c(limit*.8), linetype=c(2))+
+  geom_segment( x=0.5, xend = 8.5, y=c(feed_limit), yend=c(feed_limit), linetype=c(1), colour="grey50")+
+  annotate("text", x=0.65, y=38e+6, label=expression(bold("Fish oil\nreplacement only")), size=2.5, hjust=0)
+
+
+#legend <- get_legend(optimal_use)
+
+
+annotate_figure(ggarrange(optimal_use, salmon_shrimp_only, fish_meal_only, fishoil_only, 
+          nrow = 1, ncol = 4,
+          legend = "none", 
+          labels=c("a", "b", "c", "d"),
+          widths = c(1.15,1,1,1),
+          font.label = list(size=10),
+          label.x = c(0,-0.1,-0.1, -0.1)),
+          bottom = textGrob("Aquaculture 2030 scenarios"))+
+  ggsave("Fig 4 - revision.tiff", dpi = 600, device = "tiff", width = 18, height=9, units = "cm")+
+  ggsave("Fig 4 - revision.pdf", dpi = 600, device = "pdf", width = 18, height=9, units = "cm")
+
+
+```
+
+
+
+
+```{r}
+optimal <- 
+      bind_rows(
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nBAU"),
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nRap.Gr."),
+        
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nCon.Shft")
+      ) %>% 
+      mutate(Diet = "Optimal global use")
+
+
+high_value_only <- 
+   bind_rows(
+        
+        fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, fao_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(fao_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nBAU"),
+        
+        fread("forage fish consumption - optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_RG_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_RG_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nRap.Gr."),
+        
+        
+        fread("forage fish consumption - development optimal replacement.csv", header=T) %>% 
+          select(Country, Species, Taxa_adj, rep_id, WB_CD_consumption) %>% 
+          group_by(rep_id) %>% 
+          summarise(Rep_Value = sum(WB_CD_consumption)) %>% 
+          summarise(Value = mean(Rep_Value), sd=sd(Rep_Value)) %>% 
+          mutate(Scenario = "2030\nCon.Shft")
+      ) %>% 
+      mutate(Diet = "High-value spp. only")
+
+
+optimal
+high_value_only
+
+
+```
 
 ####SECTION 1 COMBINE CONSUMPTION SCENARIOS ACROSS DIETS
 
@@ -5522,6 +6420,7 @@ write_csv(a_test, "forage fish consumption - development optimal replacement.csv
 ## All diets and growth scenarios
 
 ```{r}
+
 
 (all_diets_scenarios <- 
   bind_rows(
@@ -5834,6 +6733,7 @@ geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.2,position =  position_
 #Historical supply
 
 ```{r}
+
 
 ff_consumption <- 
   fread("forage fish consumption.csv", header=T) 
