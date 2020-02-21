@@ -8155,33 +8155,32 @@ insects_total+
 
 ```{r}
 
-
-
-a_test <- bind_rows(lapply(1:dim(na.exclude(prod.aqua))[1], function(target_row_id){
-  target_row <- na.exclude(prod.aqua)[target_row_id,]
+#FCR
+a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
+  target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
   temp_df <- bind_rows(lapply(1:500, function(rep_id){
     #isolate each row 
     a <- feeds_as_list[[target_row[["Taxa"]]]] 
     
-    #consumption parameters FCR change
+    #different  parameters FCR change
     b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
-    c <- mean(c(a[["FM_min"]], a[["FM_max"]]))   # assign random fishmeal inclusion from range 
-    d <- mean(c(a[["FO_min"]], a[["FO_max"]]))   #assign random fish oil inclusion from range
-    e <- mean(c(a[["Fed_min"]], a[["Fed_max"]]))    #assign random fed proportion from 2015 -2025 range
+    c <- a[["FM_min"]]   # assign minimum fishmeal inclusion 
+    d <- a[["FO_min"]]   #assign minimum fish oil inclusion from range
+    e <- a[["Fed_min"]]   #assign random fed proportion from 2015 -2025 range
     
-    #Consumption parameters FMFO change
+    # #Consumption parameters FMFO change
+    # 
+    # bb <- a[["FCR_min"]]  # assign minimum fcr from group range
+    # cc <- runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]])   # assign random fishmeal inclusion from range 
+    # dd <- runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])   #assign random fish oil inclusion from range
+    # ee <- a[["Fed_min"]]    #assign minimum fed proportion from 2015 -2025 range
     
-    bb <- mean(c(a[["FCR_min"]], a[["FCR_max"]]))  # assign random fcr from group range
-    cc <- runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]])   # assign random fishmeal inclusion from range 
-    dd <- runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])   #assign random fish oil inclusion from range
-    ee <- mean(c(a[["Fed_min"]], a[["Fed_max"]]))    #assign random fed proportion from 2015 -2025 range
-    
-    #Consumption parameters fed proportions change
-    
-    bbb <- mean(c(a[["FCR_min"]], a[["FCR_max"]]))  # assign random fcr from group range
-    ccc <- mean(c(a[["FM_min"]], a[["FM_max"]]))   # assign random fishmeal inclusion from range 
-    ddd <- mean(c(a[["FO_min"]],  a[["FO_max"]]))  #assign random fish oil inclusion from range
-    eee <- runif(n=1, min = a[["Fed_min"]], max= a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
+    # #Consumption parameters fed proportions change
+    # 
+    # bbb <- mean(c(a[["FCR_min"]], a[["FCR_max"]]))  # assign random fcr from group range
+    # ccc <- mean(c(a[["FM_min"]], a[["FM_max"]]))   # assign random fishmeal inclusion from range 
+    # ddd <- mean(c(a[["FO_min"]],  a[["FO_max"]]))  #assign random fish oil inclusion from range
+    # eee <- runif(n=1, min = a[["Fed_min"]], max= a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
     
     
     #Consumption calculations for FCR change
@@ -8193,26 +8192,26 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(prod.aqua))[1], function(target_row_
     l <-  case_when(i<j ~ h-(j-i),
                     T ~ h+k) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded). If they are greater then exact forage fish equivalents of the extra fish needed are added to that needed to fulfill FM demand.
                    
-     #Consumption calculations for FMFO change
-    m <- target_row[["Value"]]*bb*cc*ee    #fm demand
-    n <- m/0.225       # forage fish biomass needed for fm demand
-    o <- target_row[["Value"]]*bb*dd*ee    #fo demand
-    p <- n*0.05   # amount of fish oil coming from the fm biomass
-    q <- (o-p)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
-    r <-  case_when(o<p ~ n-(p-o),
-                    TRUE ~ n+q) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded). If they are greater then exact forage fish equivalents of the extra fish needed are added to that needed to fulfill FM demand.
+    #  #Consumption calculations for FMFO change
+    # m <- target_row[["Value"]]*bb*cc*ee    #fm demand
+    # n <- m/0.225       # forage fish biomass needed for fm demand
+    # o <- target_row[["Value"]]*bb*dd*ee    #fo demand
+    # p <- n*0.05   # amount of fish oil coming from the fm biomass
+    # q <- (o-p)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
+    # r <-  case_when(o<p ~ n-(p-o),
+    #                 TRUE ~ n+q) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded). If they are greater then exact forage fish equivalents of the extra fish needed are added to that needed to fulfill FM demand.
     
     
-      #Consumption calculations for fed prop change
-    s <- target_row[["Value"]]*bbb*ccc*eee    #fm demand
-    t <- s/0.225       # forage fish biomass needed for fm demand
-    u <- target_row[["Value"]]*bbb*ddd*eee    #fo demand
-    v <- t*0.05   # amount of fish oil coming from the fm biomass
-    w <- (u-v)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
-    x <-  case_when(u<v ~ t-(v-u),
-                    TRUE ~ t+w) 
-    
-    
+    #   #Consumption calculations for fed prop change
+    # s <- target_row[["Value"]]*bbb*ccc*eee    #fm demand
+    # t <- s/0.225       # forage fish biomass needed for fm demand
+    # u <- target_row[["Value"]]*bbb*ddd*eee    #fo demand
+    # v <- t*0.05   # amount of fish oil coming from the fm biomass
+    # w <- (u-v)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
+    # x <-  case_when(u<v ~ t-(v-u),
+    #                 TRUE ~ t+w) 
+    # 
+    # 
     
     
     #bind new objects to end of target row
@@ -8228,22 +8227,23 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(prod.aqua))[1], function(target_row_
         fo_from_fm_FCR = j, 
         surplus_FCR = k,
         consumption_FCR = l,
+        Element="FCR"
         
-        #FMFO change
-        fm_demand_FMFO = m, 
-        fm_biomass_FMFO = n,
-        fo_demand_FMFO = o,
-        from_fm_FMFO = p, 
-        surplus_FMFO = q,
-        consumption_FMFO = r,
+        # #FMFO change
+        # fm_demand_FMFO = m, 
+        # fm_biomass_FMFO = n,
+        # fo_demand_FMFO = o,
+        # from_fm_FMFO = p, 
+        # surplus_FMFO = q,
+        # consumption_FMFO = r
         
-        #Fed prop change
-        fm_demand_FED = s, 
-        fm_biomass_FED = t,
-        fo_demand_FED = u,
-        fo_from_fm_FED = v, 
-        surplus_FED = w,
-        consumption_FED = x
+        # #Fed prop change
+        # fm_demand_FED = s, 
+        # fm_biomass_FED = t,
+        # fo_demand_FED = u,
+        # fo_from_fm_FED = v, 
+        # surplus_FED = w,
+        # consumption_FED = x
         
         
         ))
@@ -8252,10 +8252,108 @@ a_test <- bind_rows(lapply(1:dim(na.exclude(prod.aqua))[1], function(target_row_
   return(temp_df)
 }))#close lapply function, lapply call, and bind_rows
 
-write_csv(a_test, "consumption sensitivity analysis.csv")
+write_csv(a_test, "consumption sensitivity analysis - FCR.csv")
 
 
   
+a_test <- bind_rows(lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row_id){
+  target_row <- na.exclude(fed_aqua_proj)[target_row_id,]
+  temp_df <- bind_rows(lapply(1:500, function(rep_id){
+    #isolate each row 
+    a <- feeds_as_list[[target_row[["Taxa"]]]] 
+    
+    # #different  parameters FCR change
+    # b <- runif(n = 1, min = a[["FCR_min"]], max = a[["FCR_max"]])  # assign random fcr from group range
+    # c <- a[["FM_min"]]   # assign minimum fishmeal inclusion 
+    # d <- a[["FO_min"]]   #assign minimum fish oil inclusion from range
+    # e <- a[["Fed_min"]]   #assign random fed proportion from 2015 -2025 range
+    
+    # #Consumption parameters FMFO change
+    # 
+    bb <- a[["FCR_min"]]  # assign minimum fcr from group range
+    cc <- runif(n = 1, min = a[["FM_min"]], max = a[["FM_max"]])   # assign random fishmeal inclusion from range
+    dd <- runif(n = 1, min = a[["FO_min"]], max = a[["FO_max"]])   #assign random fish oil inclusion from range
+    ee <- a[["Fed_min"]]    #assign minimum fed proportion from 2015 -2025 range
+    
+    # #Consumption parameters fed proportions change
+    # 
+    # bbb <- mean(c(a[["FCR_min"]], a[["FCR_max"]]))  # assign random fcr from group range
+    # ccc <- mean(c(a[["FM_min"]], a[["FM_max"]]))   # assign random fishmeal inclusion from range 
+    # ddd <- mean(c(a[["FO_min"]],  a[["FO_max"]]))  #assign random fish oil inclusion from range
+    # eee <- runif(n=1, min = a[["Fed_min"]], max= a[["Fed_max"]])    #assign random fed proportion from 2015 -2025 range
+    
+    
+    #Consumption calculations for FCR change
+    # g <- target_row[["Value"]]*b*c*e    #fm demand
+    # h <- g/0.225       # forage fish biomass needed for fm demand
+    # i <- target_row[["Value"]]*b*d*e    #fo demand
+    # j <- h*0.05   # amount of fish oil coming from the fm biomass
+    # k <- (i-j)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
+    # l <-  case_when(i<j ~ h-(j-i),
+    #                 T ~ h+k) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded). If they are greater then exact forage fish equivalents of the extra fish needed are added to that needed to fulfill FM demand.
+                   
+    #  #Consumption calculations for FMFO change
+    m <- target_row[["Value"]]*bb*cc*ee    #fm demand
+    n <- m/0.225       # forage fish biomass needed for fm demand
+    o <- target_row[["Value"]]*bb*dd*ee    #fo demand
+    p <- n*0.05   # amount of fish oil coming from the fm biomass
+    q <- (o-p)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass
+    r <-  case_when(o<p ~ n-(p-o),
+                    TRUE ~ n+q) #total forage fish required - so when fo demand is less than that produced from fishmeal consumed, the total forage fish equivalents are discounted by the weight of fish oil available for other uses (i.e. traded). If they are greater then exact forage fish equivalents of the extra fish needed are added to that needed to fulfill FM demand.
+    
+    
+    #   #Consumption calculations for fed prop change
+    # s <- target_row[["Value"]]*bbb*ccc*eee    #fm demand
+    # t <- s/0.225       # forage fish biomass needed for fm demand
+    # u <- target_row[["Value"]]*bbb*ddd*eee    #fo demand
+    # v <- t*0.05   # amount of fish oil coming from the fm biomass
+    # w <- (u-v)/0.05 # difference in the amount of fish oil still needed (surplus) converted into forage fish biomass 
+    # x <-  case_when(u<v ~ t-(v-u),
+    #                 TRUE ~ t+w) 
+    # 
+    # 
+    
+    
+    #bind new objects to end of target row
+    rep_id_row_as_df <- data.frame(
+      c(target_row, 
+        rep_id=rep_id,
+        
+        
+        # #FCR change
+        # fm_demand_FCR = g, 
+        # fm_biomass_FCR = h,
+        # fo_demand_FCR = i,
+        # fo_from_fm_FCR = j, 
+        # surplus_FCR = k,
+        # consumption_FCR = l,
+        # Element="FCR"
+        
+        #FMFO change
+        fm_demand_FMFO = m,
+        fm_biomass_FMFO = n,
+        fo_demand_FMFO = o,
+        from_fm_FMFO = p,
+        surplus_FMFO = q,
+        consumption_FMFO = r,
+        Element="FMFO"
+        
+        # #Fed prop change
+        # fm_demand_FED = s, 
+        # fm_biomass_FED = t,
+        # fo_demand_FED = u,
+        # fo_from_fm_FED = v, 
+        # surplus_FED = w,
+        # consumption_FED = x
+        
+        
+        ))
+    return(rep_id_row_as_df)
+  })) #close lapply function, lapply call, and bind_rows
+  return(temp_df)
+}))#close lapply function, lapply call, and bind_rows
+
+write_csv(a_test, "consumption sensitivity analysis - FMFO.csv")
 
  
 
