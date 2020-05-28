@@ -2554,17 +2554,9 @@ dev.off()
 #sort fish oil nutrition data first
 ```{r}
 
+
 FO <- 
-  fish_oil %>% 
-  mutate(n3n6 = as.numeric(n3n6))%>% 
-  filter(!is.na(n3n6)) %>% 
-  group_by(Study_id) %>% 
-  nest() %>% 
-  mutate(Relative_nutrition = purrr::map(data, ~(.$n3n6/.$n3n6[1]))) %>% 
-  unnest(data, Relative_nutrition)
-
-growth_data
-
+  fish_oil
 
 ```
 
@@ -2636,6 +2628,7 @@ plotSmeModel(fit_fwfishes_soy, xlab="",ylab="", showIndividuals=F, showConfidenc
 #SALMONIDS 
 
 ```{r}
+
 salmonids_algae <- 
   FO %>% 
   filter(Fish_group=="Salmonids" & Feed_general=="Algae") %>% 
@@ -2654,7 +2647,7 @@ fit_salmonids_algae$info
 plot(fit_salmonids_algae, "diagnostic")
 
 
-plotSmeModel(fit_salmonids_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_salmonids_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -2680,7 +2673,7 @@ fit_salmonids_soy$info #won't converge - plotting model to describe trend
 plot(fit_salmonids_soy, "diagnostic")
 
 
-plotSmeModel(fit_salmonids_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_salmonids_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=10, lty=2, lwd=1, col='red'))))
 text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -2717,6 +2710,7 @@ axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 ```{r}
 
+
 shrimpy_algae <- 
   FO %>% 
   filter(Fish_group=="Shrimps" & Feed_general=="Algae") %>% 
@@ -2738,7 +2732,7 @@ plot(fit_shrimpy_algae, "diagnostic")
 #fit_shrimpy_algae <- loess(shrimpy_algae$Relative_FCR~shrimpy_algae$FO_replacement)
 
 
-plotSmeModel(fit_shrimpy_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_shrimpy_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -2763,7 +2757,7 @@ fit_shrimpy_soy$info
 plot(fit_shrimpy_soy, "diagnostic")
 
 
-plotSmeModel(fit_shrimpy_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_shrimpy_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
 text(x=10, y=1.1, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -2795,7 +2789,7 @@ fit_marinefishes_algae$info
 plot(fit_marinefishes_algae, "diagnostic")
 
 
-plotSmeModel(fit_marinefishes_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=80, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_marinefishes_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 text(x=10, y=1.35, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -2821,7 +2815,7 @@ fit_marinefishes_soy$info
 plot(fit_marinefishes_soy, "diagnostic")
 
 
-plotSmeModel(fit_marinefishes_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_marinefishes_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=17, lty=2, lwd=1, col='red'))))
 text(x=10, y=1.4, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
@@ -2845,41 +2839,41 @@ op <- par(mfrow=c(3,2),
 
 
 #Shrimps and algae 
-plotSmeModel(fit_shrimpy_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_shrimpy_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 #text(x=2, y=1.13, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Shrimps and soy 
-plotSmeModel(fit_shrimpy_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_shrimpy_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
 #text(x=2, y=1.14, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 #Salmonids and algae 
-plotSmeModel(fit_salmonids_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=30, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_salmonids_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 #text(x=2, y=1.14, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 #Salmonids and soy 
-plotSmeModel(fit_salmonids_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_salmonids_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=10, lty=2, lwd=1, col='red'))))
 #text(x=2, y=1.14, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 
 #Marine fishes and algae
-plotSmeModel(fit_marinefishes_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=80, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_marinefishes_algae, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#172869", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=100, lty=2, lwd=1, col='red'))))
 #text(x=2, y=1.35, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 #Marine fishes and soy
-plotSmeModel(fit_marinefishes_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#E9B186", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=50, lty=2, lwd=1, col='red'))))
+plotSmeModel(fit_marinefishes_soy, xlab="",ylab="",  xaxt="n",showIndividuals=T,  showConfidenceBands=T, col.meanCurve="#F7AA14", col=alpha("grey50", 0.5), pch=16,yaxt="n", bty = "l", panel.first = c((abline(h=1.05, lty=2, lwd=1, col='grey20')),(abline(v=17, lty=2, lwd=1, col='red'))))
 #text(x=2, y=1.4, labels = expression(bold("0%")), cex=1,pos = 4)
 axis(side=1, at=c(0,50,100), tick = T, tck=-0.05)
 
 
 mtext("Fish oil replacement (%)", side = 1, line=1, outer = T, cex=1)
 mtext("Relative feed conversion ratio",side = 2, line=2, outer = T, cex=1)
-mtext(c("Algae", "Soy"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
+mtext(c("Microalgae", "Soy-oil blends"), side=3, line = 0, outer = T, at=c(0.27,0.77), cex = 0.75, font=3)
 mtext(c("Shrimps", "Salmonids","Marine fishes"), side=2, line = 0.5, outer = T, at=rev(seq(from =.2, to=.85, length.out = 3)), cex = 0.75, font=3)
 par(op)
 dev.off()
@@ -8806,1098 +8800,13 @@ ggarrange(production_scenarios, consumption_scenarios, nrow = 2, ncol=1, align =
 
 
 
-#not sure what this code is
 
-```{r}
 
-## Current forage fish use
 
-FF_consumption <- vector("list", 100000)
-  
-  #matrix(data = NA, ncol = 14)
-#colnames(FF_consumption) <- c("Repeat", "Country", "Group", "Prod", "fcr", "fm", "fo",  "fed",  "fm_demand",  "fm_biomass", " fo_demand" ,"fo_from_fm", "surplus", "consumption")
-#if(levels(fed_aqua_proj$Broad_group)[4] %in% unique(data$Broad_group)){
 
-for (i in 1:length(levels(fed_aqua_proj$Country))){
-  for (j in 1:length(levels(fed_aqua_proj$Broad_group))){
-    dat <- fed_aqua_proj[fed_aqua_proj$Country==levels(fed_aqua_proj$Country)[i],]
-    Prod <-  sum(dat$Value[dat$Broad_group==levels(fed_aqua_proj$Broad_group)[j]])
-    Country <-levels(fed_aqua_proj$Country)[i]
-    Group <- levels(fed_aqua_proj$Broad_group)[j]
-    fcr <- runif(1, feeds$FCR_min[j], feeds$FCR_max[j])
-    fm <-runif(1, feeds$FM_min[j], feeds$FM_max[j])
-    fo <- runif(1, feeds$FO_min[j], feeds$FO_max[j])
-    fed <- runif(1, feeds$Fed_min[j], feeds$Fed_max[j])
-    Repeat <- r
-    
-    #Consumption calculations
-    fm_demand <- Prod*fcr*fm*fed
-    fm_biomass <- fm_demand/0.225
-    fo_demand <- Prod*fcr*fo*fed
-    fo_from_fm <- fm_biomass*0.05
-    surplus <- (fo_demand-fo_from_fm)/0.05
-    if(surplus>0){
-      consumption <- fm_biomass+surplus
-    } else {
-      consumption <- fm_biomass
-    }
-    
-    new <- c(Repeat, Country, Group, Prod, fcr, fm, fo, fed, fm_demand, fm_biomass, fo_demand, fo_from_fm, surplus, consumption)
-    FF_consumption[[i*j]] <- new
-  }
-}
 
 
-FF_consumption <- data.frame(matrix(unlist(FF_consumption), ncol=14, byrow=T))
 
 
 
-FF_consumption<- as.data.frame(FF_consumption, row.names = F)
-FF_consumption<-FF_consumption[2:nrow(FF_consumption),]
-
-#make numeric
-for (i in 4:ncol(FF_consumption)){
-  FF_consumption[,i] <- as.numeric(levels(FF_consumption[,i]))[FF_consumption[,i]]
-}
-
-nrow(FF_consumption)
-
-sum(FF_consumption$consumption)
-
-
-Consump_summ <- FF_consumption %>%
-  group_by(Group) %>%
-  summarise(Value=sum(consumption), sd=sd(consumption))
-
-ggplot(data = Consump_summ, aes(x=reorder(Group, -Value), y=Value, fill=Group))+geom_bar(stat = "identity")+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.3)+
-  coord_flip()
-
-
-Consump_summ <- FF_consumption %>%
-  group_by(Country) %>%
-  summarise(Value=sum(consumption), sd=sd(consumption))
-
-ggplot(data = Consump_summ[Consump_summ$Value>0.1e+06,], aes(x=reorder(Country, Value), y=Value))+geom_bar(stat = "identity")+
-  geom_errorbar(aes(ymin=Value-sd, ymax=Value+sd), width=0.3)+
-  coord_flip()
-
-
-
-
-
-
-Consump_summ$Scenario <- factor(Consump_summ$Scenario, levels(Consump_summ$Scenario)[c(3,1,2,4)])
-Consump_summ$Scenario <- factor(Consump_summ$Scenario, levels(Consump_summ$Scenario)[c(3,1,2,4)])
-
-sum(Consump_summ$mean[Consump_summ$Scenario=="DATA"])
-  
-#plot all facets in ascending order
-names <- levels(Consump_summ$Scenario)
-
-for (i in 1:length(names)) {
-    dat <- subset(Consump_summ, Scenario == names[i])
-    dat$Group <- factor(dat$Group, levels=dat[order(-dat$mean),]$Group)
-
-    assign(paste("p",i, sep = ""), ggplot(dat, aes(x = Group, y = mean, fill = Scenario, width=0.75)) + 
-    labs(y = bquote(Forage~fish~consumption~(T~x10^6)), x = NULL, fill = NULL) +
-    geom_bar(stat = "identity") +
-    geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=0.2)+
-    facet_wrap(~Scenario) +
-    coord_flip() +
-    scale_y_continuous(limits = c(0,6e+07))+
-    guides(fill=FALSE) +
-    theme_bw() + 
-    theme(panel.grid = element_blank(),
-    panel.border = element_blank()) +
-    scale_fill_brewer(palette="Set2"))
-}   
-
-
-ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
-#ggsave("FMFO consumption.tiff", device = "tiff", dpi=600, width=18, height=13, units = "cm")
-
-class(dat$mean)
-FF_consumption[FF_consumption$X2=="Albania",]
-
-fed_aqua_proj
-data$Broad_group
-df
-```
-
-
-#old diet data
-
-```{r}
-# #feeds[["animal name"]][["df"]]
-# 
-# feeds$FCR_min <- c(1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 4.6)
-# feeds$FCR_max <- c(1.7, 1.5, 1.8, 1.5, 1.8, 1.7, 1.7, 1.3, 1.6, 1.6, 7.4)
-# feeds$FM_min <- c(0.02, 0.02, 0.02, 0.25, 0.05, 0.15, 0.08, 0.08, 0.05, 0.00, 0.05)
-# feeds$FM_max <- c(0.04, 0.03, 0.04, 0.30, 0.10, 0.25, 0.16, 0.16, 0.16, 0.03, 0.1)
-# feeds$FO_min <- c(0.00, 0.00, 0.00, 0.00, 0.00, 0.03, 0.01, 0.04, 0.01, 0.00, 0.05)
-# feeds$FO_max <- c(0.01, 0.01, 0.01, 0.03, 0.01, 0.04, 0.04, 0.08, 0.02, 0.01, 0.10)
-# # feeds$FMFO_min <- c(0.02, 0.06, 0.02, 0.24, 0.04, 0.06, 0.08, 0.1, 0.06, 0.01, 0.1)
-# # feeds$FMFO_max <- c(0.05, 0.11, 0.02, 0.33, 0.09, 0.11, 0.15, 0.2, 0.09, 0.02, 0.2)
-# feeds$Fed_min <- c(0.55, 0.80, 0.40, 0.97, 0.55, 0.4, 0.8, 1.00, 0.95, 0.9, 1)
-# feeds$Fed_max <- c(0.65, 0.85, 0.60, 1.00, 0.65, 0.6, 0.9, 1.00, 0.95, 1.00, 1)
-
-
-```
-
-
-
-#OLD CODE
-
-```{r}
-#Data sources for scenario building
-
-#Scenarios - 1. Business as usual 2. Shifting diets in China 3. Faster aquaculture growth to compensate for pescetarian diets
-
-
-
-
-# #Using Tacon and Metian growth rates
-# bau_growth_rates <- matrix(data = c(rep(c(1.05,1.04,1.03), each=5), rep(c(1.08,1.06,1.06), each=5), rep(c(1.08,1.06,1.05), each=5), rep(c(1.0,1.0,1.0), each=5), rep(c(1.05,1.05,1.05), each=5), rep(c(1.08,1.06,1.05), each=5) , rep(c(1.08, 1.06,1.05), each=5),rep(c(1.1,1.08,1.05), each=5),rep(c(1.03,1.03,1.03), each=5), rep(c(1.1,1.08,1.08), each=5)), nrow = length(levels(fed_aqua$Broad_group)), ncol=length(seq(2015:2029)), byrow = T)
-# 
-# rownames(bau_growth_rates) <- levels(fed_aqua$Broad_group)
-# colnames(bau_growth_rates) <- seq(2015:2029)
-# 
-# Carps <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Carps" & fed_aqua.global$Year==2015])
-# Catfish <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Catfish" & fed_aqua.global$Year==2015])
-# Diadromous_fishes <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Diadromous fishes" & fed_aqua.global$Year==2015])
-# Eels <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Eels" & fed_aqua.global$Year==2015])
-# FW_Crustaceans <-c(fed_aqua.global$Value[fed_aqua.global$Group=="FW Crustaceans" & fed_aqua.global$Year==2015])
-# FW_fishes <-c(fed_aqua.global$Value[fed_aqua.global$Group=="FW fishes" & fed_aqua.global$Year==2015]) 
-# Marine_fishes <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Marine fishes" & fed_aqua.global$Year==2015])
-# Salmonids <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Salmonids" & fed_aqua.global$Year==2015])
-# Shrimps <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Shrimps" & fed_aqua.global$Year==2015])
-# Tilapias <-c(fed_aqua.global$Value[fed_aqua.global$Group=="Tilapias" & fed_aqua.global$Year==2015])
-# 
-# 
-# #Carps
-# for (i in 1:length(seq(2015:2029))){
-#   Carps <- c(Carps, Carps[i]*bau_growth_rates[1,i])
-# }
-# #Catfish
-# for (i in 1:length(seq(2015:2029))){
-#   Catfish <- c(Catfish, Catfish[i]*bau_growth_rates[2,i])
-# }
-# #diadromous fishes
-# for (i in 1:length(seq(2015:2029))){
-#   Diadromous_fishes <- c(Diadromous_fishes, Diadromous_fishes[i]*bau_growth_rates[3,i])
-# }
-# #Eels
-# for (i in 1:length(seq(2015:2029))){
-#   Eels <- c(Eels, Eels[i]*bau_growth_rates[4,i])
-# }
-# #FW crustaceans
-# for (i in 1:length(seq(2015:2029))){
-#   FW_Crustaceans <- c(FW_Crustaceans, FW_Crustaceans[i]*bau_growth_rates[5,i])
-# }
-# #FW fishes
-# for (i in 1:length(seq(2015:2029))){
-#   FW_fishes <- c(FW_fishes, FW_fishes[i]*bau_growth_rates[6,i])
-# }
-# #Marine fishes
-# for (i in 1:length(seq(2015:2029))){
-#   Marine_fishes <- c(Marine_fishes, Marine_fishes[i]*bau_growth_rates[7,i])
-# }
-# #salmonids
-# for (i in 1:length(seq(2015:2029))){
-#   Salmonids <- c(Salmonids, Salmonids[i]*bau_growth_rates[8,i])
-# }
-# #Shrimps
-# for (i in 1:length(seq(2015:2029))){
-#   Shrimps <- c(Shrimps,Shrimps[i]*bau_growth_rates[9,i])
-# }
-# #Tilapia
-# for (i in 1:length(seq(2015:2029))){
-#   Tilapias <- c(Tilapias, Tilapias[i]*bau_growth_rates[10,i])
-# }
-# 
-# rowSums(cbind.data.frame(Carps, Catfish, Diadromous_fishes, Eels, FW_fishes, FW_Crustaceans, Marine_fishes, Salmonids, Shrimps, Tilapias))
-# 
-# plot(Salmonids)
-
-###################   Tacon and Metian produce ~ 90 million by 2030 with these growth rates - very high - probably won't use for BAU ####
-
-
-
-##PROJECTIONS BASED FDOR DIFFERENT GROUPS
-
-
-# PROJECTION SCENARIO 1 - Business as usual
-#Create projections from expected changes to total production and proportional among farmed groups
-
-fed_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = NA)
-
-fed_projections$Group<-factor(fed_projections$Group, levels(fed_projections$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
-
-
-
-#Expected doubled fed aquaculture production to 2050 - see Froehlich 2018 & Tilman and Clark 
-
-Proj_total <- 2* sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
-Growth_rates <- data.frame(Group = levels(fed_aqua.global$Group), Growth= c(1.02, 1.04, 1.04, 1, 1, 1.02, 1,1,1,1,1,0.996 ))
-
-
-
-#Calculate the change in production assuming growth rates from impact model (conservative as this is growth in share of total production -  not fed production) - see World Bank to 2030
-
-
-for (i in 1:length(levels(fed_aqua.global$Group))){
-  Prop <- sum(fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015])/ sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
-  fed_projections$Value[i] <- Proj_total*(Prop*Growth_rates$Growth[i])
-}
-
-years <- seq(from = 2015, to = 2049, by=1)
-
-interpolations <- data.frame(Year = rep(years, length(levels(fed_projections$Group))), Group=rep(levels(fed_projections$Group), each=length(years),1))
-
-interpolations$Group<-factor(interpolations$Group, levels(interpolations$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
-
-
-#add the current data for 2015 for new projections layer
-
-interpolations$Value <- NA
-for (i in 1:length(levels(fed_aqua.global$Group))){
-  interpolations$Value[interpolations$Group==levels(interpolations$Group)[i] & interpolations$Year==2015] <- fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015]
-}
-
-# add 2050 projections and interpolate between 2015 and 2050
-fed_projections <- rbind(interpolations, fed_projections)
-fed_projections <- arrange(fed_projections, (Group), (Year))
-
-for (i in 1:length(levels(fed_projections$Group))){
-  fed_projections$Value[fed_projections$Group==levels(fed_projections$Group)[i]]<-na.approx(fed_projections$Value[fed_projections$Group==levels(fed_projections$Group)[i]])
-
-}
-
-fed_projections
-
-
-
-
-
-
-
-
-#test if this works in the plot
-ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
-  geom_line()+
-  geom_line(data = fed_projections,aes(x=Year, y=Value, colour=Group), linetype=2)+
-  theme_bw()+
-  theme(panel.grid = element_blank(), 
-        legend.text = element_text(size=6),
-        legend.title = element_blank(),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8))+
-  scale_x_continuous(limits = c(1950,2055))+
-  scale_y_continuous()+
-  geom_vline(xintercept = 2015, lty=2)+
-  labs(y=bquote(Production~(T~x10^6)))+
-  guides(colour=F)
-
-ggsave("basic linear proj.tiff", device = "tiff", dpi=600, width = 9, height = 6, unit="cm")
-
-
-
-
-
-#add scenarios for confidence around trajectories
-
-#PROJECTIONS SCENARIO 2 - Shifting preference to high value fish in china
-
-China_Proj_total <- Proj_total*1.24
-Growth_rates <- data.frame(Group = levels(fed_aqua.global$Group), Growth= c(1.03, 3.11, 1.03, 1.03, 2.96, 1.03, 3.05 , 0.96, 1.03, 0.96, 0.96 ,0.87))
-
-
-Chn_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = (NA) )
-
-
-for (i in 1:length(levels(fed_aqua.global$Group))){
-  Chn_projections$Value[i]<- fed_projections$Value[fed_projections$Year==2050 & fed_projections$Group==levels(fed_aqua.global$Group)[i]]*Growth_rates$Growth[i]
-}
-
-#add 2015 and 2050 data from data and projections and interpolate
-
-interpolations <- data.frame(Year = rep(years, length(levels(fed_projections$Group))), Group=rep(levels(fed_projections$Group), each=length(years),1))
-
-interpolations$Group<-factor(interpolations$Group, levels(interpolations$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
-
-
-#add the current data for 2015 for new projections layer
-
-interpolations$Value <- NA
-for (i in 1:length(levels(fed_aqua.global$Group))){
-  interpolations$Value[interpolations$Group==levels(interpolations$Group)[i] & interpolations$Year==2015] <- fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015]
-}
-
-# add 2050 projections and interpolate between 2015 and 2050
-Chn_projections <- rbind(interpolations, Chn_projections)
-Chn_projections <- arrange(Chn_projections, (Group), (Year))
-
-
-for (i in 1:length(levels(Chn_projections$Group))){
-  Chn_projections$Value[Chn_projections$Group==levels(Chn_projections$Group)[i]]<-na.approx(Chn_projections$Value[Chn_projections$Group==levels(Chn_projections$Group)[i]])
-
-}
-
-#test china projections work with plot
-
-ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
-  geom_line()+
-  geom_line(data = Chn_projections,aes(x=Year, y=Value, colour=Group), linetype="dotted")+
-  theme_bw()+
-  theme(panel.grid = element_blank(), 
-        legend.text = element_text(size=6),
-        legend.title = element_blank(),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8))+
-  scale_x_continuous(limits = c(1950,2055))+
-  scale_y_continuous()+
-  geom_vline(xintercept = 2015, lty=2)+
-  labs(y=bquote(Production~(T~x10^6)))+
-  guides(colour=F)
-
-
-# SCENARIO THREE - PESCETARIAN DIETS
-
-
-pesc_projections <- data.frame(Year=rep(2050), Group=levels(fed_aqua.global$Group), Value = NA )
-
-pesc_projections$Group<-factor(pesc_projections$Group, levels(pesc_projections$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
-
-
-
-#Expected tripled fed aquaculture production to 2050 under rapid change scenario - see Froehlich 2018 & Tilman and Clark 
-
-Pesc_Proj_total <- 3* sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
-Growth_rates <- data.frame(Group = levels(fed_aqua.global$Group), Growth= c(1.04, 1.1, 1.29, 1.01, 1.11, 1.01, 1.09, 1.06, 1.02, 1.36, 1.15, 0.998))
-
-
-
-#Calculate the change in production assuming growth rates from impact model (conservative as this is growth in share of total production -  not fed production) - see World Bank to 2030
-
-
-for (i in 1:length(levels(fed_projections$Group))){
-  Prop <- sum(fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015])/ sum(fed_aqua.global$Value[fed_aqua.global$Year==2015])
-  pesc_projections$Value[i] <- (Pesc_Proj_total*Prop)*Growth_rates$Growth[i]
-}
-
-#Adjust new production to stay in line with x3 growth
-adj<-Pesc_Proj_total/ sum(pesc_projections$Value)
-
-pesc_projections$Value <- pesc_projections$Value*adj
-
-
-
-years <- seq(from = 2015, to = 2049, by=1)
-
-interpolations <- data.frame(Year = rep(years, length(levels(pesc_projections$Group))), Group=rep(levels(pesc_projections$Group), each=length(years),1))
-
-interpolations$Group<-factor(interpolations$Group, levels(interpolations$Group)[c(1,11,12,2,10, 5, 3, 6, 4, 7, 8, 9)])
-
-
-#add the current data for 2015 for new projections layer
-
-interpolations$Value <- NA
-for (i in 1:length(levels(fed_aqua.global$Group))){
-  interpolations$Value[interpolations$Group==levels(interpolations$Group)[i] & interpolations$Year==2015] <- fed_aqua.global$Value[fed_aqua.global$Group==levels(fed_aqua.global$Group)[i] & fed_aqua.global$Year==2015]
-}
-
-# add 2050 projections and interpolate between 2015 and 2050
-pesc_projections <- rbind(interpolations, pesc_projections)
-pesc_projections <- arrange(pesc_projections, (Group), (Year))
-
-for (i in 1:length(levels(pesc_projections$Group))){
-  pesc_projections$Value[pesc_projections$Group==levels(pesc_projections$Group)[i]]<-na.approx(pesc_projections$Value[pesc_projections$Group==levels(pesc_projections$Group)[i]])
-
-}
-
-pesc_projections
-
-
-ggplot(data = fed_aqua.global, aes(x=Year, y=(Value), colour=Group))+
-  geom_line()+
-  geom_line(data = pesc_projections,aes(x=Year, y=Value, colour=Group), linetype=2)+
-  theme_bw()+
-  theme(panel.grid = element_blank(), 
-        legend.text = element_text(size=6),
-        legend.title = element_blank(),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8))+
-  scale_x_continuous(limits = c(1950,2055))+
-  scale_y_continuous()+
-  geom_vline(xintercept = 2015, lty=2)+
-  labs(y=bquote(Production~(T~x10^6)))+
-  guides(colour=F)
-
-ggsave("basic linear proj.tiff", device = "tiff", dpi=600, width = 9, height = 6, unit="cm")
-
-
-#now create min and maxs of all projections from the scenarios
-
-Proj_all <-cbind.data.frame(fed_projections$Value, Chn_projections$Value, pesc_projections$Value)
-names(Proj_all)[1] <- "BAU"
-names(Proj_all)[2] <- "CHN"
-names(Proj_all)[3] <- "PESC"
-
-Proj_all$Group <- fed_projections$Group
-Proj_all$Year <- fed_projections$Year
-Proj_all$min <- pmin(Proj_all$BAU, Proj_all$CHN, Proj_all$PESC)
-Proj_all$max <- pmax(Proj_all$BAU, Proj_all$CHN, Proj_all$PESC)
-Proj_all$Value <- rowMeans(Proj_all[,c(6,7)])
-
-Proj_all$Group <-factor(Proj_all$Group, levels(Proj_all$Group)[c(1:5, 8, 7,9, 6,10,11,12)])
-
-
-
-#make indepdent legend
-cbbPalette <- c("#000000", "#009E73", "#e79f00", "#9ad0f3", "#0072B2", "#D55E00", 
-    "#CC79A7", "#F0E442")
-
-colourCount <- length(unique(Proj_all$Group))
-cols <- colorRampPalette(cbbPalette)
-#Colours
-#"#000000" "#006449" "#7DBEE7" "#D29E0A" "#BCB984" "#3F9E53" "#1C83BD" "#606861" "#D4600F" "#CE7179" #"#D99F82" "#F0E442"
-
-#create custom legend
-# ggplot()+
-#   theme(panel.grid = element_blank(),
-#         panel.background = element_blank(),
-#         axis.text = element_blank(),
-#         axis.ticks = element_blank(),
-#         axis.title = element_blank())+
-#   scale_x_continuous(limits=c(0,1.4))+
-#   scale_y_continuous(limits=c(0.1,1.3))+
-#   annotate("segment", x=c(0.0, 0.0,0,0,0,0), xend = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), yend = c(1.2, 1, 0.8, 0.6, 0.4, 0.2), colour = c("#000000", "#006449", "#3F9E53", "#D29E0A", "#BCB984" ,"#7DBEE7"), size=1)+
-#   annotate("text", x=c(0.16, 0.17, 0.17, 0.17, 0.20, 0.28), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), label =c("Carp", "Shrimp", "Tilapia", "Catfish", "Salmonids", "Freshwater fish, other"))+
-#   annotate("segment", x=c(0.65, 0.65,0.65,0.65,0.65,0.65), xend = c(0.75, 0.75, 0.75, 0.75, 0.75, 0.75), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), yend = c(1.2, 1, 0.8, 0.6, 0.4, 0.2), colour = c("#1C83BD", "#606861", "#D4600F", "#CE7179", "#D99F82", "#F0E442"), size=1)+
-#   annotate("text", x=c(0.91, 0.88, 0.81, 0.9, 0.82, 0.9), y=c(1.2, 1, 0.8, 0.6, 0.4, 0.2), label =c("Crustaceans, other", "Demersal fish", "Eels", "Marine fish, other" , "Mullet" ,                "Pelagic fish, other"))+
-#   annotation_custom(grob = carp_img, xmin = 0.25, xmax = 0.4, ymin=1.1, ymax = 1.3)+
-#   annotation_custom(grob = shrimp_img, xmin = 0.25, xmax = 0.4, ymin=0.9, ymax = 1.1)+
-#   annotation_custom(grob = tilapia_img, xmin = 0.25, xmax = 0.4, ymin=0.7, ymax = 0.9)+
-#   annotation_custom(grob = catfish_img, xmin = 0.25, xmax = 0.43, ymin=0.5, ymax = 0.7)+
-#   annotation_custom(grob = salmon_img, xmin = 0.3, xmax = 0.47, ymin=0.3, ymax = 0.5)+
-#   annotation_custom(grob = snakehead_img, xmin = 0.47, xmax = 0.6, ymin=0.1, ymax = 0.3)+
-#   annotation_custom(grob = crab_img, xmin = 1, xmax = 1.3, ymin=1.1, ymax = 1.26)+
-#   annotation_custom(grob = bass_img, xmin = 1, xmax = 1.21, ymin=0.9, ymax = 1.1)+
-#   annotation_custom(grob = eel_img, xmin = 0.85, xmax = 1.1, ymin=0.7, ymax = 0.9)+
-#   annotation_custom(grob = grouper_img, xmin = 1.05, xmax = 1.25, ymin=0.5, ymax = 0.7)+
-#   annotation_custom(grob = mullet_img, xmin = 0.89, xmax = 1.07, ymin=0.3, ymax = 0.5)+
-#   annotation_custom(grob = jack_img, xmin = 1.08, xmax = 1.26, ymin=0.1, ymax = 0.3)
-# 
-# 
-# ggsave("f1legend.png", device = "png", dpi=300, width=18, height=13, units="cm")
-
-# legend_grob <- readPNG("f1legend.png")
-# legend_grob <-rasterGrob(legend_grob, interpolate = T)
-
-BAU <- Proj_all[,c(1,4,5)]
-names(BAU)[1] <-"Value"
-CHN <- Proj_all[,c(2,4,5)]
-names(CHN)[1] <-"Value"
-PESC <- Proj_all[,c(3,4,5)]
-names(PESC)[1] <-"Value"
-
-
-
-
-#MAIN PLOT
-(fig1 <- ggplot(data = fed_aqua.global, aes(x=Year, y=Value, colour=Group))+
-  #annotation_custom(legend_grob, xmin = 1932, xmax = 2035, ymin = 19e+06, ymax = 55e+06)+
-  geom_line(size=0.4)+
-  geom_ribbon(data = Proj_all, aes(x=Year, ymin=min, ymax=max, fill=Group), colour=NA, alpha=0.08)+
-  # geom_line(data = BAU, aes(x=Year, y=Value, colour=Group), linetype="dashed", size=0.3)+
-  # geom_line(data = CHN, aes(x=Year, y=Value, colour=Group), linetype="dotted", size=0.3)+
-  # geom_line(data = PESC, aes(x=Year, y=Value, colour=Group), linetype="dotdash", size=0.3)+
-  geom_line(data = Proj_all, aes(x=Year, y=Value, colour=Group), linetype="dashed", size=0.3)+
-  theme_bw()+
-  scale_colour_manual(values=c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#606861", "#D4600F", "#CE7179", "#D99F82", "#F0E442"))+
-  scale_fill_manual(values=c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#606861", "#D4600F", "#CE7179", "#D99F82", "#F0E442"))+
-  theme(panel.grid = element_blank(), 
-        legend.text = element_text(size=6),
-        legend.title = element_blank(),
-        legend.key.size = unit(0.3,"cm"),
-        legend.background = element_blank(),
-        legend.position = c(0.3, 0.85),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8))+
-  scale_x_continuous(limits = c(1950,2030), breaks = c(1950, 1970, 1990, 2010, 2030), labels = c(1950, 1970, 1990, 2010, 2030))+
-  scale_y_continuous(breaks = c(0, 1e+07, 2e+07, 3e+07, 4e+07, 5e+07), labels = c(0,10,20,30,40,50), limits = c(0, 3.28e+07))+
-  geom_vline(xintercept = 2015, lty=2)+
-  labs(y=bquote(Production~(T~x10^6)))+
-  guides(colour=guide_legend(ncol = 2), fill=F))  
-
-ggsave("f1maint.tiff", device = "tiff", width=9, height=7, units = "cm")
-
-
-
-  # annotation_custom(carp_img, xmin = 2050, xmax = 2060, ymin = c(42e+06), ymax = 44e+06)+ 
-  # annotation_custom(shrimp_img, xmin = 2050, xmax = 2060, ymin = c(18e+06), ymax = 24e+06)+ 
-  # annotation_custom(salmon_img, xmin = 2050, xmax = 2060, ymin = c(9e+06), ymax = 15e+06)+ 
-  # annotation_custom(tilapia_img, xmin = 2050, xmax = 2060, ymin = c(6e+06), ymax = 12e+06)+ 
-  # annotation_custom(catfish_img, xmin = 2050, xmax = 2060, ymin = c(5e+06), ymax = 11e+06)+ 
-  # annotation_custom(snakehead_img, xmin = 2050, xmax = 2060, ymin = c(4e+06), ymax = 10e+06)+ 
-  # annotation_custom(bass_img, xmin = 2050, xmax = 2060, ymin = c(3e+06), ymax = 9e+06)+ 
-  # annotation_custom(eel_img, xmin = 2050, xmax = 2060, ymin = c(2e+06), ymax = 8e+06)+ 
-  # annotation_custom(grouper_img, xmin = 2050, xmax = 2060, ymin = c(1e+06), ymax = 7e+06)+ 
-  # annotation_custom(mullet_img, xmin = 2050, xmax = 2060, ymin = c(0.1e+06), ymax = 6.1e+06)+ 
-  # annotation_custom(jack_img, xmin = 2050, xmax = 2060, ymin = c(-0.5e+06), ymax = 5.5e+06)+ 
-  # annotation_custom(carp_img, xmin = 2050, xmax = 2060, ymin = c(-1e+06), ymax = 5e+06)
-
-
-
-(fed_aqua_proj[1,])
-class(fed_aqua_proj[1,])
-
-lapply(1:dim(na.exclude(fed_aqua_proj))[1], function(target_row){
-  x <- fed_aqua_proj[target_row,]
-  print(x)
-})
-  
-x <- list(foo = "", bar = 0)
-bind_rows(rep(list(x), 2))
-
-
-Production_list <- lapply(Countries_list_of_df, function(target_country){
-  # expand.grid(Country=target_country$Country,
-  #             Broad_group=target_country$Broad_group,
-  #             Current_production = target_country$Value)
-   data.frame(Country=target_country$Country,
-               Broad_group=target_country$Broad_group,
-               Current_production = target_country$Value)
-
-    })
-
-length(Countries_df[[2]]$Broad_group)
-Production_list[[2]]
-names(fed_aqua_proj)
-
-
-Countries_df[[2]][["Broad_group"]]
-
-a_different_a <- bind_rows(
-  lapply(feeds_as_list, function(target_animal){
-    x <- target_animal[["FCR_min"]]*0.5; 
-    y <- target_animal[["FCR_max"]]; 
-    z <- abs(y-x); 
-    out_df <- data.frame(testx=x, y=y, z=z); 
-    return(out_df) 
-  }), 
-.id="Broad Group"
-)
-
-
-
-
-
-ggsave("basic linear proj with scenarios.tiff", device = "tiff", dpi=600, width = 9, height = 7, unit="cm")
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Old fed species list 
-```{r}
-# Fed_Spp <-c( #CARPS
-# "Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla", 
-# 
-# #TILAPIA
-# "Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei",  
-# 
-# #CATFISH
-# "Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish", 
-# 
-# #FW FISHES
-# "Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile perch", 
-# 
-# #SALMONIDS
-# "Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout", 
-# 
-# #DIADROMOUS
-# "Milkfish", "Barramundi(=Giant seaperch)", "Striped bass", "Three-spined stickleback",
-# 
-# ##EELS,
-# "Japanese eel", "Short-finned eel", "European eel", "River eels nei", 
-# 
-# #MARINE FISHES
-# "European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei", "Groundfishes nei" , "Finfishes nei",  "Gilthead seabream", "Goldlined seabream", "Silver seabream", "Blackhead seabream", "Crimson seabream", "Filefishes nei", "Mangrove red snapper", "Sixfinger threadfin" , "Emperor red snapper", "Croakers, drums nei",  "Fourfinger threadfin", "Green humphead parrotfish",
-# "White-spotted spinefoot", "Snappers nei", "Yellowfin seabream",  "Yellowback seabream",  "Meagre",  "Drums nei", "Sobaity seabream", "Red porgy" , "Sharpsnout seabream", "Shi drum",  "Red drum" , "White seabream",   "Okhotsk atka mackerel" , "Porgies, seabreams nei",  "Common snook", "Mojarras(=Silver-biddies) nei", "Percoids nei", "Sargo breams nei" , "Common dentex" ,"Great blue spotted mudskipper", "Snooks(=Robalos) nei", "Common pandora", "Filefishes, leatherjackets nei", "Spinefeet(=Rabbitfishes) nei" , "Common two-banded seabream", "Gobies nei", "Spotted seabass", "Scats", "Snappers, jobfishes nei", "Pargo breams nei", "Goldsilk seabream",  "Russell's snapper", "Marbled spinefoot","Blackspot(=red) seabream" , "Brown meagre",  "Large yellow croaker","Obscure pufferfish", "John's snapper","Papuan black snapper", "Black seabass", "Spotted rose snapper",  "Trumpet emperor", "Two-spot red snapper" , "Streaked spinefoot", "Waigieu seaperch", "Atlantic spadefish", "Japanese seabream"  , "Whitemouth croaker" , "Mi-iuy (brown) croaker", "Tarpon", "Orbicular batfish" , "Sciaenas nei", "Japanese meagre" , "Pink dentex" , "Pufferfishes nei", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Atlantic wolffish", "Spotted wolffish", "Daggertooth pike conger", "Korean rockfish", "Scorpionfishes nei","Cobia", "Japanese jack mackerel",   "White trevally" , "Bigeye trevally"  , "Giant trevally", "Snubnose pompano" , "Silversides(=Sand smelts) nei", "Jacks, crevalles nei", "Bluefish"   , "Crevalle jack" , "Mackerels nei" , "Florida pompano", "Longfin yellowtail", "Golden trevally" ,  "Big-scale sand smelt",  "Malabar trevally",      
-# 
-# #TUNAS
-# "Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna",
-# 
-# #FW CRUSTCEANS
-# "Freshwater crustaceans nei", "Sawtooth caridina", "Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes nei",  "Signal crayfish", "Noble crayfish", "Indo-Pacific swamp crab", "Portunus swimcrabs nei", "Gazami crab" , "Callinectes swimcrabs nei","Marine crabs nei", "Blue crab", "Spinous spider crab", "Swimming crabs, etc. nei",  "Blue swimming crab", "Orange mud crab" , "Mediterranean shore crab", "Green crab", "Caribbean spiny lobster",  "Spiny lobsters nei",  "Mud spiny lobster",  "Flathead lobster",  "Japanese spiny lobster", "Palinurid spiny lobsters nei", "Tropical spiny lobsters nei",
-# 
-# #SHRIMPS PRAWNS
-# "Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Monsoon river prawn","Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Monkey river prawn",  "Speckled shrimp", "Caramote prawn", "Green tiger prawn", "Brown tiger prawn", "Banana prawn", "Eastern king prawn", "Redtail prawn", "Baltic prawn", "Common prawn", "Greasyback shrimp", "Natantian decapods nei", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")
-# 
-# # length(Fed_Spp)
-# # length(Fed_Spp[grep("nei", Fed_Spp)])
-# # length(Fed_Spp)-length(Fed_Spp[grep("nei", Fed_Spp)])
-# # 
-# # levels(prod.aqua2$ISSCAAP_Group)
-# # unique(prod.aqua2$Species[prod.aqua2$ISSCAAP_Group=="Miscellaneous freshwater fishes"])
-# 
-# 
-# # Sci_Spp<-c("Ctenopharyngodon idella", "Megalobrama amblycephala", "Cyprinus carpio", "Carassius carassius", "Mylopharyngodon piceus", "Barbonymus gonionotus", "Catla catla", "Labeo rohita", "Cirrhinus cirrhosus", "Oreochromis niloticus", "Oreochromis aureus x O. niloticus", "Ictalurus punctatus", "Ictalurus punctatus x I. furcatus", "Clarias gariepinus x C. macrocephalus", "Clarias gariepinus",  "Silurus asotus" , "Pelteobagrus fulvidraco", "Channa spp",   "Channa argus" , "Siniperca chuatsi", "Monopterus albus", "Piaractus brachypomus", "Colossoma macropomum","Piaractus mesopotamicus", "Anguilla spp", "Salmo salar", "Oncorhynchus mykiss", "Chanos chanos", "Lates calcarifer", "Platichthys flesus", "Bothidae", "Pleuronectidae", "Psetta maxima", "Gadus morhua", "Dicentrarchus labrax", "Sparus aurata", "Epinephelus spp", "Serranidae", "Sciaenops ocellatus", "Mugil cephalus", "Liza vaigiensis", "Liza ramada", "Mugil soiuy", "Valamugil seheli", "Mugil liza", "Seriola quinqueradiata", "Eriocheir sinensis", "Cherax quadricarinatus", "Macrobrachium rosenbergii", "Macrobrachium nipponense", "Penaeus vannamei", "Penaeus monodon", "Penaeus chinensis")
-
-
-fed_aqua <-prod.aqua[prod.aqua$Species %in% Fed_Spp,]
-
-write.csv(fed_aqua, "Fed aquaculture tidy.csv", row.names = F)
-
-```
-
-
-## OLD  Figure 1a - Plotting changes in production over time of species groups and species based projections
-
-```{r}
-
-
-
-fed_aqua<-read.csv("Fed aquaculture tidy.csv", header = T)
-
-taxons<-read.csv("CL_FI_SPECIES_GROUPS.csv", header = T)
-names(taxons)[names(taxons)=="Name_en"]<-"Species"
-
-class(taxons$Species)
-taxons$Species <- as.character(taxons$Species)
-class(prod.aqua$Species)
-prod.aqua$Species <- as.character(prod.aqua$Species)
-
-prod.aqua2 <- plyr::join(prod.aqua, taxons, by="Species", type="left")
-prod.aqua2 <- prod.aqua2[,c(1:7, 15:23)]
-
-# diets<-read.csv("fishmeal diet data.csv", header = T)
-# 
-# fed_aqua<-dplyr::left_join(fed_aqua, diets, by="Scientific_Name")
-
-#exclude algae and amphib/reptile species
-prod.aqua2<-prod.aqua2[!(prod.aqua2$Major_Group=="MAMMALIA" | prod.aqua2$Major_Group=="PLANTAE AQUATICAE" |  prod.aqua2$Major_Group=="AMPHIBIA, REPTILIA"),]
-
-prod.aqua2 <-  prod.aqua2[!is.na(prod.aqua2$Value),]
-
-
-
-#add broad groups based off Tacon and Metain
-fed_aqua$Broad_group <-NA
-fed_aqua$Broad_group<-as.character(fed_aqua$Broad_group)
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Grass carp(=White amur)", "Common carp", "Crucian carp", "Wuchang bream", "Black carp", "Silver barb", "Mrigal carp", "Roho labeo", "Catla")] <- "Carps"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Nile tilapia", "Blue-Nile tilapia, hybrid", "Redbelly tilapia", "Blackchin tilapia", "Mango tilapia", "Mozambique tilapia", "Longfin tilapia", "Redbreast tilapia", "Sabaki tilapia", "Three spotted tilapia", "Blue tilapia", "Tilapias nei")] <- "Tilapias"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Striped catfish", "Pangas catfish", "Pangas catfishes nei", "Channel catfish", "Africa-bighead catfish, hybrid", "North African catfish", "Amur catfish", "Yellow catfish", "Torpedo-shaped catfishes nei", "Philippine catfish", "Upsidedown catfishes", "Asian redtail catfish", "Stinging catfish", "South American catfish", "Wels(=Som) catfish", "Hong Kong catfish", "Bagrid catfish", "Black catfishes nei", "Chinese longsnout catfish", "Duckbill catfish", "Naked catfishes","Amazon sailfin catfish" ,"Suckermouth catfish")] <- "Catfishes"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese seabass", "Snakeheads(=Murrels) nei", "Snakehead","Mandarin fish", "Asian swamp eel",   "Pacu", "Pirapatinga", "Cachama", "Largemouth black bass", "Giant gourami", "Tambacu, hybrid", "Snakeskin gourami", "Indonesian snakehead", "Tambatinga, hybrid", "Pond smelt", "Striped snakehead", "Nile perch")] <- "FW fishes"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Milkfish", "Striped bass", "Three-spined stickleback")] <- "Diadromous fishes"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic salmon", "Coho(=Silver) salmon", "Chinook(=Spring=King) salmon", "Pacific salmons nei"," Chinook(=Spring=King) salmon", "Masu(=Cherry) salmon", "Chum(=Keta=Dog) salmon", "Sockeye(=Red) salmon", "Salmonids nei", "Salmonoids nei", "Rainbow trout", "Rainbow trout", "Sea trout", "Brook trout", "Sevan trout", "Trouts nei", "Golden trout")] <- "Salmonids"
-
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("European flounder",  "Lefteye flounders nei" ,  "Righteye flounders nei", "Turbot","Marine fishes nei", "Groundfishes nei" , "Finfishes nei",  "Gilthead seabream", "Goldlined seabream", "Silver seabream", "Blackhead seabream", "Crimson seabream", "Filefishes nei", "Mangrove red snapper", "Sixfinger threadfin" , "Emperor red snapper", "Croakers, drums nei",  "Fourfinger threadfin", "Green humphead parrotfish",
-"White-spotted spinefoot", "Snappers nei", "Yellowfin seabream",  "Yellowback seabream",  "Meagre",  "Drums nei", "Sobaity seabream", "Red porgy" , "Sharpsnout seabream", "Shi drum",  "Red drum" , "White seabream",   "Okhotsk atka mackerel" , "Porgies, seabreams nei",  "Common snook", "Mojarras(=Silver-biddies) nei", "Percoids nei", "Sargo breams nei" , "Common dentex" ,"Great blue spotted mudskipper", "Snooks(=Robalos) nei", "Common pandora", "Filefishes, leatherjackets nei", "Spinefeet(=Rabbitfishes) nei" , "Common two-banded seabream", "Gobies nei", "Spotted seabass", "Scats", "Snappers, jobfishes nei", "Pargo breams nei", "Goldsilk seabream",  "Russell's snapper", "Marbled spinefoot","Blackspot(=red) seabream" , "Brown meagre",  "Large yellow croaker","Obscure pufferfish", "John's snapper","Papuan black snapper", "Black seabass", "Spotted rose snapper",  "Trumpet emperor", "Two-spot red snapper" , "Streaked spinefoot", "Waigieu seaperch", "Atlantic spadefish", "Japanese seabream"  , "Whitemouth croaker" , "Mi-iuy (brown) croaker", "Tarpon", "Orbicular batfish" , "Sciaenas nei", "Japanese meagre" , "Pink dentex" , "Pufferfishes nei", "Japanese amberjack", "Greater amberjack", "Yellowtail amberjack", "Atlantic cod" , "European seabass", "Flathead grey mullet" , "Squaretail mullet", "Thinlip grey mullet" , "So-iuy mullet",   "Bluespot mullet", "Lebranche mullet", "Mullets nei",  "Red drum", "Japanese seabass", "Large yellow croaker", "Bastard halibut", "Bastard halibuts nei", "Cobia", "Korean rockfish", "Tiger pufferfish", "Amberjacks nei", "Groupers nei", "Greasy grouper", "Hong Kong grouper","Black grouper","Giant grouper", "Spotted coralgrouper","Areolate grouper", "Orange-spotted grouper", "Brown-marbled grouper", "Malabar grouper",  "Humpback grouper", "Groupers, seabasses nei", "Atlantic wolffish", "Spotted wolffish", "Daggertooth pike conger", "Korean rockfish", "Scorpionfishes nei","Cobia", "Japanese jack mackerel",   "White trevally" , "Bigeye trevally"  , "Giant trevally", "Snubnose pompano" , "Silversides(=Sand smelts) nei", "Jacks, crevalles nei", "Bluefish"   , "Crevalle jack" , "Mackerels nei" , "Florida pompano", "Longfin yellowtail", "Golden trevally" ,  "Big-scale sand smelt",  "Malabar trevally", "Barramundi(=Giant seaperch)")] <- "Marine fishes"
-
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Atlantic bluefin tuna", "Yellowfin tuna", "Southern bluefin tuna", "Pacific bluefin tuna")] <- "Tunas"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Freshwater crustaceans nei", "Sawtooth caridina", "Chinese mitten crab", "Red claw crayfish", "Danube crayfish", "Marron crayfish", "Red swamp crawfish", "River prawns nei", "Yabby crayfish", "Euro-American crayfishes nei",  "Signal crayfish", "Noble crayfish", "Indo-Pacific swamp crab", "Portunus swimcrabs nei", "Gazami crab" , "Callinectes swimcrabs nei","Marine crabs nei", "Blue crab", "Spinous spider crab", "Swimming crabs, etc. nei",  "Blue swimming crab", "Orange mud crab" , "Mediterranean shore crab", "Green crab", "Caribbean spiny lobster",  "Spiny lobsters nei",  "Mud spiny lobster",  "Flathead lobster",  "Japanese spiny lobster", "Palinurid spiny lobsters nei", "Tropical spiny lobsters nei")] <- "FW Crustaceans"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Giant river prawn", "Freshwater prawns, shrimps nei", "Oriental river prawn", "Monsoon river prawn","Penaeus shrimps nei", "Kuruma prawn", "Metapenaeus shrimps nei", "Indian white prawn", "Monkey river prawn",  "Speckled shrimp", "Caramote prawn", "Green tiger prawn", "Brown tiger prawn", "Banana prawn", "Eastern king prawn", "Redtail prawn", "Baltic prawn", "Common prawn", "Greasyback shrimp", "Natantian decapods nei", "Whiteleg shrimp", "Blue shrimp", "Giant tiger prawn", "Fleshy prawn", "Southern white shrimp", "Brine shrimp", "Northern white shrimp", "Eastern school shrimp","Palaemonid shrimps nei","Atlantic ditch shrimp", "Akiami paste shrimp")] <- "Shrimps"
-
-fed_aqua$Broad_group[fed_aqua$Species %in% c("Japanese eel", "Short-finned eel", "European eel", "River eels nei")] <- "Eels"
-
-
-#fed_aqua[fed_aqua$Broad_group=="Marine fishes" & fed_aqua$Environment=="Freshwater",] <- "FW fishes"
-fed_aqua$Broad_group <- as.factor(fed_aqua$Broad_group)
-
-
-##for the Indian Major carps - assume 10% are fed as per Pahlow 2015 so adjust production value here
-fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")] <- fed_aqua$Value[fed_aqua$Species %in% c("Mrigal carp", "Roho labeo", "Catla")]*0.1
-
-
-
-
-
-### Projections based off of FAO SOFIA 2018, Tilman and Clark, and Froehlich 2018
-levels(fed_aqua$Country)
-MEDCs <- c("Canada", "United States of America", "Austria", "Belgium", "Denmark", "Finland", "France", "Germany", "Greece", "Ireland", "Italy", "Luxembourg", "Netherlands", "Portugal",  "Spain", "Sweden", "United Kingdom", "Bulgaria", "Croatia", "Cyprus","Czechia", "Estonia", "Hungary", "Latvia", "Lithuania", "Malta", "Poland", "Romania", "Slovakia", "Slovenia", "Iceland","Norway", "Switzerland", "Australia", "Japan", "New Zealand")
-
-LDCs<- c("Angola", "Benin", "Burkina Faso" ,"Burundi","Central African Republic", "Chad", "Comoros", "Congo, Dem. Rep. of the",  "Djibouti", "Eritrea", "Ethiopia", "Gambia" , "Guinea", "Guinea-Bissau", "Lesotho", "Liberia", "Madagascar", "Malawi", "Mali", "Mauritania", "Mozambique", "Niger", "Rwanda", "Sao Tome and Principe", "Senegal", "Sierra Leone", "Somalia", "South Sudan", "Sudan", "Togo", "Uganda", "Tanzania, United Rep. of", "Zambia", "Cambodia", "Kiribati", "Lao People's Dem. Rep.", "Myanmar", "Solomon Islands", "Timor Leste", "Tuvalu", "Vanuatu", "Afghanistan", "Bangladesh", "Bhutan", "Nepal", "Yemen", "Haiti")
-
-#check out production for 2015 only 
-
-fed_aqua.2015 <- fed_aqua %>%
-  filter(Year==2015) %>%
-  group_by(Year, Broad_group) %>%
-  summarise(Value= sum(Value))
-
-arrange(fed_aqua.2015, desc(Value))
-sum(fed_aqua.2015$Value) #39 million in 2015 
-
-
-
-#create projections
-
-fed_aqua_proj <- fed_aqua %>% 
-  filter(Year==2015) %>%
-  group_by(Country, Year, Broad_group) %>%
-  summarise(Value=sum(Value))%>%
-  mutate(bau = Value*1.37) #37% increase overall and in developing countries
-
-sum(fed_aqua_proj$bau)
-fed_aqua_proj$bau[fed_aqua_proj$Country %in% MEDCs] <- fed_aqua_proj$Value[fed_aqua_proj$Country %in% MEDCs]*1.281  #28% increase in developed countries
-fed_aqua_proj$bau[fed_aqua_proj$Country %in% LDCs] <-fed_aqua_proj$Value[fed_aqua_proj$Country %in% LDCs]*1.463 #46% increase in least developed (FAO SOFIA 2018)3
-
-fed_aqua_proj$chn <- fed_aqua_proj$bau*1
-fed_aqua_proj$chn[fed_aqua_proj$Broad_group %in% c("Salmonids", "Shrimps", "FW Crustaceans", "Tunas")] <- fed_aqua_proj$bau[fed_aqua_proj$Broad_group %in% c("Salmonids", "Shrimps", "FW Crustaceans", "Tunas")]*3# FROM WORLD BANK FISH TO 2030 3 times increase relative to bau for shrimps tunas salmonids and crustaceans
-
-sum(fed_aqua_proj$chn)#83 million under chn scenario
-sum(fed_aqua_proj$chn)/sum(fed_aqua_proj$bau) # 53% greater production than under the baseline 2030 scenario
-
-
-fed_aqua_proj$faq <- fed_aqua_proj$bau*1.5
-sum(fed_aqua_proj$faq)#82 million under faq scenario - 50% increase in production
-
-
-#DATA FOR PLOTTING UNTIL 2015
-
-fed_aqua.data <- fed_aqua %>%
-  group_by(Year, Broad_group) %>%
-  summarise(Value=sum(Value))
-
-#relevel the group factor
-levels(fed_aqua.data$Broad_group)
-#fed_aqua.global$Group<-factor(fed_aqua.global$Group, levels(fed_aqua.global$Group)[c(1,11,12,2,10, 6, 3, 4, 5, 7, 8, 9)])
-
-
-#Look at the group production data to present day
-ggplot(data = fed_aqua.data, aes(x=Year, y=(Value), colour=Broad_group))+
-  geom_line()+
-  theme_bw()+
-  theme(panel.grid = element_blank(), 
-        legend.text = element_text(size=6),
-        legend.title = element_blank(),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8))+
-  scale_x_continuous(limits = c(1950,2015))+
-  scale_y_continuous()+
-  geom_vline(xintercept = 2015, lty=2)+
-  labs(y=bquote(Production~(T~x10^6)))
-
-ggsave("fishsummary.tiff", device = "tiff", dpi=600, width = 12, height = 6, unit="cm")
-
-
-
-#OLD METHOD
-# #how well do our fed spp data match up to IMPACT model in terms of proportions of total aquaculture for 2008 and what do these translate into with growth rates stated by IMPACT model
-# 
-# # - Proportions are respectably similar
-# 
-# Props <- matrix(data = NA, nrow = length(levels(fed_aqua$Broad_group)), ncol=7)
-# rownames(Props) <- levels(fed_aqua$Broad_group)
-# colnames(Props) <- c("Prop_global", "bau_global", "Bau_prop", "BAU", "CHN", "FAQ", "2030_mean")
-# 
-# for (i in 1: length(levels(fed_aqua$Broad_group))){
-#   Props[i,1]<- sum(fed_aqua$Value[fed_aqua$Broad_group==levels(fed_aqua$Broad_group)[i] & fed_aqua$Year==2015])/ sum(prod.aqua2$Value[prod.aqua2$Year==2015])
-#   Props[i,2] <- 93612000
-#   Props[i,3]<- c(Props[i,1]+0.02,Props[i,1], Props[i,1], Props[i,1], Props[i,1], Props[i,1], Props[i,1], Props[i,1],Props[i,1]+0.02, Props[i,1]+0.02, Props[i,1])[i]
-#   Props[i,4] <- Props[i,2]*Props[i,3]
-#   Props[i,5] <- Props[i,4]* c(1,1,1,1,3,1,1,3,3,1,3)[i]
-#   Props[i,6] <- Props[i,4]*c(1.04, 1.01,1.01, 1.02, 1.09, 1.01, 1.06, 1.11, 1.1, 1.29, 1.06)[i]
-#   Props[i,7] <- mean(c(Props[i,4], Props[i,5], Props[i,6]))
-# }
-# sum(fed_aqua$Value[fed_aqua$Broad_group=="Shrimps" &fed_aqua$Year==2008])/sum(prod.aqua2$Value[prod.aqua2$Year==2015])
-# sum(Props[,4])/sum(fed_aqua$Value[fed_aqua$Year==2015]) #approximately 42% increase in fed aquaculture by 2030 under bau
-# sum(Props[,6])
-
-
-#BAU - FAO 2018 SOFIA suggests total aquaculture will increase from 2016 of 37% - but growth will slow down from 5.7% to 2.1% between 2017 and 2030 due to chinese aquaculture. So this gives us a baseline growth for all fed aquaculture:
-
-# sum(fed_aqua$Value[fed_aqua$Year==2015])*1.37# FAO suggest 55 million by 2030 - our estimate from Props matrix above (52 million)
-# sum(Props[,4])
-# 
-# 
-# #how much of fed aquaculture does our data represent 
-# sum(fed_aqua$Value[fed_aqua$Year==2012])/35.7e+06 #denominator taken from Tacon and Metian 2015
-# length(Fed_Spp) #280 species or nei
-# length(Fed_Spp)-length(Fed_Spp[grep("nei", Fed_Spp)]) # 225 species/ 55 nei categories
-# # Comparing production of these 225 species in 2012 to the Tacon Metian estimare = 95% of their estimate of total fed aquaculture
-# 
-# 
-# #how is fed aquaculture changing as a proportion of total fisheries aquaculture
-# prop <- c()
-# for (i in 1950:2015){
-#   prop <- c(prop, sum(fed_aqua$Value[fed_aqua$Year==i])/ sum(prod.aqua2$Value[prod.aqua2$Year==i]))
-# }
-# 
-# plot(prop, type="o")
-# 
-# 
-fed_aqua_plot <- fed_aqua.data %>% 
-   group_by(Broad_group, Year)%>%
-   summarise(Value=sum(Value))
-
-
-
-
-#GAMS for fit to data based off of the future calculations
-
-fed_aqua.2015$Year <- as.numeric(fed_aqua.2015$Year)
-#plot(x= fed_aqua.global$Year, y=fed_aqua.global$Value, col=fed_aqua.global$Group, type="p")
-
-#Set data frame with years, scenarios, groups and Values
-Proj_data <- data.frame(Scenario = rep(c("BAU", "CHN", "FAQ"), each=length(seq(2016,2030))*length(levels(fed_aqua_plot$Broad_group))), Broad_group=rep(levels(fed_aqua_plot$Broad_group), each=length(seq(2016,2030)), 3), Year=rep(seq(2016,2030),3*length(levels(fed_aqua_plot$Broad_group))))
-
-fed_aqua_proj2 <- fed_aqua_proj %>%
-  group_by(Broad_group)%>%
-  summarise(bau=sum(bau), chn=sum(chn), faq=sum(faq))
-
-
-
-#Insert production values from the Props matrix 
-Proj_data$Value <- NA
-
-for (i in 1:length(levels(Proj_data$Scenario))){
-  for (j in 1:length(levels(Proj_data$Broad_group))){
-    Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario==levels(Proj_data$Scenario)[i] & Proj_data$Broad_group==levels(Proj_data$Broad_group)[j]] <- as.numeric(fed_aqua_proj2[j,i+1])
-  }
-}
-
-
-#Join projections to data
-Proj_data <- Proj_data[,c(3,2,4,1)]
-fed_aqua.data$Scenario <- "Data"
-
-
-
-fed_aqua_combo <- rbind.data.frame(fed_aqua.data, Proj_data)
-fed_aqua_combo$Scenario <- as.factor(fed_aqua_combo$Scenario)
-fed_aqua_combo$Scenario <- factor(fed_aqua_combo$Scenario, levels(fed_aqua_combo$Scenario)[c(3,1,2,4)])
-
-(fed_aqua_combo <- arrange(fed_aqua_combo, Broad_group, Year))
-
-
-plot(y=fed_aqua_combo$Value, x=fed_aqua_combo$Year, col=fed_aqua_combo$Broad_group, pch=16, cex=0.5)
-
-
-#assemble GAM data for each group
-for (i in 1:length(levels(fed_aqua_combo$Broad_group))){
-  df <- fed_aqua_combo[fed_aqua_combo$Broad_group==levels(fed_aqua_combo$Broad_group)[i],]
-  model <- gam(Value ~ s(Year), data=df, family = "gaussian"(link = "identity"))
-  plotdata <-visreg(model, type = "contrast", plot =F)
-  assign(paste("df",i, sep = ""),data.frame(Broad_group = rep(levels(fed_aqua_combo$Broad_group)[i]), x=plotdata$fit[[plotdata$meta$x]], y=plotdata$fit$visregFit+plotdata$fit$Value,lwr=plotdata$fit$visregLwr+plotdata$fit$Value,upper=plotdata$fit$visregUpr+plotdata$fit$Value))
-  assign(paste("resids",i, sep = ""),data.frame(Broad_group = rep(levels(fed_aqua_combo$Broad_group)[i]), x=plotdata$res[[plotdata$meta$x]], y=plotdata$res$visregRes+plotdata$res$Value))
-}
-
-fit_df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11)
-res_df <- rbind(resids1, resids2, resids3, resids4, resids5, resids6, resids7, resids8, resids9, resids10, resids11)
-
-fit_df$y[fit_df$y <0] <-0
-fit_df$lwr[fit_df$lwr <0] <-0
-fit_df$upper[fit_df$upper <0] <-0
-
-res_df$y[res_df$y <0] <-0
-
-res_df2<-res_df[res_df$x < 2030,]
-
-fit_df$Broad_group <- factor(fit_df$Broad_group,levels(fit_df$Broad_group)[c(1, 9, 10, 8, 2, 5, 7, 6, 3, 4,11)])
-res_df$Broad_group <- factor(res_df$Broad_group,levels(res_df$Broad_group)[c(1, 9, 10, 8, 2, 5, 7, 6, 3, 4,11)])
-
-cbbPalette <- c("#000000", "#009E73", "#e79f00", "#9ad0f3", "#0072B2", "#D55E00", "#CC79A7", "#F0E442")
- 
-colourCount <- length(levels(fed_aqua_combo$Broad_group))
-
-getPalette = colorRampPalette(cbbPalette)
-
-
-#"#000000" "#006449" "#7DBEE7" "#D29E0A" "#BCB984" "#3F9E53" "#1C83BD" "#606861" "#D4600F" "#CE7179" #"#D99F82" "#F0E442"
-
-#c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD", "#D4600F", "#CE7179", "#D99F82", "#F0E442")
-#c("#000000" ,"#006449", "#7DBEE7", "#D29E0A", "#BCB984", "#3F9E53", "#1C83BD",  "#D4600F", "#CE7179", "#D99F82", "#F0E442")
-
-fig1a <- ggplot(fit_df, aes(x=x,y=y))+geom_line(aes(colour=Broad_group), linetype="dashed", size=0.3)+
-  geom_ribbon(aes(x=x, ymin = lwr, ymax=upper, fill=Broad_group), alpha=0.1)+
-  geom_point(data = res_df2, aes(x=x, y=y, colour=Broad_group), size=0.5)+
-  scale_x_continuous(limits = c(1970,2030), breaks = c(1950,1970,1990,2010, 2030), labels = c(1950, 1970, 1990, 2010, 2030))+
-  scale_y_continuous(limits = c(0,20e+06), breaks=c(0, 5e+06, 10e+6, 15e+06), labels = c(0,5,10,15))+
-  labs(x=bquote(Year), y=bquote(Production~(T~x10^6)))+
-  scale_colour_manual(values=getPalette(colourCount))+
-  scale_fill_manual(values=getPalette(colourCount))+
-  geom_vline(xintercept = 2015, linetype="dotted", size=0.25)+
-  theme_bw()+
-  theme(panel.grid = element_blank(),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8),
-        legend.title = element_blank(),
-        legend.key.size = unit(0.3, "cm"),
-        legend.text = element_text(size=6),
-        legend.position = c(0.3,0.8),
-        legend.background = element_blank())+
-  guides(colour= guide_legend(ncol=2))
-  
-
-ggsave("fig1 - draft.tiff", device = "tiff", dpi=600, width = 10, height = 7, units="cm")
-ggsave("fig1 - draft.pdf", device = pdf, dpi=600, width = 10, height = 7, units="cm")
-
-Proj_mean <- c(sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="BAU"]), sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="CHN"]), sum(Proj_data$Value[Proj_data$Year==2030 & Proj_data$Scenario=="FAQ"]))
-
-Now_2030  <- data.frame(Year=as.factor(c("2015", "2030")),Mean=c(sum(fed_aqua.data$Value[fed_aqua.data$Year==2015]), mean(Proj_mean)), sd=c(NA, sd(Proj_mean)))
-
-# fig1b <- ggplot(data = Now_2030, aes(x=Year, y=Mean, fill=Year))+
-#   geom_bar(stat="identity", width = 0.4)+
-#   geom_errorbar(aes(ymin=Mean-sd, ymax=Mean+sd), width=0.1, size=0.5)+
-#   theme_bw()+
-#   scale_fill_manual(values = c("dodgerblue4", "dodgerblue"))+
-#   scale_y_continuous(breaks = c(0, 2.5e+07, 5e+07, 7.5e+07), labels=c(0,25,50,75))+
-#   theme(panel.grid = element_blank(),
-#         axis.text = element_text(size=8),
-#         axis.title = element_text(size=8))+
-#   guides(fill=F)+
-#   labs(x="", y=bquote(Production~(T~x10^6)))
-# 
-# ggarrange(fig1b, fig1a, labels=c("a", "b"), nrow = 2, ncol=1)
-# ggsave("Fig1.tiff", device = "tiff", dpi=600, height=11, width = 9, unit="cm")
-# ggsave("Fig1.pdf", device = pdf, dpi=600, height=12, width = 10, unit="cm")
-
-```
-
-
-#need to assign diets at species levels then calculate current demands
-
-sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015]) #Indian Major carps represent 28% of carp production in 2015 - assume that 10% are fed (from Pahlow 2015) - so subtract 90% of IMC from carp production so....
-
-sum(fed_aqua$Value[fed_aqua$Species %in% c("Catla", "Roho labeo", "Mrigal carp") & fed_aqua$Year==2015])/sum(fed_aqua$Value[fed_aqua$Broad_group=="Carp" & fed_aqua$Year==2015])*0.9 #i.e. subtract 25.4% from carp production if doing by totals
-
-
-
-
-
-
-
-fed_aqua <- arrange(fed_aqua, desc(Year), desc(Value))
-diets<-read.csv("fishmeal diet data.csv", header = T)
-
-fed_aqua_plot1<-  filter(fed_aqua, fed_aqua$Year %in% c(2015)) %>% group_by(Broad_group) %>% summarise(sum(Value))
-
-ggplot(data=fed_aqua_plot1, aes(x=reorder(Broad_group, -`sum(Value)`), y=`sum(Value)`))+geom_bar(stat = "identity")+guides(fill=F)+coord_flip()
-
-
-
-
-
-
-
-diets2 <- aggregate(diets$Percent ~ diets$Species+diets$Ingredient+diets$FCR, FUN = mean)
-diets2 <- aggregate(diets2$`diets$Percent` ~ diets2$`diets$Species` +diets2$`diets$FCR`, FUN = sum)
-names(diets2)[1] <- "Species"
-names(diets2)[2] <- "FCR"
-names(diets2)[3] <- "Percent"
-
-
-
-fed_aqua_diets <- left_join(fed_aqua, diets2, by="Species")
-names(fed_aqua_diets)
-
-
-fed_aqua_diets$Prop <- fed_aqua_diets$Percent/100
-
-## Total fishmeal/oil demand = total production * proportion of feed from fishmeal oil * FCR 
-
-#work out consumption based on average of 2013-2015
-
-fed_aqua_diets <- fed_aqua_diets[fed_aqua_diets$Year>2012,]
-
-#sum country production
-fed_aqua_diets <-  aggregate(fed_aqua_diets$Value ~ fed_aqua_diets$Species +fed_aqua_diets$Broad_group + fed_aqua_diets$Year  +  fed_aqua_diets$FCR + fed_aqua_diets$Prop, FUN = sum)
-
-#mean across 2013 to 2015
-fed_aqua_diets<-aggregate(fed_aqua_diets$`fed_aqua_diets$Value` ~ fed_aqua_diets$`fed_aqua_diets$Species` + fed_aqua_diets$`fed_aqua_diets$Broad_group` + fed_aqua_diets$`fed_aqua_diets$FCR` + fed_aqua_diets$`fed_aqua_diets$Prop`, FUN = mean)
-
-names(fed_aqua_diets)[1] <- "Species"
-names(fed_aqua_diets)[2] <- "Broad_group"
-names(fed_aqua_diets)[3] <- "FCR"
-names(fed_aqua_diets)[4] <- "Prop"
-names(fed_aqua_diets)[5] <- "Value"
-
-#current consumption levels
-
-#make assumption that 10% of IMC are fed so adjust production value
-
-fed_aqua_diets$Value[fed_aqua_diets$Species %in% c("Catla", "Roho labeo", "Mrigal carp")] <- fed_aqua_diets$Value[fed_aqua_diets$Species %in% c("Catla", "Roho labeo", "Mrigal carp")]*0.1
-
-sum(fed_aqua_diets$Value) #average total production at 31 million tonnes of fed aquaculture across 2013 - 2015
-
-
-fed_aqua_diets$Consumption <- fed_aqua_diets$Prop * fed_aqua_diets$FCR * fed_aqua_diets$Value
-fed_aqua_diets$Scenario <-NA
-
-sum(fed_aqua_diets$Consumption)
-fed_aqua_diets$Broad_group <- as.factor(fed_aqua_diets$Broad_group)
-
-fed_summary <- aggregate(fed_aqua_diets$Consumption ~ fed_aqua_diets$Broad_group, FUN = sum)
-names(fed_summary)[1] <- "Broad_group"
-names(fed_summary)[2] <- "Consumption"
-
-fed_summary <- arrange(fed_summary, desc(Consumption))
-levels(fed_summary$Broad_group)
-fed_summary
-
-
-ggplot(data=fed_summary, aes(x=reorder(Broad_group, -Consumption),y=Consumption))+geom_bar(stat="identity", fill="blue4")+coord_flip()
-
-
-```
-
-```{r}
-ToothGrowth
-
-data1 <- data.frame(
-  group=c("A","A","A","A","B","B","B","B"), 
-  x= c(1,2,3,4,5,6,7,8),
-  y = c(1,2,3,4,5,6,7,8), 
-  z= c(10,20,30,40,50,60,70,80))  
-
-```
-data2 <- data1 %>% 
-  gather(key = Metric, value = Value, -group) %>%
-  group_by(group, Metric) %>%
-  summarise(
-    MU = mean(Value),
-    SD = sd(Value, na.rm = TRUE),
-    N = sum(!is.na(Value)),
-    upper_limit = MU + SD/sqrt(N),
-    lower_limit = MU - SD/sqrt(N)
-  )
-
-
-data2 <- data1 %>% 
-  gather(key = Metric, value = Value, -group, -x) %>%
-  group_by(group, Metric) %>%
-  summarise(
-    MU = mean(Value),
-    SD = sd(Value, na.rm = TRUE),
-    N = sum(!is.na(Value)),
-    upper_limit = MU + SD/sqrt(N),
-    lower_limit = MU - SD/sqrt(N)
-  )
-
-
-
-```
 
